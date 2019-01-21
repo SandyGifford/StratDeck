@@ -5,6 +5,7 @@ import Card, { CardType } from "../Card/Card";
 
 export interface HandProps {
 	cards: CardType[];
+	facedown: boolean;
 }
 export interface HandState { }
 
@@ -17,7 +18,7 @@ export default class Hand extends React.PureComponent<HandProps, HandState> {
 	}
 
 	public render(): React.ReactNode {
-		const { cards } = this.props;
+		const { cards, facedown } = this.props;
 
 		const cardOffset = Hand.CARD_SEPARATION * cards.length / 2;
 
@@ -29,7 +30,7 @@ export default class Hand extends React.PureComponent<HandProps, HandState> {
 						type={cardType}
 						x={Hand.CARD_SEPARATION * index - cardOffset}
 						y={-150}
-						facedown={false}
+						facedown={facedown}
 						height={0.1}
 					/>)
 				}

@@ -5,14 +5,44 @@
 		bottom: 0;
 	}
 
-	&__playerDecks {
+	&__board {
 		position: absolute;
-		bottom: 10px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	&__player,
+	&__opponent {
+		position: absolute;
 		right: 10px;
 
-		&__deck {
-			display: inline-block;
-			margin-left: 10px;
+		&__hand {
+			position: fixed;
+			right: 50%;
+		}
+
+		&__decks {
+			&__deck {
+				display: inline-block;
+				margin-left: 10px;
+			}
+		}
+	}
+
+	&__player {
+		bottom: 0;
+
+		&__hand {
+			bottom: 10px;
+		}
+	}
+
+	&__opponent {
+		top: 0;
+
+		&__hand {
+			top: 10px;
 		}
 	}
 
