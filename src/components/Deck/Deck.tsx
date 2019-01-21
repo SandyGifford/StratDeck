@@ -2,15 +2,16 @@ import "./Deck.style";
 
 import * as React from "react";
 import Card, { CardType, CardClickEventHandler } from "../Card/Card";
+import DOMUtils from "../../utils/DOMUtils";
 
 export interface DeckProps {
 	facedown: boolean;
 	onClick?: CardClickEventHandler;
 	topType?: CardType;
-	x: number;
-	y: number;
 	cardCount: number;
 	rotation?: number;
+	style?: React.CSSProperties;
+	className?: string;
 }
 export interface DeckState { }
 
@@ -21,16 +22,18 @@ export default class Deck extends React.PureComponent<DeckProps, DeckState> {
 	}
 
 	public render(): React.ReactNode {
-		const { x, y, facedown, topType, cardCount, onClick, rotation } = this.props;
+		const { facedown, topType, cardCount, onClick, rotation, style, className } = this.props;
 		const height = cardCount / 2;
 
+		const baseClassName = `Deck ${className || ""}`;
+
 		return (
-			<div className="Deck" style={{
-				left: x,
-				top: y,
-				transform: `rotate(${rotation}deg)`
+			<div className={baseClassName} style={{
+				transform: `rotate(${rotation}deg)`,
+				...style,
 			}}>
 				<Card
+					className="Deck__card"
 					x={0}
 					y={-height}
 					onClick={onClick}

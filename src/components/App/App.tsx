@@ -16,11 +16,13 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	public render(): React.ReactNode {
 		return (
 			<div className="App">
-				<Deck topType="ability3" facedown={false} rotation={-90} cardCount={50} y={20} x={70} />
-				<Deck topType="ability2" facedown={false} rotation={-90} cardCount={50} y={170} x={70} />
-				<Deck topType="ability1" facedown={false} rotation={-90} cardCount={50} y={320} x={70} />
-				<Deck topType="weapon" facedown={false} rotation={-90} cardCount={50} y={470} x={70} />
-				<Deck topType="hand" facedown={false} rotation={-90} cardCount={50} y={620} x={70} />
+				<div className="App__decks">
+					<Deck className="App__decks__deck" topType="hand" facedown={false} cardCount={50} />
+					<Deck className="App__decks__deck" topType="weapon" facedown={false} cardCount={50} />
+					<Deck className="App__decks__deck" topType="ability1" facedown={false} cardCount={50} />
+					<Deck className="App__decks__deck" topType="ability2" facedown={false} cardCount={50} />
+					<Deck className="App__decks__deck" topType="ability3" facedown={false} cardCount={50} />
+				</div>
 			</div>
 		)
 	}

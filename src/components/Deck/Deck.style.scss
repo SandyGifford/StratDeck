@@ -1,15 +1,19 @@
 .Deck {
-	position: absolute;
+	position: relative;
 	width: 125px;
 	height: 175px;
 	
+	&__card {
+		z-index: 1;
+	}
+
 	&__fill {
 		background: magenta;
 		position: absolute;
 		left: 0;
 		right: 0;
 		bottom: 0;
-		z-index: -1;
+		z-index: 0;
 		border-radius: 0 0 10px 10px;
 		background-image: linear-gradient(to bottom, #FEFEFE 0%,#999 100%);
 

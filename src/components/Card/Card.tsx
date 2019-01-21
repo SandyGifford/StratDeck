@@ -21,6 +21,8 @@ export interface CardProps {
 	height: number;
 	facedown: boolean;
 	rotation?: number;
+	style?: React.CSSProperties;
+	className?: string;
 }
 
 export interface CardState { }
@@ -32,24 +34,25 @@ export default class Card extends React.PureComponent<CardProps, CardState> {
 	}
 
 	public render(): React.ReactNode {
-		const { type, x, y, height, facedown, rotation } = this.props;
+		const { type, x, y, height, facedown, rotation, className, style } = this.props;
 
-		const className = DOMUtils.BEMClassName("Card", {
+		const baseClassName = DOMUtils.BEMClassName("Card", {
 			"facedown": facedown,
-		}, type);
+		}, type) + " " + className || "";
 
 		const shadowOpacity = NumberUtils.clamp(0.5 - (height * 0.1), 0, 0.5);
 		const xScale = facedown ? -1 : 1;
 
 		return (
 			<div
-				className={className}
+				className={baseClassName}
 				onClick={this.cardClicked}
 				style={{
 					left: x,
 					top: y,
 					transform: `scaleX(${xScale}) rotate(${rotation}deg)`,
-					boxShadow: `${10 * height}px ${10 * height}px ${25 * height}px 0 rgba(0, 0, 0, ${shadowOpacity})`
+					boxShadow: `${10 * height}px ${10 * height}px ${25 * height}px 0 rgba(0, 0, 0, ${shadowOpacity})`,
+					...style
 				}}
 			/>
 		)
