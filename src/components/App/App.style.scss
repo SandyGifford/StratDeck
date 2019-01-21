@@ -5,10 +5,40 @@
 		left: 50px;
 		transform: rotate(-90deg) translateX(-100%);
 		transform-origin: top left;
-
+		white-space: pre;
+			
 		&__deck {
 			display: inline-block;
 			margin-right: 10px;
+
+			&__label {
+				&__text {
+					font-weight: bold;
+					display: inline-block;
+
+					&::after {
+						content: ":";
+						margin-bottom: 0.5em;
+					}
+				}
+				&__cost {
+					display: inline-block;
+					color: orange;
+
+					&::after {
+						content: "";
+						margin-top: 0.25em;
+						transform: rotate(90deg);
+						display: inline-block;
+						background-image: url("/assets/coin.png");
+						background-size: contain;
+						background-repeat: no-repeat;
+						background-position: center center;
+						width: 1em;
+						height: 1em;
+					}
+				}
+			}
 		}
 	}
 }

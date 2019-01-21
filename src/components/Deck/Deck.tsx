@@ -12,6 +12,7 @@ export interface DeckProps {
 	rotation?: number;
 	style?: React.CSSProperties;
 	className?: string;
+	label?: React.ReactNode;
 }
 export interface DeckState { }
 
@@ -22,25 +23,35 @@ export default class Deck extends React.PureComponent<DeckProps, DeckState> {
 	}
 
 	public render(): React.ReactNode {
-		const { facedown, topType, cardCount, onClick, rotation, style, className } = this.props;
+		const { facedown, topType, cardCount, onClick, rotation, style, className, label } = this.props;
 		const height = cardCount / 2;
 
-		const baseClassName = `Deck ${className || ""}`;
+		const baseClassName = DOMUtils.BEMClassName("Deck", {
+			"hasLabel": !!label,
+		}) + " " + (className || "");
 
 		return (
 			<div className={baseClassName} style={{
 				transform: `rotate(${rotation}deg)`,
 				...style,
 			}}>
-				<Card
-					className="Deck__card"
-					x={0}
-					y={-height}
-					onClick={onClick}
-					facedown={facedown}
-					type={topType || "hand"}
-					height={0} />
-				<div className="Deck__fill" style={{ height: height + 10 }} />
+				<div className="Deck__inner">
+					<div className="Deck__inner__cards">
+						<Card
+							className="Deck__inner__cards__card"
+							x={0}
+							y={-height}
+							onClick={onClick}
+							facedown={facedown}
+							type={topType || "hand"}
+							height={0} />
+						<div className="Deck__inner__cards__fill" style={{ height: height + 10 }} />
+					</div>
+					{
+						label ?
+							<div className="Deck__inner__label">{label}</div> : null
+					}
+				</div>
 			</div>
 		)
 	}

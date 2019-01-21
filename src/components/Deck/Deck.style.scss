@@ -1,31 +1,45 @@
 .Deck {
 	position: relative;
-	width: 125px;
-	height: 175px;
-	
-	&__card {
-		z-index: 1;
-	}
 
-	&__fill {
-		background: magenta;
-		position: absolute;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		z-index: 0;
-		border-radius: 0 0 10px 10px;
-		background-image: linear-gradient(to bottom, #FEFEFE 0%,#999 100%);
+	&__inner {
 
-		&::after {
-			content: "";
-			position: absolute;
-			left: 0;
-			right: 0;
-			bottom: 0;
+		&__label {
+			color: yellow;
+			display: inline-block;
+			writing-mode: tb;
+		}
+		
+		&__cards {
+			display: inline-block;
+			position: relative;
+			width: 125px;
 			height: 175px;
-			border-radius: 10px;
-			box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.75);
+			
+			&__card {
+				z-index: 1;
+			}
+
+			&__fill {
+				background: magenta;
+				position: absolute;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				z-index: 0;
+				border-radius: 0 0 10px 10px;
+				background-image: linear-gradient(to bottom, #FEFEFE 0%,#999 100%);
+
+				&::after {
+					content: "";
+					position: absolute;
+					left: 0;
+					right: 0;
+					bottom: 0;
+					height: 175px;
+					border-radius: 10px;
+					box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.75);
+				}
+			}
 		}
 	}
 }

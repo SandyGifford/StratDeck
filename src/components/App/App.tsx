@@ -17,13 +17,20 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 		return (
 			<div className="App">
 				<div className="App__decks">
-					<Deck className="App__decks__deck" topType="hand" facedown={false} cardCount={50} />
-					<Deck className="App__decks__deck" topType="weapon" facedown={false} cardCount={50} />
-					<Deck className="App__decks__deck" topType="ability1" facedown={false} cardCount={50} />
-					<Deck className="App__decks__deck" topType="ability2" facedown={false} cardCount={50} />
-					<Deck className="App__decks__deck" topType="ability3" facedown={false} cardCount={50} />
+					<Deck className="App__decks__deck" label={this.renderDeckLabel("hand attack", 1)} topType="hand" facedown={false} cardCount={50} />
+					<Deck className="App__decks__deck" label={this.renderDeckLabel("weapon attack", 2)} topType="weapon" facedown={false} cardCount={50} />
+					<Deck className="App__decks__deck" label={this.renderDeckLabel("ability 1", 3)} topType="ability1" facedown={false} cardCount={50} />
+					<Deck className="App__decks__deck" label={this.renderDeckLabel("ability 2", 4)} topType="ability2" facedown={false} cardCount={50} />
+					<Deck className="App__decks__deck" label={this.renderDeckLabel("ability 3", 5)} topType="ability3" facedown={false} cardCount={50} />
 				</div>
 			</div>
 		)
+	}
+
+	private renderDeckLabel(text: string, cost: number): React.ReactNode {
+		return <div className="App__decks__deck__label">
+			<div className="App__decks__deck__label__text">{text}</div>
+			<div className="App__decks__deck__label__cost">{cost}</div>
+		</div>;
 	}
 }
