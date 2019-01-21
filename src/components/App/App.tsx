@@ -6,7 +6,9 @@ import Deck from "../Deck/Deck";
 import Hand from "../Hand/Hand";
 
 export interface AppProps { }
-export interface AppState { }
+export interface AppState {
+
+}
 
 export default class App extends React.PureComponent<AppProps, AppState> {
 	constructor(props: AppProps) {
@@ -27,6 +29,18 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 				<div className="App__hand">
 					<Hand
 						cards={["hand", "hand", "ability1"]} />
+				</div>
+				<div className="App__playerDecks">
+					<Deck
+						label="deck"
+						className="App__playerDecks__deck"
+						facedown={true}
+						cardCount={100} />
+					<Deck
+						label="discard"
+						className="App__playerDecks__deck"
+						facedown={false}
+						cardCount={100} />
 				</div>
 			</div>
 		)
