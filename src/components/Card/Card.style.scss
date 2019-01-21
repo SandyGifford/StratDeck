@@ -1,0 +1,53 @@
+.Card {
+	$ms: 100ms;
+
+	position: absolute;
+	width: 250px;
+	height: 350px;
+	background-color: white;
+	border: 5px #DDD solid;
+	border-radius: 20px;
+	box-sizing: border-box;
+
+	transition: transform $ms linear;
+
+	transform: scaleX(1);
+
+	&::before,
+	&::after {
+		content: "";
+		position: absolute;
+		top: 25px;
+		left: 25px;
+		right: 25px;
+		bottom: 25px;
+
+		transition: opacity $ms step-start ($ms / 2);
+
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-position: center center;
+	}
+
+	&::before { opacity: 1.0; }
+	&::after { opacity: 0.0; }
+
+	&--hand { &::before { background-image: url("/assets/hand.png"); } }
+	&--weapon { &::before { background-image: url("/assets/weapon.png"); } }
+	&--ability1 { &::before { background-image: url("/assets/1.png"); } }
+	&--ability2 { &::before { background-image: url("/assets/2.png"); } }
+	&--ability3 { &::before { background-image: url("/assets/3.png"); } }
+
+	&--facedown {
+		transform: scaleX(-1);
+
+		&::before {
+			opacity: 0.0;
+		}
+
+		&::after {
+			background-image: linear-gradient(to bottom, #cf68ff 0%,#9b3bdb 100%);
+			opacity: 1.0;
+		}
+	}
+}

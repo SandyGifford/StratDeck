@@ -8,10 +8,16 @@ module.exports = {
 		filename: "index.js",
 	},
 	module: {
-		rules: [{
-			test: /\.scss$/,
-			use: ["style-loader", "css-loader", "sass-loader"]
-		}]
+		rules: [
+			{
+				test: /\.scss$/,
+				use: ["style-loader", "css-loader", "sass-loader"]
+			},
+			{
+				test: /\.tsx?$/,
+				use: ["ts-loader"]
+			}
+		]
 	},
 	resolve: {
 		extensions: [".js", ".jsx", ".ts", ".tsx", ".css", ".scss"],
