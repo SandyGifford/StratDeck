@@ -2,7 +2,6 @@
 	position: relative;
 
 	&__inner {
-
 		&__label {
 			color: yellow;
 			display: inline-block;
@@ -41,5 +40,10 @@
 				}
 			}
 		}
+	}
+
+	&--disabled {
+		opacity: 0.5;
+		pointer-events: none;
 	}
 }

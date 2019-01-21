@@ -13,6 +13,7 @@ export interface DeckProps {
 	style?: React.CSSProperties;
 	className?: string;
 	label?: React.ReactNode;
+	disabled?: boolean;
 }
 export interface DeckState { }
 
@@ -23,11 +24,11 @@ export default class Deck extends React.PureComponent<DeckProps, DeckState> {
 	}
 
 	public render(): React.ReactNode {
-		const { facedown, topType, cardCount, onClick, rotation, style, className, label } = this.props;
+		const { facedown, topType, cardCount, onClick, rotation, style, className, label, disabled } = this.props;
 		const height = cardCount / 2;
 
 		const baseClassName = DOMUtils.BEMClassName("Deck", {
-			"hasLabel": !!label,
+			"disabled": disabled,
 		}) + " " + (className || "");
 
 		return (
