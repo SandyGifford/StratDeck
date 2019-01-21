@@ -2,7 +2,7 @@ import "./App.style";
 
 import * as React from "react";
 
-import Card from "../Card/Card";
+import Deck from "../Deck/Deck";
 
 export interface AppProps { }
 export interface AppState { }
@@ -16,11 +16,11 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	public render(): React.ReactNode {
 		return (
 			<div className="App">
-				<Card facedown={false} height={0} x={0} y={0} type="hand" />
-				<Card facedown={false} height={1} x={300} y={0} type="weapon" />
-				<Card facedown={false} height={2} x={0} y={400} type="ability1" />
-				<Card facedown={false} height={3} x={300} y={400} type="ability2" />
-				<Card facedown={false} height={4} x={600} y={400} type="ability3" />
+				<Deck topType="ability3" facedown={false} rotation={-90} cardCount={50} y={20} x={70} />
+				<Deck topType="ability2" facedown={false} rotation={-90} cardCount={50} y={170} x={70} />
+				<Deck topType="ability1" facedown={false} rotation={-90} cardCount={50} y={320} x={70} />
+				<Deck topType="weapon" facedown={false} rotation={-90} cardCount={50} y={470} x={70} />
+				<Deck topType="hand" facedown={false} rotation={-90} cardCount={50} y={620} x={70} />
 			</div>
 		)
 	}

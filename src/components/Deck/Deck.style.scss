@@ -1,0 +1,27 @@
+.Deck {
+	position: absolute;
+	width: 125px;
+	height: 175px;
+	
+	&__fill {
+		background: magenta;
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: -1;
+		border-radius: 0 0 10px 10px;
+		background-image: linear-gradient(to bottom, #FEFEFE 0%,#999 100%);
+
+		&::after {
+			content: "";
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			height: 175px;
+			border-radius: 10px;
+			box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.75);
+		}
+	}
+}

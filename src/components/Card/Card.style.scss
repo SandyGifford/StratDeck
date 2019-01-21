@@ -2,25 +2,25 @@
 	$ms: 100ms;
 
 	position: absolute;
-	width: 250px;
-	height: 350px;
+	width: 125px;
+	height: 175px;
 	background-color: white;
-	border: 5px #DDD solid;
-	border-radius: 20px;
+	border: 3px #DDD solid;
+	border-radius: 10px;
 	box-sizing: border-box;
 
-	transition: transform $ms linear;
+	cursor: pointer;
 
-	transform: scaleX(1);
+	transition: transform $ms linear;
 
 	&::before,
 	&::after {
 		content: "";
 		position: absolute;
-		top: 25px;
-		left: 25px;
-		right: 25px;
-		bottom: 25px;
+		top: 10px;
+		left: 10px;
+		right: 10px;
+		bottom: 10px;
 
 		transition: opacity $ms step-start ($ms / 2);
 
@@ -39,8 +39,6 @@
 	&--ability3 { &::before { background-image: url("/assets/3.png"); } }
 
 	&--facedown {
-		transform: scaleX(-1);
-
 		&::before {
 			opacity: 0.0;
 		}
