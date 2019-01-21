@@ -1,4 +1,10 @@
 .App {
+	&__hand {
+		position: absolute;
+		left: 50%;
+		bottom: 0;
+	}
+
 	&__decks {
 		position: absolute;
 		top: 10px;

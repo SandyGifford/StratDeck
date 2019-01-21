@@ -3,6 +3,7 @@ import "./App.style";
 import * as React from "react";
 
 import Deck from "../Deck/Deck";
+import Hand from "../Hand/Hand";
 
 export interface AppProps { }
 export interface AppState { }
@@ -22,6 +23,10 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 					<Deck className="App__decks__deck" label={this.renderDeckLabel("ability 1", 3)} topType="ability1" facedown={false} cardCount={50} />
 					<Deck className="App__decks__deck" label={this.renderDeckLabel("ability 2", 4)} topType="ability2" facedown={false} cardCount={50} />
 					<Deck className="App__decks__deck" label={this.renderDeckLabel("ability 3", 5)} topType="ability3" facedown={false} cardCount={50} />
+				</div>
+				<div className="App__hand">
+					<Hand
+						cards={["hand", "hand", "ability1"]} />
 				</div>
 			</div>
 		)
