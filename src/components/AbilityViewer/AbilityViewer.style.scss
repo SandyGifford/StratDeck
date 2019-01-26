@@ -1,0 +1,35 @@
+.AbilityViewer {
+	background: #CCE;
+	color: #333;
+
+	&__name {
+		background: #334;
+		color: white;
+		font-weight: bold;
+		font-size: 15px;
+		padding: 5px 10px;
+	}
+
+	&__content {
+		padding: 5px 10px;
+
+		&__description {
+			margin-bottom: 5px;
+		}
+
+		&__stats {
+			&__stat {
+				display: flex;
+				margin-bottom: 2px;
+
+				&__name {
+					flex: 0 0 60px;
+					margin-right: 5px;
+				}
+				&__value {
+					flex: 1 1 auto;
+				}
+			}
+		}
+	}
+}
