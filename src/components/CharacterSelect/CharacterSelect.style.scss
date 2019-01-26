@@ -30,21 +30,10 @@
 
 		&__stats {
 			padding: 10px;
+			font-size: 12px;
 
-			&__stat {
-				display: flex;
-
-				&__name {
-					flex: 0 0 50%;
-					margin-right: 5px;
-				}
-				&__value {
-					flex: 1 1 auto;
-
-					&--mono {
-						font-family: monospace;
-					}
-				}
+			&__mono {
+				font-family: monospace;
 			}
 		}
 	}

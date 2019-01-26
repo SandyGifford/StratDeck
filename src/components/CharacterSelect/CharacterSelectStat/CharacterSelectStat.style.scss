@@ -1,0 +1,11 @@
+.CharacterSelectStat {
+	display: flex;
+
+	&__name {
+		flex: 0 0 60px;
+		margin-right: 5px;
+	}
+	&__value {
+		flex: 1 1 auto;
+	}
+}
