@@ -1,7 +1,7 @@
 import "./Board.style";
 
 import * as React from "react";
-import LoopUtils from "../../utils/LoopUtils";
+import LoopUtils from "../../../../utils/LoopUtils";
 import BoardSpace from "../BoardSpace/BoardSpace";
 
 export interface BoardProps {

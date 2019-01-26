@@ -1,0 +1,91 @@
+.PlayTable {
+	&__hand {
+		position: absolute;
+		left: 50%;
+		bottom: 0;
+	}
+
+	&__board {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	&__player,
+	&__opponent {
+		position: absolute;
+		right: 10px;
+
+		&__hand {
+			position: fixed;
+			right: 50%;
+		}
+
+		&__decks {
+			&__deck {
+				display: inline-block;
+				margin-left: 10px;
+			}
+		}
+	}
+
+	&__player {
+		bottom: 0;
+
+		&__hand {
+			bottom: 10px;
+		}
+	}
+
+	&__opponent {
+		top: 0;
+
+		&__hand {
+			top: 10px;
+		}
+	}
+
+	&__decks {
+		position: absolute;
+		top: 10px;
+		left: 50px;
+		transform: rotate(-90deg) translateX(-100%);
+		transform-origin: top left;
+		white-space: pre;
+			
+		&__deck {
+			display: inline-block;
+			margin-right: 10px;
+
+			&__label {
+				&__text {
+					font-weight: bold;
+					display: inline-block;
+
+					&::after {
+						content: ":";
+						margin-bottom: 0.5em;
+					}
+				}
+				&__cost {
+					display: inline-block;
+					color: orange;
+
+					&::after {
+						content: "";
+						margin-top: 0.25em;
+						transform: rotate(90deg);
+						display: inline-block;
+						background-image: url("/assets/coin.png");
+						background-size: contain;
+						background-repeat: no-repeat;
+						background-position: center center;
+						width: 1em;
+						height: 1em;
+					}
+				}
+			}
+		}
+	}
+}

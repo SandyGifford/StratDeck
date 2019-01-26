@@ -2,8 +2,8 @@ import "./Card.style";
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import DOMUtils from "../../utils/DOMUtils";
-import NumberUtils from "../../utils/NumberUtils";
+import DOMUtils from "../../../../utils/DOMUtils";
+import NumberUtils from "../../../../utils/NumberUtils";
 
 export interface CardClickEvent {
 	props: CardProps;
