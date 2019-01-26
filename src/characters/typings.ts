@@ -17,7 +17,7 @@ export interface CharacterWeapon {
 
 export interface DiceRoll {
 	count?: number;
-	sides: number;
+	sides: DiceSides;
 }
 
 export interface CharacterAbility {
