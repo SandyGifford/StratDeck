@@ -1,7 +1,7 @@
 import "./AbilityViewer.style";
 
 import * as React from "react";
-import { CharacterAbility } from "../../characters/typings";
+import { CharacterAbility } from "../../typings/character";
 
 export interface AbilityViewerProps {
 	ability: CharacterAbility;

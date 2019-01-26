@@ -5,8 +5,8 @@ import * as React from "react";
 import characters from "../../characters/characters";
 import WeaponDice from "../WeaponDice/WeaponDice";
 import CharacterSelectStat from "./subComponents/CharacterSelectStat/CharacterSelectStat";
-import { CharacterWeapon } from "../../characters/typings";
 import AbilityStatItem from "./subComponents/AbilityStatItem/AbilityStatItem";
+import { CharacterWeapon } from "../../typings/character";
 
 export interface CharacterSelectProps { }
 export interface CharacterSelectState { }
@@ -38,7 +38,7 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 							<CharacterSelectStat name="evasion">
 								<span className="CharacterSelect__character__stats__mono">{char.evasion}</span>
 							</CharacterSelectStat>
-							<CharacterSelectStat name="speed">t
+							<CharacterSelectStat name="speed">
 								<span className="CharacterSelect__character__stats__mono">{char.movement}</span>
 							</CharacterSelectStat>
 							<CharacterSelectStat name="weapon">
