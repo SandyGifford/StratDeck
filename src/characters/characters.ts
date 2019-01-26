@@ -1,5 +1,5 @@
-import CharacterDef from "./typings";
 import Abilities from "./abilities";
+import CharacterDef from "../typings/character";
 
 const characters: CharacterDef[] = [
 	{

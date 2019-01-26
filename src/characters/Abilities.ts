@@ -1,4 +1,4 @@
-import { CharacterAbility } from "./typings";
+import { CharacterAbility } from "../typings/character";
 
 export default class Abilities {
 	// Boop

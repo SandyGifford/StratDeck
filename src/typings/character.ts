@@ -1,3 +1,5 @@
+import DiceRoll from "./dice";
+
 export default interface CharacterDef {
 	name: string;
 	hp: number;
@@ -15,11 +17,6 @@ export interface CharacterWeapon {
 	range?: number;
 }
 
-export interface DiceRoll {
-	count?: number;
-	sides: DiceSides;
-}
-
 export interface CharacterAbility {
 	name: string;
 	description: string;
@@ -28,5 +25,4 @@ export interface CharacterAbility {
 }
 
 export type CharacterAbilityUse = "action" | "reaction";
-export type DiceSides = 4 | 6 | 8 | 10 | 12 | 20;
 export type CharacterAbilities = [CharacterAbility, CharacterAbility, CharacterAbility];
