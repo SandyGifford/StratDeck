@@ -1,0 +1,51 @@
+.CharacterSelect {
+	position: absolute;
+	top: 50px;
+	left: 100px;
+	right: 100px;
+	bottom: 50px;
+
+	background-color: #556;
+	box-shadow: 5px 5px 30px 0 rgba(0, 0, 0, 0.5);
+	z-index: 1;
+
+	padding: 50px;
+
+	display: flex;
+	flex-wrap: wrap;
+
+	&__character {
+		flex: 0 0 auto;
+		background: #223;
+		width: 200px;
+		height: 300px;
+		margin: 10px;
+
+		&__name {
+			font-weight: bold;
+			font-size: 20px;
+			padding: 5px 10px;
+			background: #112;
+		}
+
+		&__stats {
+			padding: 10px;
+
+			&__stat {
+				display: flex;
+
+				&__name {
+					flex: 0 0 50%;
+					margin-right: 5px;
+				}
+				&__value {
+					flex: 1 1 auto;
+
+					&--mono {
+						font-family: monospace;
+					}
+				}
+			}
+		}
+	}
+}

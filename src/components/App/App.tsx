@@ -5,6 +5,7 @@ import * as React from "react";
 import Deck from "../Deck/Deck";
 import Hand from "../Hand/Hand";
 import Board from "../Board/Board";
+import CharacterSelect from "../CharacterSelect/CharacterSelect";
 
 export interface AppProps { }
 export interface AppState {
@@ -68,6 +69,7 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 							cardCount={100} />
 					</div>
 				</div>
+				<CharacterSelect />
 			</div>
 		)
 	}
