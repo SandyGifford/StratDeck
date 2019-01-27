@@ -30,46 +30,55 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 	public render(): React.ReactNode {
 		const { selected } = this.state;
 
+		const continueClassName = DOMUtils.BEMClassName("CharacterSelect__controls__button", {
+			"disabled": selected.indexOf(null) !== -1,
+		});
+
 		return (
 			<div className="CharacterSelect">
-				{
-					characters.map((char, index) => {
-						const selectionSlot = selected.indexOf(index);
+				<div className="CharacterSelect__characters">
+					{
+						characters.map((char, index) => {
+							const selectionSlot = selected.indexOf(index);
 
-						const className = DOMUtils.BEMClassName("CharacterSelect__character", {
-							[`selected${selectionSlot}`]: selectionSlot !== -1,
-						});
+							const charClassName = DOMUtils.BEMClassName("CharacterSelect__characters__character", {
+								[`selected${selectionSlot}`]: selectionSlot !== -1,
+							});
 
-						return <div className={className} key={index} onClick={() => this.toggleSelect(index)}>
-							<div className="CharacterSelect__character__name">{char.name}</div>
-							<div className="CharacterSelect__character__stats">
-								<CharacterSelectStat name="HP">
-									<span className="CharacterSelect__character__stats__mono">{char.hp}</span>
-								</CharacterSelectStat>
-								<CharacterSelectStat name="armor">
-									<span className="CharacterSelect__character__stats__mono">{char.armor}</span>
-								</CharacterSelectStat>
-								<CharacterSelectStat name="evasion">
-									<span className="CharacterSelect__character__stats__mono">{char.evasion}</span>
-								</CharacterSelectStat>
-								<CharacterSelectStat name="speed">
-									<span className="CharacterSelect__character__stats__mono">{char.movement}</span>
-								</CharacterSelectStat>
-								<CharacterSelectStat name="weapon">
-									<WeaponDice weapon={char.weapon} />
-								</CharacterSelectStat>
-								<CharacterSelectStat name="hand">
-									<WeaponDice weapon={char.hand || CharacterSelect.DEFAULT_HAND_DAMAGE} />
-								</CharacterSelectStat>
-								<CharacterSelectStat name="abilities">
-									{
-										char.abilities.map((abil, index) => <AbilityStatItem ability={abil} key={index} />)
-									}
-								</CharacterSelectStat>
+							return <div className={charClassName} key={index} onClick={() => this.toggleSelect(index)}>
+								<div className="CharacterSelect__characters__character__name">{char.name}</div>
+								<div className="CharacterSelect__characters__character__stats">
+									<CharacterSelectStat name="HP">
+										<span className="CharacterSelect__characters__character__stats__mono">{char.hp}</span>
+									</CharacterSelectStat>
+									<CharacterSelectStat name="armor">
+										<span className="CharacterSelect__characters__character__stats__mono">{char.armor}</span>
+									</CharacterSelectStat>
+									<CharacterSelectStat name="evasion">
+										<span className="CharacterSelect__characters__character__stats__mono">{char.evasion}</span>
+									</CharacterSelectStat>
+									<CharacterSelectStat name="speed">
+										<span className="CharacterSelect__characters__character__stats__mono">{char.movement}</span>
+									</CharacterSelectStat>
+									<CharacterSelectStat name="weapon">
+										<WeaponDice weapon={char.weapon} />
+									</CharacterSelectStat>
+									<CharacterSelectStat name="hand">
+										<WeaponDice weapon={char.hand || CharacterSelect.DEFAULT_HAND_DAMAGE} />
+									</CharacterSelectStat>
+									<CharacterSelectStat name="abilities">
+										{
+											char.abilities.map((abil, index) => <AbilityStatItem ability={abil} key={index} />)
+										}
+									</CharacterSelectStat>
+								</div >
 							</div >
-						</div >
-					})
-				}
+						})
+					}
+				</div>
+				<div className="CharacterSelect__controls">
+					<div className={continueClassName}>continue</div>
+				</div>
 			</div>
 		);
 	}

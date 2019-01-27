@@ -1,64 +1,103 @@
 .CharacterSelect {
 	position: absolute;
-	top: 50px;
+
+	top: 5%;
 	left: 100px;
 	right: 100px;
-	bottom: 50px;
+
+	max-height: 90%;
 
 	background-color: #556;
 	box-shadow: 5px 5px 30px 0 rgba(0, 0, 0, 0.5);
 	z-index: 1;
-
-	padding: 50px;
+	box-sizing: border-box;
 
 	display: flex;
-	flex-wrap: wrap;
+	flex-direction: column;
 
-	&__character {
-		position: relative;
+	padding: 20px;
+
+	&__characters {
+		flex: 1 1 auto;
+		display: flex;
+		flex-wrap: wrap;
+
+		overflow-x: visible;
+		overflow-y: auto;
+
+		&__character {
+			position: relative;
+			flex: 0 0 auto;
+			background: #223;
+			width: 200px;
+			height: 300px;
+			margin: 10px;
+			cursor: pointer;
+
+			&__name {
+				font-weight: bold;
+				font-size: 20px;
+				padding: 5px 10px;
+				background: #112;
+			}
+
+			&__stats {
+				padding: 10px;
+				font-size: 12px;
+
+				&__mono {
+					font-family: monospace;
+				}
+			}
+
+			&--selected0,
+			&--selected1,
+			&--selected2 {
+				&::after {
+					content: "";
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					bottom: 0;
+
+					border-width: 5px;
+					border-style: solid;
+
+					pointer-events: none;
+				}
+			}
+
+			&--selected0 { &::after { border-color: red; } }
+			&--selected1 { &::after { border-color: yellow; } }
+			&--selected2 { &::after { border-color: blue; } }
+		}
+	}
+
+	&__controls {
 		flex: 0 0 auto;
-		background: #223;
-		width: 200px;
-		height: 300px;
-		margin: 10px;
-		cursor: pointer;
+		text-align: right;
+		margin-top: 10px;
 
-		&__name {
-			font-weight: bold;
-			font-size: 20px;
-			padding: 5px 10px;
-			background: #112;
-		}
+		&__button {
+			display: inline-block;
 
-		&__stats {
+			background-color: #223;
 			padding: 10px;
-			font-size: 12px;
+			cursor: pointer;
 
-			&__mono {
-				font-family: monospace;
+			&:hover {
+				background-color: #334;
 			}
-		}
 
-		&--selected0,
-		&--selected1,
-		&--selected2 {
-			&::after {
-				content: "";
-				position: absolute;
-				top: 0;
-				left: 0;
-				right: 0;
-				bottom: 0;
+			&:active {
+				background-color: #112;
+			}
 
-				border-width: 5px;
-				border-style: solid;
-
+			&--disabled {
 				pointer-events: none;
+				opacity: 0.5;
 			}
 		}
-
-		&--selected0 { &::after { border-color: red; } }
-		&--selected1 { &::after { border-color: yellow; } }
-		&--selected2 { &::after { border-color: blue; } }
 	}
 }
