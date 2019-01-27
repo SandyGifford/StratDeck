@@ -18,16 +18,20 @@
 		}
 
 		&__stats {
+			margin-top: 5px;
+			
 			&__stat {
 				display: flex;
 				margin-bottom: 2px;
 
 				&__name {
 					flex: 0 0 60px;
+					font-weight: bold;
 					margin-right: 5px;
 				}
 				&__value {
 					flex: 1 1 auto;
+					font-style: italic;
 				}
 			}
 		}
