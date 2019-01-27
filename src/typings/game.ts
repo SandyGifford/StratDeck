@@ -1,11 +1,5 @@
 import CharacterDef from "./character";
 
-export default interface GameState {
-	screen: GameScreen;
-	p1: PlayerState;
-	p2: PlayerState;
-}
-
 export interface PlayerState {
 	chars: PlayerCharacters;
 }

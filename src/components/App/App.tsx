@@ -4,26 +4,26 @@ import * as React from "react";
 
 import CharacterSelect, { SetSelectedCharacters } from "../CharacterSelect/CharacterSelect";
 import PlayTable from "../PlayTable/PlayTable";
-import GameState from "../../typings/game";
+import { GameScreen, PlayerState } from "../../typings/game";
 
 export interface AppProps { }
 export interface AppState {
-	gameState: GameState;
+	screen: GameScreen;
+	p1: PlayerState;
+	p2: PlayerState;
 }
 
 export default class App extends React.PureComponent<AppProps, AppState> {
 	constructor(props: AppProps) {
 		super(props);
 		this.state = {
-			gameState: {
-				screen: "characterSelect",
-				p1: {
-					chars: [null, null, null],
-				},
-				p2: {
-					chars: [null, null, null],
-				},
-			}
+			screen: "characterSelect",
+			p1: {
+				chars: [null, null, null],
+			},
+			p2: {
+				chars: [null, null, null],
+			},
 		};
 	}
 
@@ -36,7 +36,7 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	}
 
 	private renderScreen(): React.ReactNode {
-		const { screen } = this.state.gameState;
+		const { screen } = this.state;
 
 		switch (screen) {
 			case "characterSelect":
@@ -47,16 +47,13 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	}
 
 	private setP1Chars: SetSelectedCharacters = (chars) => {
-		const { gameState } = this.state;
+		const { p1 } = this.state;
 
 		this.setState({
-			gameState: {
-				...gameState,
-				screen: "table",
-				p1: {
-					...gameState.p1,
-					chars: chars,
-				}
+			screen: "table",
+			p1: {
+				...p1,
+				chars: chars,
 			}
 		})
 	};
