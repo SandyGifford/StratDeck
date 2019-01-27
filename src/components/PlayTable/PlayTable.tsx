@@ -54,8 +54,6 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 		const { boardWidth, boardHeight } = this.props;
 		const { p1, p2 } = this.state;
 
-		console.log(this.state);
-
 		return (
 			<div className="PlayTable">
 				<div className="PlayTable__decks">
