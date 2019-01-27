@@ -36,13 +36,17 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	}
 
 	private renderScreen(): React.ReactNode {
-		const { screen } = this.state;
+		const { screen, p1 } = this.state;
 
 		switch (screen) {
 			case "characterSelect":
 				return <CharacterSelect setSelectedCharacters={this.setP1Chars} />;
 			case "table":
-				return <PlayTable />;
+				return <PlayTable
+					p1={p1}
+					p2={p1}
+					boardWidth={30}
+					boardHeight={20} />;
 		}
 	}
 

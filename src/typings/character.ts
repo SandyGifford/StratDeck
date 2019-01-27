@@ -9,6 +9,7 @@ export default interface CharacterDef {
 	weapon: CharacterWeapon;
 	hand?: CharacterWeapon;
 	abilities: CharacterAbilities;
+	color: string;
 }
 
 export interface CharacterWeapon {

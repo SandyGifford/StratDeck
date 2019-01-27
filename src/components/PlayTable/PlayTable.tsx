@@ -4,17 +4,58 @@ import * as React from "react";
 import Deck from "./subComponents/Deck/Deck";
 import Board from "./subComponents/Board/Board";
 import Hand from "./subComponents/Hand/Hand";
+import { PlayerState, TablePlayerState, TablePlayerCharacters } from "../../typings/game";
 
-export interface PlayTableProps { }
-export interface PlayTableState { }
+export interface PlayTableProps {
+	p1: PlayerState;
+	p2: PlayerState;
+	boardWidth: number;
+	boardHeight: number;
+}
+export interface PlayTableState {
+	p1: TablePlayerState;
+	p2: TablePlayerState;
+}
 
 export default class PlayTable extends React.PureComponent<PlayTableProps, PlayTableState> {
 	constructor(props: PlayTableProps) {
 		super(props);
-		this.state = {};
+
+		const { p1, p2, boardHeight, boardWidth } = props;
+
+		const p1TableChars: TablePlayerCharacters = [null, null, null];
+		const p2TableChars: TablePlayerCharacters = [null, null, null];
+
+		p1.chars.forEach((char, index) => p1TableChars[index] = {
+			...char,
+			x: 0,
+			y: index,
+			maxHP: char.hp
+		});
+
+		p2.chars.forEach((char, index) => p2TableChars[index] = {
+			...char,
+			x: boardWidth - 1,
+			y: boardHeight - 1 - index,
+			maxHP: char.hp
+		});
+
+		this.state = {
+			p1: {
+				chars: p1TableChars,
+			},
+			p2: {
+				chars: p2TableChars,
+			}
+		};
 	}
 
 	public render(): React.ReactNode {
+		const { boardWidth, boardHeight } = this.props;
+		const { p1, p2 } = this.state;
+
+		console.log(this.state);
+
 		return (
 			<div className="PlayTable">
 				<div className="PlayTable__decks">
@@ -25,7 +66,11 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 					<Deck className="PlayTable__decks__deck" label={this.renderDeckLabel("ability 3", 5)} topType="ability3" facedown={false} cardCount={50} />
 				</div>
 				<div className="PlayTable__board">
-					<Board width={30} height={20} />
+					<Board
+						width={boardWidth}
+						height={boardHeight}
+						p1={p1}
+						p2={p2} />
 				</div>
 				<div className="PlayTable__player">
 					<div className="PlayTable__player__hand">

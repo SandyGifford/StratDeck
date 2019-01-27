@@ -50,27 +50,18 @@
 				}
 			}
 
-			&--selected0,
-			&--selected1,
-			&--selected2 {
-				&::after {
-					content: "";
-					position: absolute;
-					top: 0;
-					left: 0;
-					right: 0;
-					bottom: 0;
+			&__border {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
 
-					border-width: 5px;
-					border-style: solid;
+				border-width: 5px;
+				border-style: solid;
 
-					pointer-events: none;
-				}
+				pointer-events: none;
 			}
-
-			&--selected0 { &::after { border-color: red; } }
-			&--selected1 { &::after { border-color: yellow; } }
-			&--selected2 { &::after { border-color: blue; } }
 		}
 	}
 

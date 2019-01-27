@@ -46,12 +46,9 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 					{
 						characters.map((char, index) => {
 							const selectionSlot = selected.indexOf(index);
+							const isSelected = selectionSlot !== -1;
 
-							const charClassName = DOMUtils.BEMClassName("CharacterSelect__characters__character", {
-								[`selected${selectionSlot}`]: selectionSlot !== -1,
-							});
-
-							return <div className={charClassName} key={index} onClick={() => this.toggleSelect(index)}>
+							return <div className="CharacterSelect__characters__character" key={index} onClick={() => this.toggleSelect(index)}>
 								<div className="CharacterSelect__characters__character__name">{char.name}</div>
 								<div className="CharacterSelect__characters__character__stats">
 									<CharacterSelectStat name="HP">
@@ -78,6 +75,9 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 										}
 									</CharacterSelectStat>
 								</div >
+								<div className="CharacterSelect__characters__character__border" style={{
+									borderColor: isSelected ? char.color : "transparent",
+								}} />
 							</div >
 						})
 					}

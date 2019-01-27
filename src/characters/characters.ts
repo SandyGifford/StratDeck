@@ -4,6 +4,7 @@ import CharacterDef from "../typings/character";
 const characters: CharacterDef[] = [
 	{
 		name: "Boop",
+		color: "red",
 		hp: 20,
 		armor: -4,
 		evasion: 14,
@@ -20,6 +21,7 @@ const characters: CharacterDef[] = [
 	},
 	{
 		name: "Bow",
+		color: "orange",
 		hp: 16,
 		armor: -2,
 		evasion: 16,
@@ -41,6 +43,7 @@ const characters: CharacterDef[] = [
 	},
 	{
 		name: "Boom",
+		color: "yellow",
 		hp: 13,
 		armor: 0,
 		evasion: 12,
@@ -57,6 +60,7 @@ const characters: CharacterDef[] = [
 	},
 	{
 		name: "Boob",
+		color: "lime",
 		hp: 15,
 		armor: -2,
 		evasion: 12,
@@ -73,6 +77,7 @@ const characters: CharacterDef[] = [
 	},
 	{
 		name: "Booger",
+		color: "cyan",
 		hp: 18,
 		armor: -3,
 		evasion: 13,
@@ -95,6 +100,7 @@ const characters: CharacterDef[] = [
 	},
 	{
 		name: "Bog",
+		color: "blue",
 		hp: 15,
 		armor: -1,
 		evasion: 12,
@@ -111,6 +117,7 @@ const characters: CharacterDef[] = [
 	},
 	{
 		name: "Boot",
+		color: "indigo",
 		hp: 16,
 		armor: -1,
 		evasion: 18,
@@ -132,6 +139,7 @@ const characters: CharacterDef[] = [
 	},
 	{
 		name: "Boar",
+		color: "violet",
 		hp: 25,
 		armor: -5,
 		evasion: 14,
