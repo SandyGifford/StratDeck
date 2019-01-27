@@ -15,11 +15,13 @@
 	flex-wrap: wrap;
 
 	&__character {
+		position: relative;
 		flex: 0 0 auto;
 		background: #223;
 		width: 200px;
 		height: 300px;
 		margin: 10px;
+		cursor: pointer;
 
 		&__name {
 			font-weight: bold;
@@ -36,5 +38,27 @@
 				font-family: monospace;
 			}
 		}
+
+		&--selected0,
+		&--selected1,
+		&--selected2 {
+			&::after {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+
+				border-width: 5px;
+				border-style: solid;
+
+				pointer-events: none;
+			}
+		}
+
+		&--selected0 { &::after { border-color: red; } }
+		&--selected1 { &::after { border-color: yellow; } }
+		&--selected2 { &::after { border-color: blue; } }
 	}
 }
