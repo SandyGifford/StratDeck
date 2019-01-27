@@ -29,7 +29,7 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 
 	public render(): React.ReactNode {
 		const { selected } = this.state;
-		console.log(selected);
+
 		return (
 			<div className="CharacterSelect">
 				{
@@ -75,7 +75,6 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 	}
 
 	private toggleSelect = (index: number): void => {
-		console.log("selecting", index);
 		const selected = [...this.state.selected] as [number, number, number];
 		const selectionSlot = selected.indexOf(index);
 		const firstOpen = selected.indexOf(null);
