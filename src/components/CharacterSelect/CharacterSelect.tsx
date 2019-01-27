@@ -8,8 +8,14 @@ import CharacterSelectStat from "./subComponents/CharacterSelectStat/CharacterSe
 import AbilityStatItem from "./subComponents/AbilityStatItem/AbilityStatItem";
 import { CharacterWeapon } from "../../typings/character";
 import DOMUtils from "../../utils/DOMUtils";
+import { PlayerCharacters } from "../../typings/game";
 
-export interface CharacterSelectProps { }
+
+export type SetSelectedCharacters = (characters: PlayerCharacters) => void;
+
+export interface CharacterSelectProps {
+	setSelectedCharacters: SetSelectedCharacters;
+}
 export interface CharacterSelectState {
 	selected: [number, number, number];
 }
@@ -77,7 +83,7 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 					}
 				</div>
 				<div className="CharacterSelect__controls">
-					<div className={continueClassName}>continue</div>
+					<div className={continueClassName} onClick={this.continue}>continue</div>
 				</div>
 			</div>
 		);
@@ -102,4 +108,11 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 			});
 		}
 	}
+
+	private continue = () => {
+		const { setSelectedCharacters } = this.props;
+		const { selected } = this.state;
+
+		setSelectedCharacters(selected.map(index => characters[index]) as PlayerCharacters)
+	};
 }

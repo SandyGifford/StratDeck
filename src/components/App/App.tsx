@@ -2,7 +2,7 @@ import "./App.style";
 
 import * as React from "react";
 
-import CharacterSelect from "../CharacterSelect/CharacterSelect";
+import CharacterSelect, { SetSelectedCharacters } from "../CharacterSelect/CharacterSelect";
 import PlayTable from "../PlayTable/PlayTable";
 import GameState from "../../typings/game";
 
@@ -17,6 +17,12 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 		this.state = {
 			gameState: {
 				screen: "characterSelect",
+				p1: {
+					chars: [null, null, null],
+				},
+				p2: {
+					chars: [null, null, null],
+				},
 			}
 		};
 	}
@@ -34,9 +40,24 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 
 		switch (screen) {
 			case "characterSelect":
-				return <CharacterSelect />;
+				return <CharacterSelect setSelectedCharacters={this.setP1Chars} />;
 			case "table":
 				return <PlayTable />;
 		}
 	}
+
+	private setP1Chars: SetSelectedCharacters = (chars) => {
+		const { gameState } = this.state;
+
+		this.setState({
+			gameState: {
+				...gameState,
+				screen: "table",
+				p1: {
+					...gameState.p1,
+					chars: chars,
+				}
+			}
+		})
+	};
 }
