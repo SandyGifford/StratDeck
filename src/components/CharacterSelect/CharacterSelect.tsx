@@ -11,25 +11,30 @@ import DOMUtils from "../../utils/DOMUtils";
 import { PlayerCharacters } from "../../typings/game";
 
 
-export type SetSelectedCharacters = (characters: PlayerCharacters) => void;
+export type SetPlayerCharacters = (playerCharacters: PlayerCharacters[]) => void;
 
 export interface CharacterSelectProps {
-	setSelectedCharacters: SetSelectedCharacters;
+	setPlayerCharacters: SetPlayerCharacters;
+	numberOfPlayers: number;
 }
 export interface CharacterSelectState {
+	playerIndex: number;
 	selected: [number, number, number];
+	playerCharacters: PlayerCharacters[]
 }
 
 export default class CharacterSelect extends React.PureComponent<CharacterSelectProps, CharacterSelectState> {
 	private static readonly DEFAULT_HAND_DAMAGE: CharacterWeapon = {
 		dmg: { sides: 4 },
-		hit: 2
+		hit: 2,
 	};
 
 	constructor(props: CharacterSelectProps) {
 		super(props);
 		this.state = {
+			playerIndex: 0,
 			selected: [null, null, null],
+			playerCharacters: [],
 		};
 	}
 
@@ -110,9 +115,19 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 	}
 
 	private continue = () => {
-		const { setSelectedCharacters } = this.props;
-		const { selected } = this.state;
+		const { setPlayerCharacters, numberOfPlayers } = this.props;
+		const { selected, playerCharacters, playerIndex } = this.state;
 
-		setSelectedCharacters(selected.map(index => characters[index]) as PlayerCharacters)
+		const newPlayerCharacters = [...playerCharacters, selected.map(index => characters[index]) as PlayerCharacters]
+
+		if (playerIndex < numberOfPlayers - 1) {
+			this.setState({
+				selected: [null, null, null],
+				playerIndex: playerIndex + 1,
+				playerCharacters: newPlayerCharacters
+			});
+		} else {
+			setPlayerCharacters(newPlayerCharacters);
+		}
 	};
 }

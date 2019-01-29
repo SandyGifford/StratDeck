@@ -4,55 +4,44 @@ import * as React from "react";
 import Deck from "./subComponents/Deck/Deck";
 import Board from "./subComponents/Board/Board";
 import Hand from "./subComponents/Hand/Hand";
-import { PlayerState, TablePlayerState, TablePlayerCharacters } from "../../typings/game";
+import TableCharacterDef, { PlayerState, TablePlayerState, TablePlayerCharacters } from "../../typings/game";
+import { Vector2 } from "../../typings/vector";
 
 export interface PlayTableProps {
-	p1: PlayerState;
-	p2: PlayerState;
+	playersInit: PlayerState[];
 	boardWidth: number;
 	boardHeight: number;
 }
 export interface PlayTableState {
-	p1: TablePlayerState;
-	p2: TablePlayerState;
+	players: TablePlayerState[];
 }
 
 export default class PlayTable extends React.PureComponent<PlayTableProps, PlayTableState> {
 	constructor(props: PlayTableProps) {
 		super(props);
 
-		const { p1, p2, boardHeight, boardWidth } = props;
+		const { playersInit } = props;
 
-		const p1TableChars: TablePlayerCharacters = [null, null, null];
-		const p2TableChars: TablePlayerCharacters = [null, null, null];
+		const players: TablePlayerState[] = playersInit.map((player, p) => {
+			const charLocs = this.getStartLocations(p);
 
-		p1.chars.forEach((char, index) => p1TableChars[index] = {
-			...char,
-			x: 0,
-			y: index,
-			maxHP: char.hp
-		});
-
-		p2.chars.forEach((char, index) => p2TableChars[index] = {
-			...char,
-			x: boardWidth - 1,
-			y: boardHeight - 1 - index,
-			maxHP: char.hp
+			return {
+				chars: player.chars.map((char, c) => ({
+					...char,
+					...(charLocs[c]),
+					maxHP: char.hp,
+				})) as TablePlayerCharacters
+			}
 		});
 
 		this.state = {
-			p1: {
-				chars: p1TableChars,
-			},
-			p2: {
-				chars: p2TableChars,
-			}
+			players: players,
 		};
 	}
 
 	public render(): React.ReactNode {
 		const { boardWidth, boardHeight } = this.props;
-		const { p1, p2 } = this.state;
+		const { players } = this.state;
 
 		return (
 			<div className="PlayTable">
@@ -67,8 +56,7 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 					<Board
 						width={boardWidth}
 						height={boardHeight}
-						p1={p1}
-						p2={p2} />
+						players={players} />
 				</div>
 				<div className="PlayTable__player">
 					<div className="PlayTable__player__hand">
@@ -117,5 +105,26 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 			<div className="PlayTable__decks__deck__label__text">{text}</div>
 			<div className="PlayTable__decks__deck__label__cost">{cost}</div>
 		</div>;
+	}
+
+	private getStartLocations(playerIndex: number): [Vector2, Vector2, Vector2] {
+		const { boardHeight, boardWidth } = this.props;
+
+		switch (playerIndex) {
+			case 0:
+				return [
+					{ x: 0, y: 0 },
+					{ x: 0, y: 1 },
+					{ x: 0, y: 2 },
+				];
+			case 1:
+				return [
+					{ x: boardWidth - 1, y: boardHeight - 1 },
+					{ x: boardWidth - 1, y: boardHeight - 2 },
+					{ x: boardWidth - 1, y: boardHeight - 3 },
+				];
+			default:
+				throw `Board does not support this many players.  Requested start location for player ${playerIndex + 1},  max player count is 2`;
+		}
 	}
 }

@@ -2,28 +2,25 @@ import "./App.style";
 
 import * as React from "react";
 
-import CharacterSelect, { SetSelectedCharacters } from "../CharacterSelect/CharacterSelect";
+import CharacterSelect, { SetPlayerCharacters } from "../CharacterSelect/CharacterSelect";
 import PlayTable from "../PlayTable/PlayTable";
 import { GameScreen, PlayerState } from "../../typings/game";
+import LoopUtils from "../../utils/LoopUtils";
 
 export interface AppProps { }
 export interface AppState {
 	screen: GameScreen;
-	p1: PlayerState;
-	p2: PlayerState;
+	players: PlayerState[];
 }
 
 export default class App extends React.PureComponent<AppProps, AppState> {
+	private static readonly NUMBER_OF_PLAYERS = 2;
+
 	constructor(props: AppProps) {
 		super(props);
 		this.state = {
 			screen: "characterSelect",
-			p1: {
-				chars: [null, null, null],
-			},
-			p2: {
-				chars: [null, null, null],
-			},
+			players: LoopUtils.mapTimes(App.NUMBER_OF_PLAYERS, (): PlayerState => ({ chars: [null, null, null] })),
 		};
 	}
 
@@ -36,29 +33,29 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	}
 
 	private renderScreen(): React.ReactNode {
-		const { screen, p1 } = this.state;
+		const { screen, players } = this.state;
 
 		switch (screen) {
 			case "characterSelect":
-				return <CharacterSelect setSelectedCharacters={this.setP1Chars} />;
+				return <CharacterSelect setPlayerCharacters={this.setCharacters} numberOfPlayers={App.NUMBER_OF_PLAYERS} />;
 			case "table":
 				return <PlayTable
-					p1={p1}
-					p2={p1}
+					playersInit={players}
 					boardWidth={30}
 					boardHeight={20} />;
 		}
 	}
 
-	private setP1Chars: SetSelectedCharacters = (chars) => {
-		const { p1 } = this.state;
+	private setCharacters: SetPlayerCharacters = (playerChars) => {
+		const { players } = this.state;
+
+		const newPlayers = [...players];
+
+		newPlayers.forEach((player, index) => player.chars = playerChars[index]);
 
 		this.setState({
+			players: newPlayers,
 			screen: "table",
-			p1: {
-				...p1,
-				chars: chars,
-			}
-		})
+		});
 	};
 }
