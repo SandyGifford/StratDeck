@@ -15,7 +15,9 @@
 			height: 175px;
 			
 			&__card {
+				position: absolute;
 				z-index: 1;
+				left: 0,
 			}
 
 			&__fill {

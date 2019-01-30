@@ -1,7 +1,6 @@
 .Card {
+	position: relative;
 	$ms: 100ms;
-
-	position: absolute;
 	width: 125px;
 	height: 175px;
 	background-color: white;

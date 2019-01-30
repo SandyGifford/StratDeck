@@ -12,10 +12,10 @@
 		transform: translate(-50%, -50%);
 	}
 
-	&__player,
-	&__opponent {
+	&__player {
 		position: absolute;
 		right: 10px;
+		bottom: 0;
 
 		&__hand {
 			position: fixed;
@@ -28,24 +28,25 @@
 				margin-left: 10px;
 			}
 		}
-	}
-
-	&__player {
-		bottom: 0;
 
 		&__hand {
 			bottom: 10px;
 		}
 	}
 
-	&__opponent {
-		top: 0;
+	&__opponentDecks {
+		position: absolute;
+		top: -170;
+		right: 10;
+		transform: scale(0.4) rotate(-90deg);
+		transform-origin: bottom right;
 
-		&__hand {
-			top: 10px;
+		&__opp {
+			display: inline-block;
+			margin-right: 10px;
 		}
 	}
-
+	
 	&__decks {
 		position: absolute;
 		top: 10px;

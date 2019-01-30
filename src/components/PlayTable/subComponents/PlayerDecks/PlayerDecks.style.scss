@@ -1,0 +1,10 @@
+.PlayerDecks {
+	&__deck,
+	&__discard {
+		display: inline-block;
+	}
+
+	&__deck {
+		margin-right: 10px;
+	}
+}

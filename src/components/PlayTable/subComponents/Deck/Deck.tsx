@@ -6,12 +6,10 @@ import DOMUtils from "../../../../utils/DOMUtils";
 
 export interface DeckProps {
 	facedown: boolean;
-	onClick?: CardClickEventHandler;
+	onMouseDown?: CardClickEventHandler;
 	topType?: CardType;
 	cardCount: number;
 	rotation?: number;
-	style?: React.CSSProperties;
-	className?: string;
 	label?: React.ReactNode;
 	disabled?: boolean;
 }
@@ -24,29 +22,27 @@ export default class Deck extends React.PureComponent<DeckProps, DeckState> {
 	}
 
 	public render(): React.ReactNode {
-		const { facedown, topType, cardCount, onClick, rotation, style, className, label, disabled } = this.props;
-		const height = cardCount / 2;
+		const { facedown, topType, cardCount, onMouseDown, rotation, label, disabled } = this.props;
+		const deckHeight = cardCount / 2;
 
 		const baseClassName = DOMUtils.BEMClassName("Deck", {
 			"disabled": disabled,
-		}) + " " + (className || "");
+		});
 
 		return (
 			<div className={baseClassName} style={{
 				transform: `rotate(${rotation}deg)`,
-				...style,
 			}}>
 				<div className="Deck__inner">
 					<div className="Deck__inner__cards">
-						<Card
-							className="Deck__inner__cards__card"
-							x={0}
-							y={-height}
-							onClick={onClick}
-							facedown={facedown}
-							type={topType || "hand"}
-							height={0} />
-						<div className="Deck__inner__cards__fill" style={{ height: height + 10 }} />
+						<div className="Deck__inner__cards__card" style={{ top: -deckHeight }}>
+							<Card
+								onClick={onMouseDown}
+								facedown={facedown}
+								type={topType || "hand"}
+								height={0} />
+						</div>
+						<div className="Deck__inner__cards__fill" style={{ height: deckHeight + 10 }} />
 					</div>
 					{
 						label ?
