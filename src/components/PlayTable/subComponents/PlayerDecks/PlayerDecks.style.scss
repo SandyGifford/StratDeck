@@ -1,4 +1,11 @@
 .PlayerDecks {
+	&__label {
+		color: yellow;
+		display: inline-block;
+		writing-mode: tb;
+		font-size: 30px;
+	}
+	
 	&__deck,
 	&__discard {
 		display: inline-block;

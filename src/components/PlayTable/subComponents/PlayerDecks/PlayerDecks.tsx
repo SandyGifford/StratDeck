@@ -5,6 +5,7 @@ import { CardType, CardClickEventHandler } from "../Card/Card";
 import Deck from "../Deck/Deck";
 
 export interface PlayerDecksProps {
+	label?: React.ReactNode;
 	topDiscardType: CardType;
 	discardCount: number;
 	deckCount: number;
@@ -20,10 +21,18 @@ export default class PlayerDecks extends React.PureComponent<PlayerDecksProps, P
 	}
 
 	public render(): React.ReactNode {
-		const { topDiscardType, discardCount, deckCount, onDiscardMouseDown, onDeckMouseDown } = this.props;
+		const {
+			topDiscardType,
+			discardCount,
+			deckCount,
+			onDiscardMouseDown,
+			onDeckMouseDown,
+			label
+		} = this.props;
 
 		return (
 			<div className="PlayerDecks">
+				<div className="PlayerDecks"></div>
 				<div className="PlayerDecks__deck">
 					<Deck
 						topType={topDiscardType}
@@ -39,6 +48,10 @@ export default class PlayerDecks extends React.PureComponent<PlayerDecksProps, P
 						facedown={true}
 						cardCount={100} />
 				</div>
+				{
+					label ?
+						<div className="PlayerDecks__label">{label}</div> : null
+				}
 			</div>
 		)
 	}
