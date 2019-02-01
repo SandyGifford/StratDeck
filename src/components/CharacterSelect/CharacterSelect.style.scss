@@ -17,6 +17,27 @@
 
 	padding: 20px;
 
+	&__playerDetails {
+		padding: 10px;
+		
+		&__name {
+			background-color: #889;
+			color: inherit;
+			width: 100%;
+			box-sizing: border-box;
+			font-size: 20px;
+			font-weight: bold;
+			font-family: inherit;
+			border: none;
+			outline: none;
+			padding: 10px 20px;
+
+			&::placeholder {
+				color: #CCD;
+			}
+		}
+	}
+
 	&__characters {
 		flex: 1 1 auto;
 		display: flex;

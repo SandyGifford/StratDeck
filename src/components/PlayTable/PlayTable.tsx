@@ -27,6 +27,7 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 			const charLocs = this.getStartLocations(p);
 
 			return {
+				...player,
 				chars: player.chars.map((char, c) => ({
 					...char,
 					...(charLocs[c]),

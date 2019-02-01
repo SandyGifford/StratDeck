@@ -8,19 +8,20 @@ import CharacterSelectStat from "./subComponents/CharacterSelectStat/CharacterSe
 import AbilityStatItem from "./subComponents/AbilityStatItem/AbilityStatItem";
 import { CharacterWeapon } from "../../typings/character";
 import DOMUtils from "../../utils/DOMUtils";
-import { PlayerCharacters } from "../../typings/game";
+import { PlayerCharacters, PlayerState } from "../../typings/game";
 
 
-export type SetPlayerCharacters = (playerCharacters: PlayerCharacters[]) => void;
+export type SetPlayers = (players: PlayerState[]) => void;
 
 export interface CharacterSelectProps {
-	setPlayerCharacters: SetPlayerCharacters;
+	setPlayerCharacters: SetPlayers;
 	numberOfPlayers: number;
 }
 export interface CharacterSelectState {
 	playerIndex: number;
 	selected: [number, number, number];
-	playerCharacters: PlayerCharacters[]
+	players: PlayerState[];
+	playerName: string;
 }
 
 export default class CharacterSelect extends React.PureComponent<CharacterSelectProps, CharacterSelectState> {
@@ -34,19 +35,27 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 		this.state = {
 			playerIndex: 0,
 			selected: [null, null, null],
-			playerCharacters: [],
+			players: [],
+			playerName: "",
 		};
 	}
 
 	public render(): React.ReactNode {
-		const { selected } = this.state;
+		const { selected, playerName } = this.state;
 
 		const continueClassName = DOMUtils.BEMClassName("CharacterSelect__controls__button", {
-			"disabled": selected.indexOf(null) !== -1,
+			"disabled": selected.indexOf(null) !== -1 || !playerName,
 		});
 
 		return (
 			<div className="CharacterSelect">
+				<div className="CharacterSelect__playerDetails">
+					<input
+						value={playerName}
+						onChange={this.nameChanged}
+						className="CharacterSelect__playerDetails__name"
+						placeholder="-- player name --" />
+				</div>
 				<div className="CharacterSelect__characters">
 					{
 						characters.map((char, index) => {
@@ -94,6 +103,12 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 		);
 	}
 
+	private nameChanged: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+		this.setState({
+			playerName: e.target.value,
+		});
+	};
+
 	private toggleSelect = (index: number): void => {
 		const selected = [...this.state.selected] as [number, number, number];
 		const selectionSlot = selected.indexOf(index);
@@ -116,18 +131,21 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 
 	private continue = () => {
 		const { setPlayerCharacters, numberOfPlayers } = this.props;
-		const { selected, playerCharacters, playerIndex } = this.state;
+		const { selected, players, playerIndex, playerName } = this.state;
 
-		const newPlayerCharacters = [...playerCharacters, selected.map(index => characters[index]) as PlayerCharacters]
+		players.push({
+			name: playerName,
+			chars: selected.map(index => characters[index]) as PlayerCharacters,
+		});
 
 		if (playerIndex < numberOfPlayers - 1) {
 			this.setState({
 				selected: [null, null, null],
 				playerIndex: playerIndex + 1,
-				playerCharacters: newPlayerCharacters
+				players: players
 			});
 		} else {
-			setPlayerCharacters(newPlayerCharacters);
+			setPlayerCharacters(players);
 		}
 	};
 }

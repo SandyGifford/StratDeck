@@ -2,7 +2,7 @@ import "./App.style";
 
 import * as React from "react";
 
-import CharacterSelect, { SetPlayerCharacters } from "../CharacterSelect/CharacterSelect";
+import CharacterSelect, { SetPlayers } from "../CharacterSelect/CharacterSelect";
 import PlayTable from "../PlayTable/PlayTable";
 import { GameScreen, PlayerState } from "../../typings/game";
 import LoopUtils from "../../utils/LoopUtils";
@@ -20,7 +20,7 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 		super(props);
 		this.state = {
 			screen: "characterSelect",
-			players: LoopUtils.mapTimes(App.NUMBER_OF_PLAYERS, (): PlayerState => ({ chars: [null, null, null] })),
+			players: [],
 		};
 	}
 
@@ -46,13 +46,7 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 		}
 	}
 
-	private setCharacters: SetPlayerCharacters = (playerChars) => {
-		const { players } = this.state;
-
-		const newPlayers = [...players];
-
-		newPlayers.forEach((player, index) => player.chars = playerChars[index]);
-
+	private setCharacters: SetPlayers = (newPlayers) => {
 		this.setState({
 			players: newPlayers,
 			screen: "table",

@@ -1,6 +1,7 @@
 import CharacterDef from "./character";
 
 export interface PlayerState {
+	name: string;
 	chars: PlayerCharacters;
 }
 
