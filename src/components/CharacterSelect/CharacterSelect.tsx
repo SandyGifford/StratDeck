@@ -142,7 +142,8 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 			this.setState({
 				selected: [null, null, null],
 				playerIndex: playerIndex + 1,
-				players: players
+				players: players,
+				playerName: "",
 			});
 		} else {
 			setPlayerCharacters(players);
