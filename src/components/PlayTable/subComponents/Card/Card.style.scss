@@ -1,11 +1,11 @@
 .Card {
 	position: relative;
 	$ms: 100ms;
-	width: 125px;
-	height: 175px;
+	width: 12.5em;
+	height: 17.5em;
 	background-color: white;
-	border: 3px #DDD solid;
-	border-radius: 10px;
+	border: 0.3em #DDD solid;
+	border-radius: 1em;
 	box-sizing: border-box;
 
 	cursor: pointer;
@@ -16,10 +16,10 @@
 	&::after {
 		content: "";
 		position: absolute;
-		top: 10px;
-		left: 10px;
-		right: 10px;
-		bottom: 10px;
+		top: 1em;
+		left: 1em;
+		right: 1em;
+		bottom: 1em;
 
 		transition: opacity $ms step-start ($ms / 2);
 

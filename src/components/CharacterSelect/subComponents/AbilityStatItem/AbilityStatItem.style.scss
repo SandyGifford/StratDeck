@@ -1,10 +1,10 @@
 .AbilityStatItem {
-	margin-bottom: 2px;
+	margin-bottom: 0.2em;
 
 	&__name {
 		background: #445;
-		box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.5);
-		padding: 1px 3px;
+		box-shadow: 0.2em 0.2em 0.2em 0 rgba(0, 0, 0, 0.5);
+		padding: 0.1em 0.3em;
 		cursor: pointer;
 
 		&:hover {
@@ -14,7 +14,7 @@
 
 	&__viewer {
 		position: fixed;
-		width: 300px;
+		width: 30em;
 		pointer-events: none;
 		transform: translateX(-50%);
 		z-index: 1;

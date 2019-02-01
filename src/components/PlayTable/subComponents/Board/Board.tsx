@@ -23,8 +23,8 @@ export default class Board extends React.PureComponent<BoardProps, BoardState> {
 
 		return (
 			<div className="Board" style={{
-				width: width * 30,
-				height: height * 30,
+				width: `${width * 3}em`,
+				height: `${height * 3}em`,
 			}}>
 				{
 					LoopUtils.mapTimes(height, r => {

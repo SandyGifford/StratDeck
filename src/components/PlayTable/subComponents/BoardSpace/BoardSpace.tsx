@@ -20,8 +20,8 @@ export default class BoardSpace extends React.PureComponent<BoardSpaceProps, Boa
 		const { x, y, playerColor, spaceColor } = this.props;
 		return (
 			<div className="BoardSpace" style={{
-				top: y * 30,
-				left: x * 30,
+				left: `${x * 3}em`,
+				top: `${y * 3}em`,
 				backgroundColor: spaceColor,
 			}}>
 				<div className="BoardSpace__center" style={{

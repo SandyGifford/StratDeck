@@ -2,35 +2,35 @@
 	position: absolute;
 
 	top: 5%;
-	left: 100px;
-	right: 100px;
+	left: 10em;
+	right: 10em;
 
 	max-height: 90%;
 
 	background-color: #556;
-	box-shadow: 5px 5px 30px 0 rgba(0, 0, 0, 0.5);
+	box-shadow: 0.5em 0.5em 3em 0 rgba(0, 0, 0, 0.5);
 	z-index: 1;
 	box-sizing: border-box;
 
 	display: flex;
 	flex-direction: column;
 
-	padding: 20px;
+	padding: 2em;
 
 	&__playerDetails {
-		padding: 10px;
+		padding: 1em;
 		
 		&__name {
 			background-color: #889;
 			color: inherit;
 			width: 100%;
 			box-sizing: border-box;
-			font-size: 20px;
+			font-size: 2em;
 			font-weight: bold;
 			font-family: inherit;
 			border: none;
 			outline: none;
-			padding: 10px 20px;
+			padding: 1em 2em;
 
 			&::placeholder {
 				color: #CCD;
@@ -50,21 +50,21 @@
 			position: relative;
 			flex: 0 0 auto;
 			background: #223;
-			width: 200px;
-			height: 300px;
-			margin: 10px;
+			width: 20em;
+			height: 30em;
+			margin: 1em;
 			cursor: pointer;
 
 			&__name {
 				font-weight: bold;
-				font-size: 20px;
-				padding: 5px 10px;
+				font-size: 2em;
+				padding: 0.5em 1em;
 				background: #112;
 			}
 
 			&__stats {
-				padding: 10px;
-				font-size: 12px;
+				padding: 1em;
+				font-size: 1.2em;
 
 				&__mono {
 					font-family: monospace;
@@ -78,7 +78,7 @@
 				right: 0;
 				bottom: 0;
 
-				border-width: 5px;
+				border-width: 0.5em;
 				border-style: solid;
 
 				pointer-events: none;
@@ -89,13 +89,13 @@
 	&__controls {
 		flex: 0 0 auto;
 		text-align: right;
-		margin-top: 10px;
+		margin-top: 1em;
 
 		&__button {
 			display: inline-block;
 
 			background-color: #223;
-			padding: 10px;
+			padding: 1em;
 			cursor: pointer;
 
 			&:hover {

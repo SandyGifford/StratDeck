@@ -32,7 +32,6 @@ export default class PlayerDecks extends React.PureComponent<PlayerDecksProps, P
 
 		return (
 			<div className="PlayerDecks">
-				<div className="PlayerDecks"></div>
 				<div className="PlayerDecks__deck">
 					<Deck
 						topType={topDiscardType}

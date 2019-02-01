@@ -14,7 +14,7 @@
 
 	&__player {
 		position: absolute;
-		right: 10px;
+		right: 1em;
 		bottom: 0;
 
 		&__hand {
@@ -25,39 +25,40 @@
 		&__decks {
 			&__deck {
 				display: inline-block;
-				margin-left: 10px;
+				margin-left: 1em;
 			}
 		}
 
 		&__hand {
-			bottom: 10px;
+			bottom: 1em;
 		}
 	}
 
 	&__opponentDecks {
 		position: absolute;
-		top: -170;
-		right: 10;
-		transform: scale(0.4) rotate(-90deg);
+		top: -20em;
+		right: 1em;
+		font-size: 0.4em;
+		transform: rotate(-90deg);
 		transform-origin: bottom right;
 
 		&__opp {
 			display: inline-block;
-			margin-right: 10px;
+			margin-right: 1em;
 		}
 	}
 	
 	&__decks {
 		position: absolute;
-		top: 10px;
-		left: 50px;
+		top: 1em;
+		left: 5em;
 		transform: rotate(-90deg) translateX(-100%);
 		transform-origin: top left;
 		white-space: pre;
 			
 		&__deck {
 			display: inline-block;
-			margin-right: 10px;
+			margin-right: 1em;
 
 			&__label {
 				&__text {

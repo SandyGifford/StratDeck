@@ -45,7 +45,7 @@ export default class Card extends React.PureComponent<CardProps, CardState> {
 				onClick={this.cardClicked}
 				style={{
 					transform: `scaleX(${xScale}) rotate(${rotation}deg)`,
-					boxShadow: `${10 * height}px ${10 * height}px ${25 * height}px 0 rgba(0, 0, 0, ${shadowOpacity})`,
+					boxShadow: `${1 * height}em ${1 * height}em ${2.5 * height}em 0 rgba(0, 0, 0, ${shadowOpacity})`,
 				}}
 			/>
 		)

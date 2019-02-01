@@ -35,14 +35,14 @@ export default class Deck extends React.PureComponent<DeckProps, DeckState> {
 			}}>
 				<div className="Deck__inner">
 					<div className="Deck__inner__cards">
-						<div className="Deck__inner__cards__card" style={{ top: -deckHeight }}>
+						<div className="Deck__inner__cards__card" style={{ top: `${-deckHeight / 10}em` }}>
 							<Card
 								onClick={onMouseDown}
 								facedown={facedown}
 								type={topType || "hand"}
 								height={0} />
 						</div>
-						<div className="Deck__inner__cards__fill" style={{ height: deckHeight + 10 }} />
+						<div className="Deck__inner__cards__fill" style={{ height: `${(deckHeight / 10) + 10}em` }} />
 					</div>
 					{
 						label ?
