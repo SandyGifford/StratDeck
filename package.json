@@ -8,13 +8,15 @@
   "dependencies": {
     "@types/react": "^16.7.20",
     "@types/react-dom": "^16.0.11",
+    "express": "^4.16.4",
+    "mongodb": "^3.1.13",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
+    "socket.io": "^2.2.0",
     "typescript": "^3.2.4"
   },
   "devDependencies": {
     "css-loader": "^2.1.0",
-    "express": "^4.16.4",
     "node-sass": "^4.11.0",
     "nodemon": "^1.18.9",
     "sass-loader": "^7.1.0",
