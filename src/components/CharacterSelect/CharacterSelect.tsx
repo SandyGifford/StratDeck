@@ -34,9 +34,9 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 		super(props);
 		this.state = {
 			playerIndex: 0,
-			selected: [null, null, null],
+			selected: [1, 2, 3],
 			players: [],
-			playerName: "",
+			playerName: "player 1",
 		};
 	}
 
@@ -139,11 +139,12 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 		});
 
 		if (playerIndex < numberOfPlayers - 1) {
+			const nextPlayerIndex = playerIndex + 1;
 			this.setState({
-				selected: [null, null, null],
-				playerIndex: playerIndex + 1,
+				selected: [1, 2, 3],
+				playerIndex: nextPlayerIndex,
 				players: players,
-				playerName: "",
+				playerName: `player ${nextPlayerIndex + 1}`,
 			});
 		} else {
 			setPlayerCharacters(players);
