@@ -88,7 +88,7 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 						players.map((player, index) => {
 							if (index === 0) return null;
 
-							return <div className="PlayTable__opponentDecks_opp" key={index}>
+							return <div className="PlayTable__opponentDecks__opp" key={index}>
 								<PlayerDecks
 									label={`${player.name} (player ${index + 1})`}
 									deckCount={100}
@@ -124,6 +124,18 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 					{ x: boardWidth - 1, y: boardHeight - 1 },
 					{ x: boardWidth - 1, y: boardHeight - 2 },
 					{ x: boardWidth - 1, y: boardHeight - 3 },
+				];
+			case 2:
+				return [
+					{ x: 0, y: boardHeight - 1 },
+					{ x: 1, y: boardHeight - 1 },
+					{ x: 2, y: boardHeight - 1 },
+				];
+			case 3:
+				return [
+					{ x: boardWidth - 1, y: 0 },
+					{ x: boardWidth - 2, y: 0 },
+					{ x: boardWidth - 3, y: 0 },
 				];
 			default:
 				throw `Board does not support this many players.  Requested start location for player ${playerIndex + 1},  max player count is 2`;

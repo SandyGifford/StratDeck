@@ -14,7 +14,7 @@ export interface AppState {
 }
 
 export default class App extends React.PureComponent<AppProps, AppState> {
-	private static readonly NUMBER_OF_PLAYERS = 2;
+	private static readonly NUMBER_OF_PLAYERS = 4;
 
 	constructor(props: AppProps) {
 		super(props);
