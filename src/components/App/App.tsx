@@ -4,18 +4,17 @@ import * as React from "react";
 
 import CharacterSelect, { SetPlayers } from "../CharacterSelect/CharacterSelect";
 import PlayTable from "../PlayTable/PlayTable";
-import { GameScreen, PlayerState } from "../../typings/game";
-import LoopUtils from "../../utils/LoopUtils";
+import { GameState } from "../../typings/game";
 
-export interface AppProps { }
-export interface AppState {
-	screen: GameScreen;
-	players: PlayerState[];
+export type UpdateGameState = (gameState: Partial<GameState>) => void;
+
+export interface AppProps {
+	gameState: GameState;
+	updateGameState: UpdateGameState;
 }
+export interface AppState { }
 
 export default class App extends React.PureComponent<AppProps, AppState> {
-	private static readonly NUMBER_OF_PLAYERS = 4;
-
 	constructor(props: AppProps) {
 		super(props);
 		this.state = {
@@ -33,11 +32,12 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	}
 
 	private renderScreen(): React.ReactNode {
-		const { screen, players } = this.state;
+		const { gameState } = this.props;
+		const { screen, players } = gameState;
 
 		switch (screen) {
 			case "characterSelect":
-				return <CharacterSelect setPlayerCharacters={this.setCharacters} numberOfPlayers={App.NUMBER_OF_PLAYERS} />;
+				return <CharacterSelect setPlayerCharacters={this.setCharacters} numberOfPlayers={gameState.playerCount} />;
 			case "table":
 				return <PlayTable
 					playersInit={players}
@@ -47,7 +47,9 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	}
 
 	private setCharacters: SetPlayers = (newPlayers) => {
-		this.setState({
+		const { updateGameState } = this.props;
+
+		updateGameState({
 			players: newPlayers,
 			screen: "table",
 		});

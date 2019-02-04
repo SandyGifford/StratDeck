@@ -1,5 +1,12 @@
 import CharacterDef from "./character";
 
+export interface GameState {
+	screen: GameScreen;
+	players: PlayerState[];
+	playerCount: number;
+	whosTurn: number;
+}
+
 export interface PlayerState {
 	name: string;
 	chars: PlayerCharacters;
