@@ -9,28 +9,18 @@ import App from "./components/App/App";
 
 Server.addConnectedListener(render);
 Server.addGameUpdatedListener(render);
-Server.addGameResetListener(render);
 
 const target = document.createElement("div");
 document.body.appendChild(target);
 
 function render(gameState: GameState): void {
 	if (!gameState) {
-		Server.resetGame();
+		Server.resetGame(3);
 		return;
 	}
 
-	function updateGameState(newGameState: Partial<GameState>) {
-		Server.updateGameState({
-			...gameState,
-			...newGameState,
-		})
-	}
-
 	ReactDOM.render(
-		<App
-			gameState={gameState}
-			updateGameState={updateGameState} />,
+		<App gameState={gameState} />,
 		target
 	);
 }

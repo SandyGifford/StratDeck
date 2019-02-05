@@ -10,15 +10,39 @@ const SocketWrench = require("./SocketWrenchServer");
 
 let gameState = null;
 
+function updateGameState(newGameState) {
+	gameState = newGameState;
+	io.emit("game state updated", gameState);
+}
+
 SocketWrench(io, {
 	getGameState: (data, resolve) => {
 		resolve(gameState);
+	},
+	setPlayerState: (data, resolve) => {
+		const players = gameState.players;
+		players[data.playerIndex] = data.playerState;
+		const allPicked = players.every(player => !player);
+
+		updateGameState({
+			...gameState, 
+			players: players,
+		});
+
+		resolve();
 	}
 });
 
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "../dist/index.html")));
 app.get("/assets/*", (req, res) => res.sendFile(path.join(__dirname, "../dist", req.url)));
 app.get("/build/*", (req, res) => res.sendFile(path.join(__dirname, "../dist", req.url)));
+
+io.on("update game state", newGameState => {
+	console.log("updating game state", newGameState);
+
+	gameState = newGameState;
+	io.emit("game state updated", gameState);
+});
 
 io.on("connection", socket => {
 	console.log(`a user connected (${socket.handshake.address})`);
@@ -28,15 +52,7 @@ io.on("connection", socket => {
 	socket.on("update game state", newGameState => {
 		console.log("updating game state", newGameState);
 
-		gameState = newGameState;
-		io.emit("game state updated", gameState);
-	});
-
-	socket.on("reset game state", (initialGameState) => {
-		console.log("resetting game state");
-
-		gameState = initialGameState;
-		io.emit("game state reset", gameState);
+		updateGameState(newGameState);
 	});
 });
 

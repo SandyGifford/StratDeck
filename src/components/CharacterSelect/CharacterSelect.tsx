@@ -8,19 +8,16 @@ import CharacterSelectStat from "./subComponents/CharacterSelectStat/CharacterSe
 import AbilityStatItem from "./subComponents/AbilityStatItem/AbilityStatItem";
 import { CharacterWeapon } from "../../typings/character";
 import DOMUtils from "../../utils/DOMUtils";
-import { PlayerCharacters, PlayerState } from "../../typings/game";
+import { PlayerState, PlayerCharacters } from "../../typings/game";
+import Server from "../../connection/Server";
 
-
-export type SetPlayers = (players: PlayerState[]) => void;
 
 export interface CharacterSelectProps {
-	setPlayerCharacters: SetPlayers;
-	numberOfPlayers: number;
-}
-export interface CharacterSelectState {
 	playerIndex: number;
+}
+
+export interface CharacterSelectState {
 	selected: [number, number, number];
-	players: PlayerState[];
 	playerName: string;
 }
 
@@ -33,10 +30,8 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 	constructor(props: CharacterSelectProps) {
 		super(props);
 		this.state = {
-			playerIndex: 0,
-			selected: [1, 2, 3],
-			players: [],
-			playerName: "player 1",
+			selected: [null, null, null],
+			playerName: `player ${props.playerIndex + 1}`
 		};
 	}
 
@@ -130,24 +125,12 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 	}
 
 	private continue = () => {
-		const { setPlayerCharacters, numberOfPlayers } = this.props;
-		const { selected, players, playerIndex, playerName } = this.state;
+		const { playerIndex } = this.props;
+		const { selected, playerName } = this.state;
 
-		players.push({
+		Server.setPlayerState(playerIndex, {
+			chars: selected.map(charIndex => characters[charIndex]) as PlayerCharacters,
 			name: playerName,
-			chars: selected.map(index => characters[index]) as PlayerCharacters,
 		});
-
-		if (playerIndex < numberOfPlayers - 1) {
-			const nextPlayerIndex = playerIndex + 1;
-			this.setState({
-				selected: [1, 2, 3],
-				playerIndex: nextPlayerIndex,
-				players: players,
-				playerName: `player ${nextPlayerIndex + 1}`,
-			});
-		} else {
-			setPlayerCharacters(players);
-		}
 	};
 }

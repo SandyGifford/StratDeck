@@ -1,3 +1,37 @@
 .App {
+	&__newGamePanel {
+		position: absolute;
+		top: 0;
+		right: 0;
+		background: #112;
+		font-size: 2em;
+		padding: 0.5em 1em;
+		z-index: 1;
 
+		&__playerCountSelect {
+			display: inline-block;
+			margin-right: 0.5em;
+			font-size: 1em;
+
+			background: #334;
+			border: none;
+			outline: none;
+			color: white;
+			cursor: pointer;
+
+			&:hover {
+				background: #445;
+			}
+		}
+		&__start {
+			display: inline-block;
+			background: #334;
+			padding: 0.25em 0.5em;
+			cursor: pointer;
+
+			&:hover {
+				background: #445;
+			}
+		}
+	}
 }

@@ -1,10 +1,11 @@
 import { GameState } from "../typings/game";
+import LoopUtils from "../utils/LoopUtils";
 
-const initialGameState: GameState = {
-	players: [],
+const initialGameState = (playerCount: number): GameState => ({
+	players: LoopUtils.mapTimes(playerCount, () => null),
 	screen: "characterSelect",
-	playerCount: 2,
+	playerCount: playerCount,
 	whosTurn: 0,
-};
+});
 
 export default initialGameState;
