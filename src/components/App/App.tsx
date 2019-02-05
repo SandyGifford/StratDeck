@@ -5,15 +5,17 @@ import * as React from "react";
 import CharacterSelect from "../CharacterSelect/CharacterSelect";
 import PlayTable from "../PlayTable/PlayTable";
 import { GameState } from "../../typings/game";
-import LoopUtils from "../../utils/LoopUtils";
 import Server from "../../connection/Server";
+import LoopUtils from "../../utils/LoopUtils";
+import SimpleSelect, { SimpleSelectMakeLabel, SimpleSelectChangedHandler } from "../SimpleSelect/SimpleSelect";
+import SimpleButton, { SimpleButtonClickHandler } from "../SimpleButton/SimpleButton";
 
 export interface AppProps {
 	gameState: GameState;
 }
 export interface AppState {
 	myPlayerIndex: number;
-	newGamePlayerCount: number;
+	selectingPlayer: boolean;
 }
 
 export default class App extends React.PureComponent<AppProps, AppState> {
@@ -21,56 +23,71 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 		super(props);
 		this.state = {
 			myPlayerIndex: 0,
-			newGamePlayerCount: props.gameState.playerCount,
+			selectingPlayer: true,
 		};
 	}
 
 	public render(): React.ReactNode {
-		const { newGamePlayerCount } = this.state;
-
 		return (
 			<div className="App">
 				{this.renderScreen()}
-				<div className="App__newGamePanel">
-					<select className="App__newGamePanel__playerCountSelect" value={newGamePlayerCount} onChange={this.onNewGamePlayerCountChange}>
-						{
-							LoopUtils.mapTimes(3, p => <option
-								className="App__newGamePanel__playerCountSelect__option"
-								key={p}
-								value={p + 2}>
-								{p + 2} player{p + 2 > 1 ? "s" : ""}
-							</option>)
-						}
-					</select>
-					<div className="App__newGamePanel__start" onClick={this.resetGame}>start</div>
-				</div>
 			</div>
 		)
 	}
 
 	private renderScreen(): React.ReactNode {
 		const { gameState } = this.props;
-		const { myPlayerIndex } = this.state;
-		const { screen, players } = gameState;
+		const { myPlayerIndex, selectingPlayer } = this.state;
+		const { screen, players, playerCount } = gameState;
 
-		switch (screen) {
-			case "characterSelect":
-				return <CharacterSelect playerIndex={myPlayerIndex} />;
-			case "table":
-				return <PlayTable
-					playersInit={players}
-					boardWidth={30}
-					boardHeight={20} />;
+		if (selectingPlayer) {
+			return <div className="App_playerPicker">
+				<div className="App_playerPicker__header">which player are you?</div>
+				<div className="App_playerPicker__content">
+					<SimpleSelect
+						className="App_playerPicker__content__select"
+						items={LoopUtils.mapTimes(playerCount, p => p + 1)}
+						makeLabel={this.makeSelectPlayerLabel}
+						value={myPlayerIndex}
+						onChange={this.changeSelectedPlayer} />
+					<SimpleButton
+						className="App_playerPicker__content__start"
+						onClick={this.startGame}>
+						start game
+					</SimpleButton>
+				</div>
+			</div>
+		} else {
+			switch (screen) {
+				case "characterSelect":
+					return <CharacterSelect playerIndex={myPlayerIndex} />;
+				case "table":
+					return <PlayTable
+						playersInit={players}
+						boardWidth={30}
+						boardHeight={20} />;
+				default:
+					return null; // should never be hit
+			}
 		}
 	}
 
-	private onNewGamePlayerCountChange: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
+	private makeSelectPlayerLabel: SimpleSelectMakeLabel<number> = playerNumber => {
+		const playerIndex = playerNumber - 1;
+		const player = this.props.gameState.players[playerIndex];
+		if (player && player.name) return player.name;
+		return `player ${playerNumber}`;
+	};
+
+	private changeSelectedPlayer: SimpleSelectChangedHandler<number> = playerNumber => {
 		this.setState({
-			newGamePlayerCount: parseInt(e.target.value, 10),
+			myPlayerIndex: playerNumber - 1,
 		});
 	};
 
-	private resetGame = () => {
-		Server.resetGame(this.state.newGamePlayerCount);
+	private startGame: SimpleButtonClickHandler = () => {
+		this.setState({
+			selectingPlayer: false,
+		});
 	};
 }

@@ -20,13 +20,29 @@ SocketWrench(io, {
 		resolve(gameState);
 	},
 	setPlayerState: (data, resolve) => {
-		const players = gameState.players;
-		players[data.playerIndex] = data.playerState;
-		const allPicked = players.every(player => !player);
+		const {playerIndex, playerState} = data;
+		const {players} = gameState;
+
+		players[playerIndex] = playerState;
+
+		const waitingOnPlayers = players.reduce((playerCount, player) => {
+			if (player) playerCount--;
+			return playerCount;
+		}, players.length);
+		const allPicked = waitingOnPlayers === 0;
+
+		console.log(
+			`Player ${playerIndex + 1} (${playerState.name}) has selected characters, ` + (
+				allPicked ? "all players ready" : (
+					`still waiting on ${waitingOnPlayers} player` + (waitingOnPlayers === 1 ? "" : "s")
+				)
+			)
+		);
 
 		updateGameState({
 			...gameState, 
 			players: players,
+			screen: allPicked ? "table" : "characterSelect",
 		});
 
 		resolve();

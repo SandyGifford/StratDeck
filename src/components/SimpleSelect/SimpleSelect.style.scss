@@ -1,0 +1,15 @@
+.SimpleSelect {
+	font-size: 1em;
+
+	display: inline-block;
+	background: #334;
+	border: 0.2em solid #556;
+	border-radius: 0.5em;
+	outline: none;
+	color: white;
+	cursor: pointer;
+
+	&:hover {
+		background: #445;
+	}
+}

@@ -15,7 +15,7 @@ document.body.appendChild(target);
 
 function render(gameState: GameState): void {
 	if (!gameState) {
-		Server.resetGame(3);
+		Server.resetGame(2);
 		return;
 	}
 

@@ -5,4 +5,11 @@ export default class DOMUtils {
 			modifiers.map(mod => `${className}--${mod}`).join(" ")
 		);
 	}
+
+	public static buildClassList(...classNames: string[]): string {
+		return classNames.reduce((aggregate, cn) => {
+			if (cn) aggregate += ` ${cn}`;
+			return aggregate;
+		}, "");
+	}
 }

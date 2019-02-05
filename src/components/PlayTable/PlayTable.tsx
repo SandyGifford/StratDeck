@@ -7,6 +7,10 @@ import Hand from "./subComponents/Hand/Hand";
 import TableCharacterDef, { PlayerState, TablePlayerState, TablePlayerCharacters } from "../../typings/game";
 import { Vector2 } from "../../typings/vector";
 import PlayerDecks from "./subComponents/PlayerDecks/PlayerDecks";
+import LoopUtils from "../../utils/LoopUtils";
+import Server from "../../connection/Server";
+import SimpleSelect, { SimpleSelectChangedHandler, SimpleSelectMakeLabel } from "../SimpleSelect/SimpleSelect";
+import SimpleButton from "../SimpleButton/SimpleButton";
 
 export interface PlayTableProps {
 	playersInit: PlayerState[];
@@ -15,6 +19,7 @@ export interface PlayTableProps {
 }
 export interface PlayTableState {
 	players: TablePlayerState[];
+	newGamePlayerCount: number;
 }
 
 export default class PlayTable extends React.PureComponent<PlayTableProps, PlayTableState> {
@@ -38,12 +43,13 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 
 		this.state = {
 			players: players,
+			newGamePlayerCount: props.playersInit.length,
 		};
 	}
 
 	public render(): React.ReactNode {
 		const { boardWidth, boardHeight } = this.props;
-		const { players } = this.state;
+		const { players, newGamePlayerCount } = this.state;
 
 		return (
 			<div className="PlayTable">
@@ -98,6 +104,15 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 						})
 					}
 				</div>
+				<div className="PlayTable__newGamePanel">
+					<SimpleSelect
+						className="PlayTable__newGamePanel__playerCountSelect"
+						items={LoopUtils.mapTimes(3, p => p + 2)}
+						makeLabel={this.makeNewPlayerCountLabel}
+						value={newGamePlayerCount}
+						onChange={this.onNewGamePlayerCountChange} />
+					<SimpleButton className="PlayTable__newGamePanel__start" onClick={this.resetGame}>start</SimpleButton>
+				</div>
 			</div>
 		)
 	}
@@ -141,4 +156,18 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 				throw `Board does not support this many players.  Requested start location for player ${playerIndex + 1},  max player count is 2`;
 		}
 	}
+
+	private makeNewPlayerCountLabel: SimpleSelectMakeLabel<number> = playerNumber => {
+		return `${playerNumber} player${playerNumber === 1 ? "" : "s"}`;
+	};
+
+	private onNewGamePlayerCountChange: SimpleSelectChangedHandler<number> = playerCount => {
+		this.setState({
+			newGamePlayerCount: playerCount,
+		});
+	};
+
+	private resetGame = () => {
+		Server.resetGame(this.state.newGamePlayerCount);
+	};
 }

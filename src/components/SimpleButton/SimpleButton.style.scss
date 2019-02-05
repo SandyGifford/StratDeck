@@ -1,0 +1,12 @@
+.SimpleButton {
+	display: inline-block;
+	background: #334;
+	padding: 0.25em 0.5em;
+	border: 0.2em solid #556;
+	border-radius: 0.5em;
+	cursor: pointer;
+
+	&:hover {
+		background: #445;
+	}
+}
