@@ -1,4 +1,5 @@
 import CharacterDef from "./character";
+import { CardType } from "../components/PlayTable/subComponents/Card/Card";
 
 export interface GameState {
 	screen: GameScreen;
@@ -10,6 +11,9 @@ export interface GameState {
 export interface PlayerState {
 	name: string;
 	chars: PlayerCharacters;
+	hand: CardType[];
+	deck: CardType[];
+	discard: CardType[];
 }
 
 export interface TablePlayerState extends PlayerState {

@@ -37,7 +37,7 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 					...char,
 					...(charLocs[c]),
 					maxHP: char.hp,
-				})) as TablePlayerCharacters
+				})) as TablePlayerCharacters,
 			}
 		});
 

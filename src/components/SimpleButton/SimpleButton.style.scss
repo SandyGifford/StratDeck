@@ -6,6 +6,11 @@
 	border-radius: 0.5em;
 	cursor: pointer;
 
+	&--disabled {
+		opacity: 0.5;
+		pointer-events: none;
+	}
+
 	&:hover {
 		background: #445;
 	}

@@ -7,6 +7,7 @@ export type SimpleButtonClickHandler = () => void;
 
 export interface SimpleButtonProps {
 	onClick: SimpleButtonClickHandler;
+	disabled?: boolean;
 	className?: string;
 }
 export interface SimpleButtonState { }
@@ -18,10 +19,12 @@ export default class SimpleButton extends React.PureComponent<SimpleButtonProps,
 	}
 
 	public render(): React.ReactNode {
-		const { children, onClick, className } = this.props;
+		const { children, onClick, className, disabled } = this.props;
 
 		const topClassName = DOMUtils.buildClassList(
-			"SimpleButton",
+			DOMUtils.BEMClassName("SimpleButton", {
+				disabled: disabled,
+			}),
 			className
 		);
 

@@ -60,7 +60,9 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 		} else {
 			switch (screen) {
 				case "characterSelect":
-					return <CharacterSelect playerIndex={myPlayerIndex} />;
+					return <CharacterSelect
+						playerIndex={myPlayerIndex}
+						alreadySelected={!!players[myPlayerIndex]} />;
 				case "table":
 					return <PlayTable
 						playersInit={players}

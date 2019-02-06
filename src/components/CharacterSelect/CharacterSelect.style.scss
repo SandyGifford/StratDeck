@@ -17,6 +17,11 @@
 
 	padding: 2em;
 
+	&__alreadyPicked {
+		font-size: 3em;
+		text-align: center;
+	}
+
 	&__playerDetails {
 		padding: 1em;
 		
@@ -90,26 +95,6 @@
 		flex: 0 0 auto;
 		text-align: right;
 		margin-top: 1em;
-
-		&__button {
-			display: inline-block;
-
-			background-color: #223;
-			padding: 1em;
-			cursor: pointer;
-
-			&:hover {
-				background-color: #334;
-			}
-
-			&:active {
-				background-color: #112;
-			}
-
-			&--disabled {
-				pointer-events: none;
-				opacity: 0.5;
-			}
-		}
+		font-size: 2em;
 	}
 }
