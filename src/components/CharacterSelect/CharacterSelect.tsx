@@ -7,7 +7,6 @@ import WeaponDice from "../WeaponDice/WeaponDice";
 import CharacterSelectStat from "./subComponents/CharacterSelectStat/CharacterSelectStat";
 import AbilityStatItem from "./subComponents/AbilityStatItem/AbilityStatItem";
 import { CharacterWeapon } from "../../typings/character";
-import DOMUtils from "../../utils/DOMUtils";
 import { PlayerCharacters } from "../../typings/game";
 import Server from "../../connection/Server";
 import SimpleButton from "../SimpleButton/SimpleButton";

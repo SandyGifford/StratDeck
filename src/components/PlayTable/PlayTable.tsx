@@ -4,7 +4,7 @@ import * as React from "react";
 import Deck from "./subComponents/Deck/Deck";
 import Board from "./subComponents/Board/Board";
 import Hand from "./subComponents/Hand/Hand";
-import TableCharacterDef, { PlayerState, TablePlayerState, TablePlayerCharacters } from "../../typings/game";
+import { PlayerState, TablePlayerState, TablePlayerCharacters } from "../../typings/game";
 import { Vector2 } from "../../typings/vector";
 import PlayerDecks from "./subComponents/PlayerDecks/PlayerDecks";
 import LoopUtils from "../../utils/LoopUtils";

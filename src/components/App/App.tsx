@@ -5,7 +5,6 @@ import * as React from "react";
 import CharacterSelect from "../CharacterSelect/CharacterSelect";
 import PlayTable from "../PlayTable/PlayTable";
 import { GameState } from "../../typings/game";
-import Server from "../../connection/Server";
 import LoopUtils from "../../utils/LoopUtils";
 import SimpleSelect, { SimpleSelectMakeLabel, SimpleSelectChangedHandler } from "../SimpleSelect/SimpleSelect";
 import SimpleButton, { SimpleButtonClickHandler } from "../SimpleButton/SimpleButton";
