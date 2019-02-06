@@ -83,7 +83,7 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 					<div className="PlayTable__player__hand">
 						<Hand
 							facedown={false}
-							cards={["hand", "hand", "ability1"]} />
+							cards={me.hand} />
 					</div>
 					<div className="PlayTable__player__decks">
 						<PlayerDecks
