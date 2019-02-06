@@ -12,6 +12,7 @@ import Server from "../../connection/Server";
 import SimpleButton from "../SimpleButton/SimpleButton";
 import LoopUtils from "../../utils/LoopUtils";
 import { CardType } from "../PlayTable/subComponents/Card/Card";
+import ArrayUtils from "../../utils/ArrayUtils";
 
 
 export interface CharacterSelectProps {
@@ -150,10 +151,10 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 			chars: selected.map(charIndex => characters[charIndex]) as PlayerCharacters,
 			name: playerName,
 			hand: [],
-			deck: [
+			deck: ArrayUtils.shuffle([
 				...this.makeCards(6, "hand"),
 				...this.makeCards(4, "weapon")
-			],
+			]),
 			discard: [],
 		});
 	};
