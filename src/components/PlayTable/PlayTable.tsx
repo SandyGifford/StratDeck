@@ -100,8 +100,8 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 							return <div className="PlayTable__opponentDecks__opp" key={index}>
 								<PlayerDecks
 									label={`${player.name} (player ${index + 1})`}
-									deckCount={100}
-									discardCount={100}
+									deckCount={player.deck.length}
+									discardCount={player.discard.length}
 									topDiscardType="weapon" />
 							</div>
 						})

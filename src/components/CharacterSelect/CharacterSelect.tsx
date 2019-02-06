@@ -34,7 +34,7 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 		super(props);
 
 		this.state = {
-			selected: [null, null, null],
+			selected: [0, 1, 2],
 			playerName: `player ${props.playerIndex + 1}`
 		};
 	}

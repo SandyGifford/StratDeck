@@ -37,14 +37,14 @@ export default class PlayerDecks extends React.PureComponent<PlayerDecksProps, P
 						topType={topDiscardType}
 						onMouseDown={onDeckMouseDown}
 						label={`deck (${deckCount})`}
-						facedown={false}
+						facedown={true}
 						cardCount={deckCount} />
 				</div>
 				<div className="PlayerDecks__discard">
 					<Deck
 						onMouseDown={onDiscardMouseDown}
 						label={`discard (${discardCount})`}
-						facedown={true}
+						facedown={false}
 						cardCount={discardCount} />
 				</div>
 				{
