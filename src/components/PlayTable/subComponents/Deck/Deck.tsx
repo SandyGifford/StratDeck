@@ -33,22 +33,26 @@ export default class Deck extends React.PureComponent<DeckProps, DeckState> {
 			<div className={baseClassName} style={{
 				transform: `rotate(${rotation}deg)`,
 			}}>
-				<div className="Deck__inner">
-					<div className="Deck__inner__cards">
-						<div className="Deck__inner__cards__card" style={{ top: `${-deckHeight / 10}em` }}>
-							<Card
-								onClick={onMouseDown}
-								facedown={facedown}
-								type={topType || "hand"}
-								height={0} />
+				{
+					cardCount === 0 ?
+						<div className="Deck__empty" /> :
+						<div className="Deck__inner">
+							<div className="Deck__inner__cards">
+								<div className="Deck__inner__cards__card" style={{ top: `${-deckHeight / 10}em` }}>
+									<Card
+										onClick={onMouseDown}
+										facedown={facedown}
+										type={topType || "hand"}
+										height={0} />
+								</div>
+								<div className="Deck__inner__cards__fill" style={{ height: `${(deckHeight / 10) + 10}em` }} />
+							</div>
+							{
+								label ?
+									<div className="Deck__inner__label">{label}</div> : null
+							}
 						</div>
-						<div className="Deck__inner__cards__fill" style={{ height: `${(deckHeight / 10) + 10}em` }} />
-					</div>
-					{
-						label ?
-							<div className="Deck__inner__label">{label}</div> : null
-					}
-				</div>
+				}
 			</div>
 		)
 	}

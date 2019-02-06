@@ -1,6 +1,14 @@
 .Deck {
 	position: relative;
 
+	&__empty {
+		width: 12.5em;
+		height: 17.5em;
+		border-radius: 1em;
+		border: 1em dashed #556;
+		box-sizing: border-box;
+	}
+
 	&__inner {
 		&__label {
 			color: yellow;

@@ -65,6 +65,7 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 				case "table":
 					return <PlayTable
 						playersInit={players}
+						myPlayerIndex={myPlayerIndex}
 						boardWidth={30}
 						boardHeight={20} />;
 				default:

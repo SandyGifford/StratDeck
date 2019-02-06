@@ -16,6 +16,7 @@ export interface PlayTableProps {
 	playersInit: PlayerState[];
 	boardWidth: number;
 	boardHeight: number;
+	myPlayerIndex: number;
 }
 export interface PlayTableState {
 	players: TablePlayerState[];
@@ -48,8 +49,10 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 	}
 
 	public render(): React.ReactNode {
-		const { boardWidth, boardHeight } = this.props;
+		const { boardWidth, boardHeight, myPlayerIndex } = this.props;
 		const { players, newGamePlayerCount } = this.state;
+
+		const me = players[myPlayerIndex];
 
 		return (
 			<div className="PlayTable">
@@ -84,8 +87,8 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 					</div>
 					<div className="PlayTable__player__decks">
 						<PlayerDecks
-							deckCount={100}
-							discardCount={100}
+							deckCount={me.deck.length}
+							discardCount={me.discard.length}
 							topDiscardType="hand" />
 					</div>
 				</div>
