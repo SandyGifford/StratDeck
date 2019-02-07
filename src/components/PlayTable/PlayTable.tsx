@@ -86,23 +86,23 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 							cards={me.hand} />
 					</div>
 					<div className="PlayTable__player__decks">
-						<PlayerDecks
-							deckCount={me.deck.length}
-							discardCount={me.discard.length}
-							topDiscardType="hand" />
+						<PlayerDecks player={me} />
 					</div>
 				</div>
 				<div className="PlayTable__opponentDecks">
 					{
 						players.map((player, index) => {
-							if (index === 0) return null;
+							if (index === myPlayerIndex) return null;
+
+							const genericLabel = `player ${index + 1}`;
+							const label = genericLabel === player.name ?
+								genericLabel :
+								`${player.name} (${genericLabel})`;
 
 							return <div className="PlayTable__opponentDecks__opp" key={index}>
 								<PlayerDecks
-									label={`${player.name} (player ${index + 1})`}
-									deckCount={player.deck.length}
-									discardCount={player.discard.length}
-									topDiscardType="weapon" />
+									label={label}
+									player={player} />
 							</div>
 						})
 					}

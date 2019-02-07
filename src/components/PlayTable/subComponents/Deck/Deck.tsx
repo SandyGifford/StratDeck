@@ -9,7 +9,6 @@ export interface DeckProps {
 	onMouseDown?: CardClickEventHandler;
 	topType?: CardType;
 	cardCount: number;
-	rotation?: number;
 	label?: React.ReactNode;
 	disabled?: boolean;
 }
@@ -22,7 +21,7 @@ export default class Deck extends React.PureComponent<DeckProps, DeckState> {
 	}
 
 	public render(): React.ReactNode {
-		const { facedown, topType, cardCount, onMouseDown, rotation, label, disabled } = this.props;
+		const { facedown, topType, cardCount, onMouseDown, label, disabled } = this.props;
 		const deckHeight = cardCount / 2;
 
 		const baseClassName = DOMUtils.BEMClassName("Deck", {
@@ -30,9 +29,7 @@ export default class Deck extends React.PureComponent<DeckProps, DeckState> {
 		});
 
 		return (
-			<div className={baseClassName} style={{
-				transform: `rotate(${rotation}deg)`,
-			}}>
+			<div className={baseClassName}>
 				{
 					cardCount === 0 ?
 						<div className="Deck__empty" /> :

@@ -22,7 +22,7 @@ export default class SimpleSelect<S extends (string | number)> extends React.Pur
 	}
 
 	public render(): React.ReactNode {
-		let { items, makeLabel, className } = this.props;
+		let { items, makeLabel, className, value } = this.props;
 		makeLabel = makeLabel || (s => s) as SimpleSelectMakeLabel<S>;
 
 		const topClassName = DOMUtils.buildClassList(
@@ -31,7 +31,7 @@ export default class SimpleSelect<S extends (string | number)> extends React.Pur
 		);
 
 		return (
-			<select className={topClassName} onChange={this.onChange}>
+			<select className={topClassName} onChange={this.onChange} value={value}>
 				{
 					items.map(item => <option className="SimpleSelect__option" key={item} value={item}>
 						{makeLabel(item)}

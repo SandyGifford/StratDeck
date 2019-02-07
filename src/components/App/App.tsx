@@ -18,10 +18,16 @@ export interface AppState {
 }
 
 export default class App extends React.PureComponent<AppProps, AppState> {
+	private static readonly LS_PLAYER_INDEX_KEY = "playerIndex";
+
 	constructor(props: AppProps) {
 		super(props);
+
+		const lastPlayerIndex = parseInt(window.sessionStorage.getItem(App.LS_PLAYER_INDEX_KEY));
+
 		this.state = {
-			myPlayerIndex: 0,
+			myPlayerIndex: lastPlayerIndex || 0,
+			// myPlayerIndex: 0,
 			selectingPlayer: true,
 		};
 	}
@@ -45,7 +51,7 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 				<div className="App_playerPicker__content">
 					<SimpleSelect
 						className="App_playerPicker__content__select"
-						items={LoopUtils.mapTimes(playerCount, p => p + 1)}
+						items={LoopUtils.mapTimes(playerCount, p => p)}
 						makeLabel={this.makeSelectPlayerLabel}
 						value={myPlayerIndex}
 						onChange={this.changeSelectedPlayer} />
@@ -74,16 +80,17 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 		}
 	}
 
-	private makeSelectPlayerLabel: SimpleSelectMakeLabel<number> = playerNumber => {
-		const playerIndex = playerNumber - 1;
+	private makeSelectPlayerLabel: SimpleSelectMakeLabel<number> = playerIndex => {
 		const player = this.props.gameState.players[playerIndex];
 		if (player && player.name) return player.name;
-		return `player ${playerNumber}`;
+		return `player ${playerIndex + 1}`;
 	};
 
-	private changeSelectedPlayer: SimpleSelectChangedHandler<number> = playerNumber => {
+	private changeSelectedPlayer: SimpleSelectChangedHandler<number> = playerIndex => {
+		window.sessionStorage.setItem(App.LS_PLAYER_INDEX_KEY, playerIndex + "");
+
 		this.setState({
-			myPlayerIndex: playerNumber - 1,
+			myPlayerIndex: playerIndex,
 		});
 	};
 

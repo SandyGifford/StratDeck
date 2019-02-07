@@ -1,14 +1,13 @@
 import "./PlayerDecks.style";
 
 import * as React from "react";
-import { CardType, CardClickEventHandler } from "../Card/Card";
-import Deck from "../Deck/Deck";
+import { CardClickEventHandler } from "../Card/Card";
+import DeckDeck from "../DeckDeck/DeckDeck";
+import { PlayerState } from "../../../../typings/game";
 
 export interface PlayerDecksProps {
 	label?: React.ReactNode;
-	topDiscardType: CardType;
-	discardCount: number;
-	deckCount: number;
+	player: PlayerState;
 	onDiscardMouseDown?: CardClickEventHandler;
 	onDeckMouseDown?: CardClickEventHandler;
 }
@@ -22,36 +21,35 @@ export default class PlayerDecks extends React.PureComponent<PlayerDecksProps, P
 
 	public render(): React.ReactNode {
 		const {
-			topDiscardType,
-			discardCount,
-			deckCount,
+			player,
 			onDiscardMouseDown,
 			onDeckMouseDown,
 			label
 		} = this.props;
 
+		const { deck, discard } = player;
+
 		return (
 			<div className="PlayerDecks">
 				<div className="PlayerDecks__deck">
-					<Deck
-						topType={topDiscardType}
+					<DeckDeck
 						onMouseDown={onDeckMouseDown}
-						label={`deck (${deckCount})`}
+						label={`deck (${deck.length})`}
 						facedown={true}
-						cardCount={deckCount} />
+						deck={deck} />
 				</div>
 				<div className="PlayerDecks__discard">
-					<Deck
+					<DeckDeck
 						onMouseDown={onDiscardMouseDown}
-						label={`discard (${discardCount})`}
+						label={`discard (${discard.length})`}
 						facedown={false}
-						cardCount={discardCount} />
+						deck={discard} />
 				</div>
 				{
 					label ?
 						<div className="PlayerDecks__label">{label}</div> : null
 				}
 			</div>
-		)
+		);
 	}
 }
