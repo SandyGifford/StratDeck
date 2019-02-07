@@ -9,7 +9,7 @@ export default class DeckUtils {
 
 	public static dealCardsToDeck(fromDeck: CardType[], toDeck: CardType[], cardCount: number): void {
 		const cards = DeckUtils.dealCards(fromDeck, cardCount);
-		toDeck.push(...cards);
+		this.addCardsToTop(toDeck, cards);
 	}
 
 	public static dealCards(deck: CardType[], cardCount: number): CardType[] {
