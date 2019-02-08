@@ -8,6 +8,7 @@ import { GameState } from "../../typings/game";
 import LoopUtils from "../../utils/LoopUtils";
 import SimpleSelect, { SimpleSelectMakeLabel, SimpleSelectChangedHandler } from "../SimpleSelect/SimpleSelect";
 import SimpleButton, { SimpleButtonClickHandler } from "../SimpleButton/SimpleButton";
+import PopMessage from "../PopMessage/PopMessage";
 
 export interface AppProps {
 	gameState: GameState;
@@ -27,7 +28,6 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 
 		this.state = {
 			myPlayerIndex: lastPlayerIndex || 0,
-			// myPlayerIndex: 0,
 			selectingPlayer: true,
 		};
 	}
@@ -35,6 +35,7 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	public render(): React.ReactNode {
 		return (
 			<div className="App">
+				<PopMessage />
 				{this.renderScreen()}
 			</div>
 		)

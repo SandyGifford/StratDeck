@@ -1,6 +1,6 @@
-export type GenericEventListener<D> = (data: D) => void;
+export type GenericEventListener<D = void> = (data: D) => void;
 
-export default class EventDelegate<D> {
+export default class EventDelegate<D = void> {
 	private listeners: GenericEventListener<D>[] = [];
 
 	public addEventListener(listener: GenericEventListener<D>): void {

@@ -12,6 +12,9 @@ import Server from "../../connection/Server";
 import SimpleSelect, { SimpleSelectChangedHandler, SimpleSelectMakeLabel } from "../SimpleSelect/SimpleSelect";
 import SimpleButton from "../SimpleButton/SimpleButton";
 
+export type PlayPhase = "buy" | "play";
+export type PlayMode = "move" | "use";
+
 export interface PlayTableProps {
 	playersInit: PlayerState[];
 	boardWidth: number;
@@ -21,6 +24,8 @@ export interface PlayTableProps {
 export interface PlayTableState {
 	players: TablePlayerState[];
 	newGamePlayerCount: number;
+	playPhase: PlayPhase;
+	playMode: PlayMode;
 }
 
 export default class PlayTable extends React.PureComponent<PlayTableProps, PlayTableState> {
@@ -45,6 +50,8 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 		this.state = {
 			players: players,
 			newGamePlayerCount: props.playersInit.length,
+			playPhase: "buy",
+			playMode: null,
 		};
 	}
 
