@@ -1,7 +1,6 @@
 import "./PlayTable.style";
 
 import * as React from "react";
-import Deck from "./subComponents/Deck/Deck";
 import Board from "./subComponents/Board/Board";
 import Hand from "./subComponents/Hand/Hand";
 import { PlayerState, TablePlayerState, TablePlayerCharacters, GameState } from "../../typings/game";
