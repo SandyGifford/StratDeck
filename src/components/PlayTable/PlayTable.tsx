@@ -4,19 +4,21 @@ import * as React from "react";
 import Deck from "./subComponents/Deck/Deck";
 import Board from "./subComponents/Board/Board";
 import Hand from "./subComponents/Hand/Hand";
-import { PlayerState, TablePlayerState, TablePlayerCharacters } from "../../typings/game";
+import { PlayerState, TablePlayerState, TablePlayerCharacters, GameState } from "../../typings/game";
 import { Vector2 } from "../../typings/vector";
 import PlayerDecks from "./subComponents/PlayerDecks/PlayerDecks";
 import LoopUtils from "../../utils/LoopUtils";
 import Server from "../../connection/Server";
 import SimpleSelect, { SimpleSelectChangedHandler, SimpleSelectMakeLabel } from "../SimpleSelect/SimpleSelect";
 import SimpleButton from "../SimpleButton/SimpleButton";
+import PopMessenger from "../PopMessage/PopMessenger";
 
 export type PlayPhase = "buy" | "play";
 export type PlayMode = "move" | "use";
 
 export interface PlayTableProps {
 	playersInit: PlayerState[];
+	gameState: GameState;
 	boardWidth: number;
 	boardHeight: number;
 	myPlayerIndex: number;
@@ -44,7 +46,7 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 					...(charLocs[c]),
 					maxHP: char.hp,
 				})) as TablePlayerCharacters,
-			}
+			};
 		});
 
 		this.state = {
@@ -53,6 +55,14 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 			playPhase: "buy",
 			playMode: null,
 		};
+	}
+
+	public componentDidUpdate(prevProps: PlayTableProps, prevState: PlayTableState) {
+		this.updateMessage(prevState);
+	}
+
+	public componentDidMount() {
+		this.updateMessage();
 	}
 
 	public render(): React.ReactNode {
@@ -125,6 +135,26 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 				</div>
 			</div>
 		)
+	}
+
+	private updateMessage(prevState?: Partial<PlayTableState>): void {
+		const { gameState, myPlayerIndex } = this.props;
+		const { whosTurn, players } = gameState;
+		const { playPhase } = this.state;
+		prevState = prevState || {};
+
+		if (whosTurn !== myPlayerIndex) {
+			PopMessenger.message(`${players[whosTurn].name}'s turn`);
+		} else if (playPhase !== prevState.playPhase) {
+			switch (playPhase) {
+				case "buy":
+					PopMessenger.message("buy a card");
+					break;
+				case "play":
+					PopMessenger.message("play");
+					break;
+			}
+		}
 	}
 
 	private renderDeckLabel(text: string, cost: number): React.ReactNode {

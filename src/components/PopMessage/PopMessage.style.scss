@@ -11,9 +11,11 @@
 	box-shadow: 0.5em 0.5em 1em 0 rgba(0, 0, 0, 0.5);
 	transition: transform 0.5s, margin-bottom 0.5s;
 	font-size: 2em;
+	text-align: center;
 
 	&--open {
 		transform: translate(-50%, 100%);
 		margin-bottom: 0;
+		z-index: 2;
 	}
 }

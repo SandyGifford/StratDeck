@@ -3,10 +3,12 @@ import EventDelegate, { GenericEventListener } from "../../utils/EventDelegate";
 
 export type PopMessageListener = GenericEventListener<React.ReactNode>;
 export type PopMessageCloseListener = GenericEventListener;
+export type PopMessageClearListener = GenericEventListener;
 
 export default class PopMessenger {
 	private static readonly messageDelegate = new EventDelegate<React.ReactNode>();
 	private static readonly closeDelegate = new EventDelegate();
+	private static readonly clearDelegate = new EventDelegate();
 
 	public static message(node: React.ReactNode): void {
 		this.messageDelegate.trigger(node);
@@ -30,5 +32,17 @@ export default class PopMessenger {
 
 	public static removeCloseListener(listener: PopMessageCloseListener): void {
 		this.closeDelegate.removeEventListener(listener);
+	}
+
+	public static clear(): void {
+		this.clearDelegate.trigger();
+	}
+
+	public static addClearListener(listener: PopMessageClearListener): void {
+		this.clearDelegate.addEventListener(listener);
+	}
+
+	public static removeClearListener(listener: PopMessageClearListener): void {
+		this.clearDelegate.removeEventListener(listener);
 	}
 }

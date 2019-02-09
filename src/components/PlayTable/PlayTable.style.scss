@@ -55,6 +55,7 @@
 		transform: rotate(-90deg) translateX(-100%);
 		transform-origin: top left;
 		white-space: pre;
+		z-index: 1;
 			
 		&__deck {
 			display: inline-block;
@@ -99,5 +100,9 @@
 		font-size: 2em;
 		padding: 0.5em 1em;
 		z-index: 1;
+
+		&__start {
+			margin-left: 0.5em;
+		}
 	}
 }
