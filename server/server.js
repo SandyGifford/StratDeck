@@ -16,12 +16,19 @@ function updateGameState(newGameState) {
 }
 
 SocketWrench(io, {
+	resetGameState: (newGameState, resolve) => {
+		console.log("resetting game", newGameState);
+
+		gameState = newGameState;
+		io.emit("game state reset", gameState);
+		resolve();
+	},
 	getGameState: (data, resolve) => {
 		resolve(gameState);
 	},
 	setPlayerState: (data, resolve) => {
-		const {playerIndex, playerState} = data;
-		const {players} = gameState;
+		const { playerIndex, playerState } = data;
+		const { players } = gameState;
 
 		players[playerIndex] = playerState;
 
@@ -40,7 +47,7 @@ SocketWrench(io, {
 		);
 
 		updateGameState({
-			...gameState, 
+			...gameState,
 			players: players,
 			screen: allPicked ? "table" : "characterSelect",
 		});
@@ -52,6 +59,13 @@ SocketWrench(io, {
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "../dist/index.html")));
 app.get("/assets/*", (req, res) => res.sendFile(path.join(__dirname, "../dist", req.url)));
 app.get("/build/*", (req, res) => res.sendFile(path.join(__dirname, "../dist", req.url)));
+
+// io.on("reset game state", newGameState => {
+// 	console.log("resetting game", newGameState);
+
+// 	gameState = newGameState;
+// 	io.emit("game state reset", gameState);
+// });
 
 io.on("update game state", newGameState => {
 	console.log("updating game state", newGameState);
@@ -73,4 +87,4 @@ io.on("connection", socket => {
 });
 
 
-server.listen(3000);
+server.listen(3000, "0.0.0.0");

@@ -1,9 +1,14 @@
 import * as React from "react";
 import EventDelegate, { GenericEventListener } from "../../utils/EventDelegate";
+import Server from "../../connection/Server";
 
 export type PopMessageListener = GenericEventListener<React.ReactNode>;
 export type PopMessageCloseListener = GenericEventListener;
 export type PopMessageClearListener = GenericEventListener;
+
+Server.addGameResetListener(() => {
+	PopMessenger.clear();
+});
 
 export default class PopMessenger {
 	private static readonly messageDelegate = new EventDelegate<React.ReactNode>();
