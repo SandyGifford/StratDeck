@@ -12,6 +12,7 @@ import SimpleSelect, { SimpleSelectChangedHandler, SimpleSelectMakeLabel } from 
 import SimpleButton from "../SimpleButton/SimpleButton";
 import PopMessenger from "../PopMessage/PopMessenger";
 import CardPool from "./subComponents/CardPool/CardPool";
+import Rotado from "../Rotado/Rotado";
 
 export type PlayPhase = "buy" | "play";
 export type PlayMode = "move" | "use";
@@ -93,22 +94,26 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 					</div>
 				</div>
 				<div className="PlayTable__opponentDecks">
-					{
-						players.map((player, index) => {
-							if (index === myPlayerIndex) return null;
+					<Rotado angle={90}>
+						<div className="PlayTable__opponentDecks__rot">
+							{
+								players.map((player, index) => {
+									if (index === myPlayerIndex) return null;
 
-							const genericLabel = `player ${index + 1}`;
-							const label = genericLabel === player.name ?
-								genericLabel :
-								`${player.name} (${genericLabel})`;
+									const genericLabel = `player ${index + 1}`;
+									const label = genericLabel === player.name ?
+										genericLabel :
+										`${player.name} (${genericLabel})`;
 
-							return <div className="PlayTable__opponentDecks__opp" key={index}>
-								<PlayerDecks
-									label={label}
-									player={player} />
-							</div>
-						})
-					}
+									return <div className="PlayTable__opponentDecks__rot_>_opp" key={index}>
+										<PlayerDecks
+											label={label}
+											player={player} />
+									</div>
+								})
+							}
+						</div>
+					</Rotado>
 				</div>
 				<div className="PlayTable__newGamePanel">
 					<SimpleSelect

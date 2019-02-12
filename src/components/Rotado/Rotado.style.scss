@@ -1,0 +1,12 @@
+.Rotado {
+	position: relative;
+
+	&__position,
+	&__clone {
+		position: absolute;
+	}
+
+	&__clone {
+		visibility: hidden;
+	}
+}

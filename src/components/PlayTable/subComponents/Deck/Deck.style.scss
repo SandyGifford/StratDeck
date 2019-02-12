@@ -1,5 +1,6 @@
 .Deck {
 	position: relative;
+	width: 12.5em;
 
 	&__empty {
 		width: 12.5em;
@@ -11,9 +12,9 @@
 
 	&__inner {
 		&__label {
+			margin-top: 0.5em;
+			width: 100%;
 			color: yellow;
-			display: inline-block;
-			writing-mode: tb;
 			font-size: 1.5em;
 		}
 		

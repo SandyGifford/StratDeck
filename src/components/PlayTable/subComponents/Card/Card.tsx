@@ -18,7 +18,6 @@ export interface CardProps {
 	type: CardType;
 	height: number;
 	facedown: boolean;
-	rotation?: number;
 }
 
 export interface CardState { }
@@ -30,7 +29,7 @@ export default class Card extends React.PureComponent<CardProps, CardState> {
 	}
 
 	public render(): React.ReactNode {
-		const { type, height, facedown, rotation } = this.props;
+		const { type, height, facedown } = this.props;
 
 		const baseClassName = DOMUtils.BEMClassName("Card", {
 			"facedown": facedown,
@@ -44,7 +43,7 @@ export default class Card extends React.PureComponent<CardProps, CardState> {
 				className={baseClassName}
 				onClick={this.cardClicked}
 				style={{
-					transform: `scaleX(${xScale}) rotate(${rotation}deg)`,
+					transform: `scaleX(${xScale})`,
 					boxShadow: `${1 * height}em ${1 * height}em ${2.5 * height}em 0 rgba(0, 0, 0, ${shadowOpacity})`,
 				}}
 			/>

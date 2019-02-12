@@ -36,15 +36,15 @@
 
 	&__opponentDecks {
 		position: absolute;
-		top: 0em;
+		top: 35em;
 		right: 1em;
 		font-size: 0.4em;
-		transform: rotate(-90deg);
-		transform-origin: bottom right;
-
-		&__opp {
-			display: inline-block;
-			margin-right: 5em;
+		
+		&__rot {
+			&__opp {
+				display: inline-block;
+				margin-right: 5em;
+			}
 		}
 	}
 	

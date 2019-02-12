@@ -28,6 +28,9 @@ export default class Deck extends React.PureComponent<DeckProps, DeckState> {
 			"disabled": disabled,
 		});
 
+		const labelEl = label ?
+			<div className="Deck__inner__label">{label}</div> : null;
+
 		return (
 			<div className={baseClassName}>
 				{
@@ -44,12 +47,9 @@ export default class Deck extends React.PureComponent<DeckProps, DeckState> {
 								</div>
 								<div className="Deck__inner__cards__fill" style={{ height: `${(deckHeight / 10) + 10}em` }} />
 							</div>
-							{
-								label ?
-									<div className="Deck__inner__label">{label}</div> : null
-							}
 						</div>
 				}
+				{labelEl}
 			</div>
 		)
 	}
