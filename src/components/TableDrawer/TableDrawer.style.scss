@@ -1,0 +1,31 @@
+.TableDrawer {
+	position: fixed;
+	z-index: 1;
+	transition: transform 0.5s;
+
+	&--fill {
+		background: #556;
+		padding: 5em;
+		box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.5);
+	}
+
+	&--top { bottom: 100%; transform: translate(-50%, 10%); }
+	&--left { right: 100%; transform: translate(10%, -50%); }
+	&--right { left: 100%; transform: translate(-10%, -50%); }
+	&--bottom { top: 100%; transform: translate(-50%, -10%); }
+
+	&--top,
+	&--bottom {
+		left: 50%;
+	}
+
+	&--left,
+	&--right {
+		top: 50%;
+	}
+
+	&--topOpen { transform: translate(-50%, 100%); }
+	&--leftOpen { transform: translate(100%, -50%); }
+	&--rightOpen { transform: translate(-100%, -50%); }
+	&--bottomOpen { transform: translate(-50%, -100%); }
+}

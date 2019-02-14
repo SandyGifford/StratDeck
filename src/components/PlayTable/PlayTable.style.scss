@@ -13,12 +13,8 @@
 	}
 
 	&__player {
-		position: absolute;
-		right: 1em;
-		bottom: 0;
-
 		&__hand {
-			position: fixed;
+			position: absolute;
 			right: 50%;
 		}
 
@@ -35,9 +31,6 @@
 	}
 
 	&__opponentDecks {
-		position: absolute;
-		top: 35em;
-		right: 1em;
 		font-size: 0.4em;
 		
 		&__rot {
@@ -46,15 +39,6 @@
 				margin-right: 5em;
 			}
 		}
-	}
-	
-	&__cardPool {
-		position: absolute;
-		top: 1em;
-		left: 5em;
-		transform: rotate(-90deg) translateX(-100%);
-		transform-origin: top left;
-		z-index: 1;
 	}
 	
 	&__newGamePanel {
