@@ -9,12 +9,12 @@ import App from "./components/App/App";
 
 Server.addConnectedListener(render);
 Server.addGameUpdatedListener(render);
+Server.addGameResetListener(render);
 
 const target = document.createElement("div");
 document.body.appendChild(target);
 
 function render(gameState: GameState): void {
-	console.log("rendering", gameState);
 	if (!gameState) {
 		Server.resetGame(2);
 		return;
