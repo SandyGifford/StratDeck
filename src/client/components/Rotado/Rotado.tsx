@@ -8,6 +8,7 @@ export interface RotadoProps<T extends HTMLElement> {
 	angle: number;
 	unit?: RotadoUnit;
 	children: React.ReactElement<T>;
+	watchResize?: boolean;
 }
 export interface RotadoState { }
 
@@ -26,7 +27,12 @@ export default class Rotado<T extends HTMLElement> extends React.PureComponent<R
 	}
 
 	public componentDidMount(): void {
+		window.addEventListener("resize", this.onWindowResize);
 		this.updateRotation();
+	}
+
+	public componentWillUnmount(): void {
+		window.removeEventListener("resize", this.onWindowResize);
 	}
 
 	public render(): React.ReactNode {
@@ -62,6 +68,11 @@ export default class Rotado<T extends HTMLElement> extends React.PureComponent<R
 			</div>
 		)
 	}
+
+	private onWindowResize = () => {
+		if (this.props.watchResize)
+			this.forceUpdate();
+	};
 
 	private updateRotation() {
 		const rootEl = this.rootRef.current;

@@ -77,7 +77,7 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 		return (
 			<div className="PlayTable">
 				<TableDrawer side="left" forceState={this.isMyTurn() && playPhase === "buy" ? "open" : null}>
-					<Rotado angle={-90}>
+					<Rotado angle={-90} watchResize={true}>
 						<div className="PlayTable__cardPool">
 							<CardPool />
 						</div>
