@@ -32,7 +32,8 @@
     "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
-    "watch": "webpack --watch",
+    "watchClient": "webpack --watch --config webpack.client.config.js",
+    "watchServer": "webpack --watch --config webpack.server.config.js",
     "build": "webpack",
     "devStart": "nodemon --inspect ./dist/build/server.js"
   }

@@ -1,12 +1,8 @@
-const nodeExternals = require('webpack-node-externals');
 const path = require("path");
 
-module.exports = {
+module.exports = (entry, additionalRules) => ({
 	mode: "development",
-	entry: {
-		client: "./src/client/index.tsx",
-		server: "./src/server/server.ts",
-	},
+	entry: entry,
 	output: {
 		path: path.resolve(__dirname, "dist/build"),
 		filename: "[name].js",
@@ -14,13 +10,10 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.scss$/,
-				use: ["style-loader", "css-loader", "sass-loader"]
-			},
-			{
 				test: /\.tsx?$/,
 				use: ["ts-loader"]
-			}
+			},
+			...(additionalRules || []),
 		]
 	},
 	resolve: {
@@ -34,10 +27,4 @@ module.exports = {
 		},
 	},
 	devtool: "source-map",
-	target: "node",
-	externals: [nodeExternals()],
-	node: {
-		__dirname: false
-	},
-	context: __dirname,
-};
+});
