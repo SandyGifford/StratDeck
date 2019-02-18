@@ -3,7 +3,7 @@ const path = require("path");
 module.exports = {
 	mode: "development",
 	entry: {
-		index: "./src/index.tsx",
+		client: "./src/client/index.tsx",
 	},
 	output: {
 		path: path.resolve(__dirname, "dist/build"),
@@ -23,6 +23,12 @@ module.exports = {
 	},
 	resolve: {
 		extensions: [".js", ".jsx", ".ts", ".tsx", ".css", ".scss"],
+		alias: {
+			"@shared": path.resolve(__dirname, "src/shared/"),
+			"@components": path.resolve(__dirname, "src/client/components/"),
+			"@client": path.resolve(__dirname, "src/client/"),
+			"@server": path.resolve(__dirname, "src/server/"),
+		},
 	},
 	devtool: "source-map",
 };
