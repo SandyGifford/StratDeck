@@ -1,6 +1,5 @@
 import * as io from "socket.io-client";
 import GameState, { PlayerState } from "@typings/game";
-import initialGameState from "@client/constants/initialGameState";
 import emitTypes from "@shared/emitTypes";
 const socket = io();
 
@@ -45,7 +44,6 @@ export default class ServerConnect {
 	};
 
 	public static resetGame = (playerCount: number): void => {
-		socket.emit(emitTypes.toServer.resetGame, initialGameState(playerCount));
-		// Server.resetGameStateWrench.emit(initialGameState(playerCount));
+		socket.emit(emitTypes.toServer.resetGame, playerCount);
 	};
 }

@@ -1,16 +1,13 @@
 console.clear();
 
-import * as path from "path";
-console.log("=> " + path.join(__dirname, "../index.html"));
-
 import * as express from "express";
 import { Server } from "http";
 
-const app = express();
-const server: Server = require("http").Server(app);
-
 import SocketStuff from "./socketStuff";
 import routing from "./routing";
+
+const app = express();
+const server: Server = require("http").Server(app);
 
 SocketStuff(server);
 app.use(routing);
