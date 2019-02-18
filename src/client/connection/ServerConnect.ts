@@ -8,7 +8,7 @@ export type ConnectedEventHandler = (gameState: GameState) => void;
 export type GameUpdatedEventHandler = (gameState: GameState) => void;
 export type GameResetEventHandler = (gameState: GameState) => void;
 
-export default class Server {
+export default class ServerConnect {
 	public static setPlayerState = (playerIndex: number, playerState: PlayerState): void => {
 		socket.emit(emitTypes.toServer.setPlayerState, {
 			playerIndex: playerIndex,

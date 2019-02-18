@@ -8,12 +8,14 @@ import LoopUtils from "@client/utils/LoopUtils";
 import SimpleButton, { SimpleButtonClickHandler } from "@components/SimpleButton/SimpleButton";
 import CharacterSelect from "@components/CharacterSelect/CharacterSelect";
 import PlayTable from "@components/PlayTable/PlayTable";
+import ServerConnect from "@client/connection/ServerConnect";
 
 
 export interface AppProps {
-	gameState: GameState;
+	initialGameState: GameState;
 }
 export interface AppState {
+	gameState: GameState;
 	myPlayerIndex: number;
 	selectingPlayer: boolean;
 }
@@ -24,12 +26,20 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	constructor(props: AppProps) {
 		super(props);
 
-		const lastPlayerIndex = parseInt(window.sessionStorage.getItem(App.LS_PLAYER_INDEX_KEY));
-
 		this.state = {
-			myPlayerIndex: lastPlayerIndex || 0,
-			selectingPlayer: true,
+			...this.getDefaultState(),
+			gameState: props.initialGameState,
 		};
+	}
+
+	public componentDidMount() {
+		ServerConnect.addGameUpdatedListener(this.gameStateUpdated);
+		ServerConnect.addGameResetListener(this.gameReset);
+	}
+
+	public componentWillUnmount() {
+		ServerConnect.removeGameUpdatedListener(this.gameStateUpdated);
+		ServerConnect.removeGameResetListener(this.gameReset);
 	}
 
 	public render(): React.ReactNode {
@@ -42,8 +52,7 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	}
 
 	private renderScreen(): React.ReactNode {
-		const { gameState } = this.props;
-		const { myPlayerIndex, selectingPlayer } = this.state;
+		const { myPlayerIndex, selectingPlayer, gameState } = this.state;
 		const { screen, players, playerCount } = gameState;
 
 		if (selectingPlayer) {
@@ -82,8 +91,33 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 		}
 	}
 
+	private gameReset = (gameState: GameState): void => {
+		this.setState({
+			...this.getDefaultState(),
+			gameState: gameState,
+		});
+	};
+
+	private gameStateUpdated = (gameState: GameState): void => {
+		this.setState({
+			gameState: gameState,
+		});
+	};
+
+	private getLastPlayerIndex(): number {
+		return parseInt(window.sessionStorage.getItem(App.LS_PLAYER_INDEX_KEY));
+	}
+
+	private getDefaultState(): AppState {
+		return {
+			gameState: null,
+			myPlayerIndex: this.getLastPlayerIndex() || 0,
+			selectingPlayer: true,
+		}
+	}
+
 	private makeSelectPlayerLabel: SimpleSelectMakeLabel<number> = playerIndex => {
-		const player = this.props.gameState.players[playerIndex];
+		const player = this.state.gameState.players[playerIndex];
 		if (player && player.name) return player.name;
 		return `player ${playerIndex + 1}`;
 	};

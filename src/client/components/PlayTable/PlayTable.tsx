@@ -14,7 +14,7 @@ import LoopUtils from "@client/utils/LoopUtils";
 import SimpleButton from "@components/SimpleButton/SimpleButton";
 import PopMessenger from "@components/PopMessage/PopMessenger";
 import { Vector2 } from "@typings/vector";
-import Server from "@client/connection/Server";
+import ServerConnect from "@client/connection/ServerConnect";
 
 export type PlayPhase = "buy" | "play";
 export type PlayMode = "move" | "use";
@@ -206,6 +206,6 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 	};
 
 	private resetGame = () => {
-		Server.resetGame(this.state.newGamePlayerCount);
+		ServerConnect.resetGame(this.state.newGamePlayerCount);
 	};
 }

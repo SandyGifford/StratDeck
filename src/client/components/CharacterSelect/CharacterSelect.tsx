@@ -7,7 +7,7 @@ import characters from "@client/characters/characters";
 import WeaponDice from "@components/WeaponDice/WeaponDice";
 import AbilityStatItem from "./subComponents/AbilityStatItem/AbilityStatItem";
 import SimpleButton from "@components/SimpleButton/SimpleButton";
-import Server from "@client/connection/Server";
+import ServerConnect from "@client/connection/ServerConnect";
 import ArrayUtils from "@client/utils/ArrayUtils";
 import LoopUtils from "@client/utils/LoopUtils";
 import { CardType } from "@typings/game";
@@ -145,7 +145,7 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 		const { playerIndex } = this.props;
 		const { selected, playerName } = this.state;
 
-		Server.setPlayerState(playerIndex, {
+		ServerConnect.setPlayerState(playerIndex, {
 			chars: selected.map(charIndex => characters[charIndex]) as PlayerCharacters,
 			name: playerName,
 			hand: [],
