@@ -1,6 +1,6 @@
 import { PlayerState, CardType } from "@typings/game";
-import DeckUtils from "./DeckUtils";
-import ArrayUtils from "./ArrayUtils";
+import DeckUtils from "@utils/DeckUtils";
+import ArrayUtils from "@utils/ArrayUtils";
 
 export default class PlayerUtils {
 	public static dealCards(player: PlayerState, cardCount: number): void {
