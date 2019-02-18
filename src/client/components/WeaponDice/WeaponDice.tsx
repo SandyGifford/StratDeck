@@ -1,7 +1,7 @@
 import "./WeaponDice.style";
 
 import * as React from "react";
-import { CharacterWeapon } from "@shared/typing/character";
+import { CharacterWeapon } from "@typings/character";
 
 export interface WeaponDiceProps {
 	weapon: CharacterWeapon;

@@ -1,4 +1,4 @@
-import CharacterDef from "@shared/typing/character";
+import CharacterDef from "@typings/character";
 import Abilities from "./Abilities";
 
 const characters: CharacterDef[] = [

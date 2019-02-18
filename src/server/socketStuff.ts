@@ -1,9 +1,11 @@
-const gameStateManager = require("./gameStateManager");
+import { Server } from "http";
 
+import GameState from "@typings/game";
+import GameStateManager from "@server/gameStateManager";
 
-module.exports = (server) => {
-	const io = require("socket.io")(server);
-	gameStateManager.init(io);
+export default (server: Server) => {
+	const io: SocketIO.Server = require("socket.io")(server);
+	GameStateManager.init(io);
 
 	io.emit("game state reset");
 
@@ -12,21 +14,21 @@ module.exports = (server) => {
 
 		socket.emit("connection made");
 
-		socket.on("update game state", newGameState => {
+		socket.on("update game state", (newGameState: GameState) => {
 			console.log("updating game state", newGameState);
 
-			gameStateManager.updateGameState(newGameState);
+			GameStateManager.updateGameState(newGameState);
 		});
 
-		socket.on("reset game state", newGameState => {
+		socket.on("reset game state", (newGameState: GameState) => {
 			console.log("resetting game", newGameState);
 
-			gameStateManager.updateGameState(newGameState, "game state reset");
+			GameStateManager.updateGameState(newGameState, "game state reset");
 		});
 
-		socket.on("set player state", playerInfo => {
+		socket.on("set player state", (playerInfo) => {
 			console.log("setting player state", playerInfo);
-			const gameState = gameStateManager.getGameState();
+			const gameState = GameStateManager.getGameState();
 			const { playerIndex, playerState } = playerInfo;
 			const { players } = gameState;
 
@@ -46,7 +48,7 @@ module.exports = (server) => {
 				)
 			);
 
-			gameStateManager.updatePartialGameState({
+			GameStateManager.updatePartialGameState({
 				players: players,
 				screen: allPicked ? "table" : "characterSelect",
 			});

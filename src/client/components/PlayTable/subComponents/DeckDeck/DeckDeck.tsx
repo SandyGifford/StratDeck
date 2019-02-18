@@ -2,7 +2,7 @@ import "./DeckDeck.style";
 
 import * as React from "react";
 import { CardClickEventHandler } from "../Card/Card";
-import { CardType } from "@shared/typing/game";
+import { CardType } from "@typings/game";
 import Deck from "../Deck/Deck";
 
 export interface DeckDeckProps {

@@ -1,7 +1,7 @@
 import "./AbilityStatItem.style";
 
 import * as React from "react";
-import { CharacterAbility } from "@shared/typing/character";
+import { CharacterAbility } from "@typings/character";
 import AbilityViewer from "@components/AbilityViewer/AbilityViewer";
 
 export interface AbilityStatItemProps {

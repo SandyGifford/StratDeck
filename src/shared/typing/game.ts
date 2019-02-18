@@ -1,4 +1,4 @@
-import { PlayerCharacters, TablePlayerCharacters } from "@shared/typing/character";
+import { PlayerCharacters, TablePlayerCharacters } from "@typings/character";
 
 export default interface GameState {
 	screen: GameScreen;

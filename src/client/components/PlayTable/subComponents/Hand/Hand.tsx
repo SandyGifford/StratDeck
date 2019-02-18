@@ -1,7 +1,7 @@
 import "./Hand.style";
 
 import * as React from "react";
-import { CardType } from "@shared/typing/game";
+import { CardType } from "@typings/game";
 import Card from "../Card/Card";
 
 export interface HandProps {

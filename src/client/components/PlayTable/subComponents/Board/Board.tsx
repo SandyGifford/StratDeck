@@ -1,9 +1,9 @@
 import "./Board.style";
 
 import * as React from "react";
-import { TablePlayerState } from "@shared/typing/game";
+import { TablePlayerState } from "@typings/game";
 import LoopUtils from "@client/utils/LoopUtils";
-import { TableCharacterDef } from "@shared/typing/character";
+import { TableCharacterDef } from "@typings/character";
 import BoardSpace from "../BoardSpace/BoardSpace";
 
 export interface BoardProps {

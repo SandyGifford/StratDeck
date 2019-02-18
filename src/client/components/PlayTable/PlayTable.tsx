@@ -1,8 +1,8 @@
 import "./PlayTable.style";
 
 import * as React from "react";
-import GameState, { PlayerState, TablePlayerState } from "@shared/typing/game";
-import { TablePlayerCharacters } from "@shared/typing/character";
+import GameState, { PlayerState, TablePlayerState } from "@typings/game";
+import { TablePlayerCharacters } from "@typings/character";
 import TableDrawer from "@components/TableDrawer/TableDrawer";
 import Rotado from "@components/Rotado/Rotado";
 import CardPool from "./subComponents/CardPool/CardPool";
@@ -13,7 +13,7 @@ import SimpleSelect, { SimpleSelectMakeLabel, SimpleSelectChangedHandler } from 
 import LoopUtils from "@client/utils/LoopUtils";
 import SimpleButton from "@components/SimpleButton/SimpleButton";
 import PopMessenger from "@components/PopMessage/PopMessenger";
-import { Vector2 } from "@client/typings/vector";
+import { Vector2 } from "@typings/vector";
 import Server from "@client/connection/Server";
 
 export type PlayPhase = "buy" | "play";

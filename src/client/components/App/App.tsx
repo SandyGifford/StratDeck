@@ -1,7 +1,7 @@
 import "./App.style";
 
 import * as React from "react";
-import GameState from "@shared/typing/game";
+import GameState from "@typings/game";
 import PopMessage from "@components/PopMessage/PopMessage";
 import SimpleSelect, { SimpleSelectMakeLabel, SimpleSelectChangedHandler } from "@components/SimpleSelect/SimpleSelect";
 import LoopUtils from "@client/utils/LoopUtils";

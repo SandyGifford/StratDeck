@@ -1,9 +1,11 @@
+const nodeExternals = require('webpack-node-externals');
 const path = require("path");
 
 module.exports = {
 	mode: "development",
 	entry: {
 		client: "./src/client/index.tsx",
+		server: "./src/server/server.ts",
 	},
 	output: {
 		path: path.resolve(__dirname, "dist/build"),
@@ -24,6 +26,7 @@ module.exports = {
 	resolve: {
 		extensions: [".js", ".jsx", ".ts", ".tsx", ".css", ".scss"],
 		alias: {
+			"@typings": path.resolve(__dirname, "src/shared/typings/"),
 			"@shared": path.resolve(__dirname, "src/shared/"),
 			"@components": path.resolve(__dirname, "src/client/components/"),
 			"@client": path.resolve(__dirname, "src/client/"),
@@ -31,4 +34,10 @@ module.exports = {
 		},
 	},
 	devtool: "source-map",
+	target: "node",
+	externals: [nodeExternals()],
+	node: {
+		__dirname: false
+	},
+	context: __dirname,
 };

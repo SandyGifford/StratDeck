@@ -1,4 +1,4 @@
-import DiceRoll from "@shared/typing/dice";
+import DiceRoll from "@typings/dice";
 
 export default interface CharacterDef {
 	name: string;

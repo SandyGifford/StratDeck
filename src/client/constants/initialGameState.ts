@@ -1,4 +1,4 @@
-import GameState from "@shared/typing/game";
+import GameState from "@typings/game";
 import LoopUtils from "@client/utils/LoopUtils";
 
 const initialGameState = (playerCount: number): GameState => ({

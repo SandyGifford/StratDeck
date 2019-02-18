@@ -1,4 +1,4 @@
-import { CharacterAbility } from "@shared/typing/character";
+import { CharacterAbility } from "@typings/character";
 
 export default class Abilities {
 	// Boop

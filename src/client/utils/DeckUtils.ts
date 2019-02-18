@@ -1,4 +1,4 @@
-import { CardType } from "@shared/typing/game";
+import { CardType } from "@typings/game";
 
 export type MaybeMultiCard = CardType[] | CardType;
 

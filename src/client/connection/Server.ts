@@ -1,5 +1,5 @@
 import * as io from "socket.io-client";
-import GameState, { PlayerState } from "@shared/typing/game";
+import GameState, { PlayerState } from "@typings/game";
 import initialGameState from "@client/constants/initialGameState";
 const socket = io();
 

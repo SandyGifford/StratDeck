@@ -1,7 +1,7 @@
 import "./PlayerDecks.style";
 
 import * as React from "react";
-import { PlayerState } from "@shared/typing/game";
+import { PlayerState } from "@typings/game";
 import { CardClickEventHandler } from "../Card/Card";
 import DeckDeck from "../DeckDeck/DeckDeck";
 

@@ -1,4 +1,4 @@
-import { PlayerState, CardType } from "@shared/typing/game";
+import { PlayerState, CardType } from "@typings/game";
 import DeckUtils from "./DeckUtils";
 import ArrayUtils from "./ArrayUtils";
 

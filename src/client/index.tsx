@@ -3,7 +3,7 @@ import * as  ReactDOM from "react-dom";
 
 import "./index.style";
 import Server from "@client/connection/Server";
-import GameState from "@shared/typing/game";
+import GameState from "@typings/game";
 import App from "@components/App/App";
 
 Server.addConnectedListener(render);

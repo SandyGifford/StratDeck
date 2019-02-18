@@ -1,7 +1,7 @@
 import "./CharacterSelect.style";
 
 import * as React from "react";
-import { CharacterWeapon, PlayerCharacters } from "@shared/typing/character";
+import { CharacterWeapon, PlayerCharacters } from "@typings/character";
 import CharacterSelectStat from "./subComponents/CharacterSelectStat/CharacterSelectStat";
 import characters from "@client/characters/characters";
 import WeaponDice from "@components/WeaponDice/WeaponDice";
@@ -10,7 +10,7 @@ import SimpleButton from "@components/SimpleButton/SimpleButton";
 import Server from "@client/connection/Server";
 import ArrayUtils from "@client/utils/ArrayUtils";
 import LoopUtils from "@client/utils/LoopUtils";
-import { CardType } from "@shared/typing/game";
+import { CardType } from "@typings/game";
 
 
 export interface CharacterSelectProps {

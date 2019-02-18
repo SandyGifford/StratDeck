@@ -9,6 +9,9 @@
 		"jsx": "react",
 		"baseUrl": "./",
 		"paths": {
+			"@typings/*": [
+				"./src/shared/typing/*"
+			],
 			"@shared/*": [
 				"./src/shared/*"
 			],
