@@ -2,18 +2,11 @@ import * as io from "socket.io-client";
 const socket = io();
 
 import { GameState, PlayerState } from "../typings/game";
-// import SocketWrench from "./SocketWrench";
 import initialGameState from "../constants/initialGameState";
 
 export type ConnectedEventHandler = (gameState: GameState) => void;
 export type GameUpdatedEventHandler = (gameState: GameState) => void;
 export type GameResetEventHandler = (gameState: GameState) => void;
-
-
-// interface SetPlayerStateWrenchData {
-// 	playerIndex: number;
-// 	playerState: PlayerState;
-// }
 
 export default class Server {
 	private static readonly events = {
@@ -21,21 +14,6 @@ export default class Server {
 		updated: "game state updated",
 		reset: "game state reset",
 	};
-
-	// private static readonly getGameStateWrench = new SocketWrench<void, GameState>("getGameState");
-	// private static readonly setPlayerStateWrench = new SocketWrench<SetPlayerStateWrenchData, string>("setPlayerState");
-	// private static readonly resetGameStateWrench = new SocketWrench<GameState, void>("resetGameState");
-
-	// public static getGameState = (): Promise<GameState> => {
-	// 	return Server.getGameStateWrench.emit();
-	// };
-
-	// public static setPlayerState = (playerIndex: number, playerState: PlayerState): Promise<string> => {
-	// 	return Server.setPlayerStateWrench.emit({
-	// 		playerIndex: playerIndex,
-	// 		playerState: playerState,
-	// 	});
-	// };
 
 	public static setPlayerState = (playerIndex: number, playerState: PlayerState): void => {
 		socket.emit("set player state", {

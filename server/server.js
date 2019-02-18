@@ -6,58 +6,12 @@ const app = express();
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
 
-// const SocketWrench = require("./SocketWrenchServer");
-
 let gameState = null;
 
 function updateGameState(newGameState) {
 	gameState = newGameState;
 	io.emit("game state updated", gameState);
 }
-
-io.on("update game state", newGameState => {
-	console.log("updating game state", newGameState);
-
-	gameState = newGameState;
-	io.emit("game state updated", gameState);
-});
-
-io.on("reset game state", newGameState => {
-	console.log("resetting game", newGameState);
-
-	gameState = newGameState;
-	io.emit("game state reset", gameState);
-});
-
-io.on("set player state", playerInfo => {
-	console.log("setting player state", playerInfo);
-	const { playerIndex, playerState } = playerInfo;
-	const { players } = gameState;
-
-	players[playerIndex] = playerState;
-
-	const waitingOnPlayers = players.reduce((playerCount, player) => {
-		if (player) playerCount--;
-		return playerCount;
-	}, players.length);
-	const allPicked = waitingOnPlayers === 0;
-
-	console.log(
-		`Player ${playerIndex + 1} (${playerState.name}) has selected characters, ` + (
-			allPicked ? "all players ready" : (
-				`still waiting on ${waitingOnPlayers} player` + (waitingOnPlayers === 1 ? "" : "s")
-			)
-		)
-	);
-
-	updateGameState({
-		...gameState,
-		players: players,
-		screen: allPicked ? "table" : "characterSelect",
-	});
-
-	resolve();
-});
 
 io.on("connection", socket => {
 	console.log(`a user connected (${socket.handshake.address})`);
@@ -69,48 +23,41 @@ io.on("connection", socket => {
 
 		updateGameState(newGameState);
 	});
+
+	socket.on("reset game state", newGameState => {
+		console.log("resetting game", newGameState);
+
+		updateGameState(newGameState);
+	});
+
+	socket.on("set player state", playerInfo => {
+		console.log("setting player state", playerInfo);
+		const { playerIndex, playerState } = playerInfo;
+		const { players } = gameState;
+
+		players[playerIndex] = playerState;
+
+		const waitingOnPlayers = players.reduce((playerCount, player) => {
+			if (player) playerCount--;
+			return playerCount;
+		}, players.length);
+		const allPicked = waitingOnPlayers === 0;
+
+		console.log(
+			`Player ${playerIndex + 1} (${playerState.name}) has selected characters, ` + (
+				allPicked ? "all players ready" : (
+					`still waiting on ${waitingOnPlayers} player` + (waitingOnPlayers === 1 ? "" : "s")
+				)
+			)
+		);
+
+		updateGameState({
+			...gameState,
+			players: players,
+			screen: allPicked ? "table" : "characterSelect",
+		});
+	});
 });
-
-// SocketWrench(io, {
-// 	resetGameState: (newGameState, resolve) => {
-// 		console.log("resetting game", newGameState);
-
-// 		gameState = newGameState;
-// 		io.emit("game state reset", gameState);
-// 		resolve();
-// 	},
-// 	getGameState: (data, resolve) => {
-// 		resolve(gameState);
-// 	},
-// 	setPlayerState: (data, resolve) => {
-// 		const { playerIndex, playerState } = data;
-// 		const { players } = gameState;
-
-// 		players[playerIndex] = playerState;
-
-// 		const waitingOnPlayers = players.reduce((playerCount, player) => {
-// 			if (player) playerCount--;
-// 			return playerCount;
-// 		}, players.length);
-// 		const allPicked = waitingOnPlayers === 0;
-
-// 		console.log(
-// 			`Player ${playerIndex + 1} (${playerState.name}) has selected characters, ` + (
-// 				allPicked ? "all players ready" : (
-// 					`still waiting on ${waitingOnPlayers} player` + (waitingOnPlayers === 1 ? "" : "s")
-// 				)
-// 			)
-// 		);
-
-// 		updateGameState({
-// 			...gameState,
-// 			players: players,
-// 			screen: allPicked ? "table" : "characterSelect",
-// 		});
-
-// 		resolve();
-// 	}
-// });
 
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "../dist/index.html")));
 app.get("/assets/*", (req, res) => res.sendFile(path.join(__dirname, "../dist", req.url)));
