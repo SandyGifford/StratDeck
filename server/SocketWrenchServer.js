@@ -20,7 +20,7 @@ module.exports = (io, handlers, options) => {
 					socket.emit(options.messageEvent, {
 						...incomingMessage,
 						data: outgoingData,
-					})
+					});
 				};
 
 				handler(incomingMessage.data, resolve);

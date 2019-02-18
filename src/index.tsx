@@ -14,6 +14,7 @@ const target = document.createElement("div");
 document.body.appendChild(target);
 
 function render(gameState: GameState): void {
+	console.log("rendering", gameState);
 	if (!gameState) {
 		Server.resetGame(2);
 		return;

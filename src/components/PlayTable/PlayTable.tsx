@@ -69,13 +69,13 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 
 	public render(): React.ReactNode {
 		const { boardWidth, boardHeight, myPlayerIndex } = this.props;
-		const { players, newGamePlayerCount } = this.state;
+		const { players, newGamePlayerCount, playPhase } = this.state;
 
 		const me = players[myPlayerIndex];
 
 		return (
 			<div className="PlayTable">
-				<TableDrawer side="left">
+				<TableDrawer side="left" forceState={this.isMyTurn() && playPhase === "buy" ? "open" : null}>
 					<Rotado angle={-90}>
 						<div className="PlayTable__cardPool">
 							<CardPool />
@@ -138,12 +138,12 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 	}
 
 	private updateMessage(prevState?: Partial<PlayTableState>): void {
-		const { gameState, myPlayerIndex } = this.props;
+		const { gameState } = this.props;
 		const { whosTurn, players } = gameState;
 		const { playPhase } = this.state;
 		prevState = prevState || {};
 
-		if (whosTurn !== myPlayerIndex) {
+		if (!this.isMyTurn()) {
 			PopMessenger.message(`${players[whosTurn].name}'s turn`);
 		} else if (playPhase !== prevState.playPhase) {
 			switch (playPhase) {
@@ -155,6 +155,10 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 					break;
 			}
 		}
+	}
+
+	private isMyTurn(): boolean {
+		return this.props.gameState.whosTurn === this.props.myPlayerIndex;
 	}
 
 	private getStartLocations(playerIndex: number): [Vector2, Vector2, Vector2] {

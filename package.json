@@ -30,6 +30,6 @@
   "scripts": {
     "watch": "webpack --watch",
     "build": "webpack",
-    "devStart": "nodemon server/server.js"
+    "devStart": "nodemon --inspect ./server/server.js"
   }
 }
