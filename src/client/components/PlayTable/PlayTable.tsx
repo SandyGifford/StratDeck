@@ -10,7 +10,7 @@ import Board from "./subComponents/Board/Board";
 import Hand from "./subComponents/Hand/Hand";
 import PlayerDecks from "./subComponents/PlayerDecks/PlayerDecks";
 import SimpleSelect, { SimpleSelectMakeLabel, SimpleSelectChangedHandler } from "@components/SimpleSelect/SimpleSelect";
-import LoopUtils from "@client/utils/LoopUtils";
+import LoopUtils from "@utils/LoopUtils";
 import SimpleButton from "@components/SimpleButton/SimpleButton";
 import PopMessenger from "@components/PopMessage/PopMessenger";
 import { Vector2 } from "@typings/vector";

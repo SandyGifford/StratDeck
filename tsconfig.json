@@ -12,6 +12,9 @@
 			"@typings/*": [
 				"./src/shared/typing/*"
 			],
+			"@utils/*": [
+				"./src/shared/utils/*"
+			],
 			"@shared/*": [
 				"./src/shared/*"
 			],

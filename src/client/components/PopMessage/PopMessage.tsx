@@ -2,7 +2,7 @@ import "./PopMessage.style";
 
 import * as React from "react";
 import PopMessenger, { PopMessageListener, PopMessageCloseListener, PopMessageClearListener } from "./PopMessenger";
-import DOMUtils from "@client/utils/DOMUtils";
+import DOMUtils from "@utils/DOMUtils";
 
 export interface PopMessageProps { }
 export interface PopMessageState {

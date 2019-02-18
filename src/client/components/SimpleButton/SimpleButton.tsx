@@ -1,7 +1,7 @@
 import "./SimpleButton.style";
 
 import * as React from "react";
-import DOMUtils from "@client/utils/DOMUtils";
+import DOMUtils from "@utils/DOMUtils";
 
 export type SimpleButtonClickHandler = () => void;
 

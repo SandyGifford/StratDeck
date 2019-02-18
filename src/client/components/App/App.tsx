@@ -4,7 +4,7 @@ import * as React from "react";
 import GameState from "@typings/game";
 import PopMessage from "@components/PopMessage/PopMessage";
 import SimpleSelect, { SimpleSelectMakeLabel, SimpleSelectChangedHandler } from "@components/SimpleSelect/SimpleSelect";
-import LoopUtils from "@client/utils/LoopUtils";
+import LoopUtils from "@utils/LoopUtils";
 import SimpleButton, { SimpleButtonClickHandler } from "@components/SimpleButton/SimpleButton";
 import CharacterSelect from "@components/CharacterSelect/CharacterSelect";
 import PlayTable from "@components/PlayTable/PlayTable";

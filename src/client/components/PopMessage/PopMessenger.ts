@@ -1,5 +1,5 @@
 import * as React from "react";
-import EventDelegate, { GenericEventListener } from "@client/utils/EventDelegate";
+import EventDelegate, { GenericEventListener } from "@utils/EventDelegate";
 import ServerConnect from "@client/connection/ServerConnect";
 
 export type PopMessageListener = GenericEventListener<React.ReactNode>;

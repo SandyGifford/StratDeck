@@ -8,8 +8,8 @@ import WeaponDice from "@components/WeaponDice/WeaponDice";
 import AbilityStatItem from "./subComponents/AbilityStatItem/AbilityStatItem";
 import SimpleButton from "@components/SimpleButton/SimpleButton";
 import ServerConnect from "@client/connection/ServerConnect";
-import ArrayUtils from "@client/utils/ArrayUtils";
-import LoopUtils from "@client/utils/LoopUtils";
+import ArrayUtils from "@utils/ArrayUtils";
+import LoopUtils from "@utils/LoopUtils";
 import { CardType } from "@typings/game";
 
 

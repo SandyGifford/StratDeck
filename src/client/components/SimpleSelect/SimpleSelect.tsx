@@ -1,7 +1,7 @@
 import "./SimpleSelect.style";
 
 import * as React from "react";
-import DOMUtils from "@client/utils/DOMUtils";
+import DOMUtils from "@utils/DOMUtils";
 
 export type SimpleSelectMakeLabel<S extends (string | number)> = (item: S) => string;
 export type SimpleSelectChangedHandler<S extends (string | number)> = (item: S) => void;

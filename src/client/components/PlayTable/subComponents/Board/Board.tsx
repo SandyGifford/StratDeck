@@ -2,7 +2,7 @@ import "./Board.style";
 
 import * as React from "react";
 import { TablePlayerState } from "@typings/game";
-import LoopUtils from "@client/utils/LoopUtils";
+import LoopUtils from "@utils/LoopUtils";
 import { TableCharacterDef } from "@typings/character";
 import BoardSpace from "../BoardSpace/BoardSpace";
 

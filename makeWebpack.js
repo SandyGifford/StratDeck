@@ -19,7 +19,8 @@ module.exports = (entry, additionalRules) => ({
 	resolve: {
 		extensions: [".js", ".jsx", ".ts", ".tsx", ".css", ".scss"],
 		alias: {
-			"@typings": path.resolve(__dirname, "src/shared/typings/"),
+			"@utils": path.resolve(__dirname, "src/shared/utils/"),
+			"@typings": path.resolve(__dirname, "src/shared/typing/"),
 			"@shared": path.resolve(__dirname, "src/shared/"),
 			"@components": path.resolve(__dirname, "src/client/components/"),
 			"@client": path.resolve(__dirname, "src/client/"),

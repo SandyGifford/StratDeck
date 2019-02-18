@@ -3,8 +3,8 @@ import "./Card.style";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { CardType } from "@typings/game";
-import DOMUtils from "@client/utils/DOMUtils";
-import NumberUtils from "@client/utils/NumberUtils";
+import DOMUtils from "@utils/DOMUtils";
+import NumberUtils from "@utils/NumberUtils";
 
 export interface CardClickEvent {
 	props: CardProps;

@@ -1,7 +1,7 @@
 import "./TableDrawer.style";
 
 import * as React from "react";
-import DOMUtils from "@client/utils/DOMUtils";
+import DOMUtils from "@utils/DOMUtils";
 
 export type TableDrawerSide = "top" | "left" | "right" | "bottom";
 export type TableDrawerOpenState = "open" | "closed";

@@ -3,7 +3,7 @@ import "./Deck.style";
 import * as React from "react";
 import Card, { CardClickEventHandler } from "../Card/Card";
 import { CardType } from "@typings/game";
-import DOMUtils from "@client/utils/DOMUtils";
+import DOMUtils from "@utils/DOMUtils";
 
 export interface DeckProps {
 	facedown: boolean;

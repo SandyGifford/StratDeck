@@ -1,5 +1,5 @@
 import GameState from "@typings/game";
-import LoopUtils from "@client/utils/LoopUtils";
+import LoopUtils from "@utils/LoopUtils";
 
 const initialGameState = (playerCount: number): GameState => ({
 	players: LoopUtils.mapTimes(playerCount, () => null),

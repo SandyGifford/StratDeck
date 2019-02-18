@@ -2,7 +2,7 @@ import { PlayerState, CardType } from "@typings/game";
 import DeckUtils from "./DeckUtils";
 import ArrayUtils from "./ArrayUtils";
 
-export default class PlyaerUtils {
+export default class PlayerUtils {
 	public static dealCards(player: PlayerState, cardCount: number): void {
 		DeckUtils.dealCardsToDeck(player.deck, player.hand, cardCount);
 	}
