@@ -145,7 +145,7 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 		const { playerIndex } = this.props;
 		const { selected, playerName } = this.state;
 
-		ServerConnect.setPlayerState(playerIndex, {
+		ServerConnect.initializePlayer(playerIndex, {
 			chars: selected.map(charIndex => characters[charIndex]) as PlayerCharacters,
 			name: playerName,
 			hand: [],

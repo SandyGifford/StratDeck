@@ -1,20 +1,40 @@
-import GameState, { PlayerState } from "@typings/game";
-import * as SocketIO from "socket.io";
+import GameState, { PlayerState, CardType } from "@typings/game";
+import PlayerUtils from "@utils/PlayerUtils";
+import EventDelegate, { GenericEventListener } from "@utils/EventDelegate";
+import initialGameState from "./initialGameState";
 
 export default class GameStateManager {
 	private static gameState: GameState = null;
-	private static io: SocketIO.Server;
+	private static updateDelegate: EventDelegate<GameState> = new EventDelegate();
+	private static resetDelegate: EventDelegate<GameState> = new EventDelegate();
 
-	public static init(ioInit: SocketIO.Server) {
-		this.io = ioInit;
+	public static addUpdateListener(listener: GenericEventListener<GameState>) {
+		this.updateDelegate.addEventListener(listener);
 	}
 
-	public static updateGameState(newGameState: GameState, emitEvent = "game state updated") {
+	public static removeUpdateListener(listener: GenericEventListener<GameState>) {
+		this.updateDelegate.removeEventListener(listener);
+	}
+
+	public static addResetListener(listener: GenericEventListener<GameState>) {
+		this.resetDelegate.addEventListener(listener);
+	}
+
+	public static removeResetListener(listener: GenericEventListener<GameState>) {
+		this.resetDelegate.removeEventListener(listener);
+	}
+
+	public static updateGameState(newGameState: GameState) {
 		this.gameState = newGameState;
-		this.io.emit(emitEvent, this.gameState);
+		this.updateDelegate.trigger(this.gameState);
 	}
 
-	public static updatePartialGameState(partialGameState: Partial<GameState>, emitEvent?: string) {
+	public static resetGame(playerCount: number) {
+		this.gameState = initialGameState(playerCount);
+		this.resetDelegate.trigger(this.gameState);
+	}
+
+	public static updatePartialGameState(partialGameState: Partial<GameState>) {
 		const newGameState: GameState = {
 			...this.gameState,
 		};
@@ -23,10 +43,10 @@ export default class GameStateManager {
 			newGameState[key] = partialGameState[key];
 		});
 
-		this.updateGameState(newGameState, emitEvent);
+		this.updateGameState(newGameState);
 	}
 
-	public static setPlayerState(playerIndex: number, playerState: PlayerState) {
+	public static initializePlayer(playerIndex: number, playerState: PlayerState): number {
 		const { players } = this.gameState;
 
 		players[playerIndex] = playerState;
@@ -37,21 +57,46 @@ export default class GameStateManager {
 		}, players.length);
 		const allPicked = waitingOnPlayers === 0;
 
-		console.log(
-			`Player ${playerIndex + 1} (${playerState.name}) has selected characters, ` + (
-				allPicked ? "all players ready" : (
-					`still waiting on ${waitingOnPlayers} player` + (waitingOnPlayers === 1 ? "" : "s")
-				)
-			)
-		);
-
 		GameStateManager.updatePartialGameState({
 			players: players,
 			screen: allPicked ? "table" : "characterSelect",
 		});
+
+		return waitingOnPlayers;
 	}
 
-	public static getGameState() {
+	public static dealCards(playerIndex: number, cardCount: number) {
+		const player = this.gameState.players[playerIndex];
+		PlayerUtils.dealCards(player, cardCount);
+
+		this.initializePlayer(playerIndex, player);
+	}
+
+	public static takeTurn(playerIndex: number, boughtCard: CardType): void {
+		const { players } = this.gameState;
+
+		const player = players[playerIndex];
+		PlayerUtils.discardHand(player);
+		PlayerUtils.addCardToDiscard(player, boughtCard);
+
+		let { whosTurn } = this.gameState;
+		whosTurn = (whosTurn + 1) % this.gameState.playerCount;
+
+		GameStateManager.updatePartialGameState({
+			players: players,
+			whosTurn: whosTurn,
+		});
+	}
+
+	public static getGameState(): GameState {
 		return this.gameState;
+	}
+
+	public static getPlayer(playerIndex: number): PlayerState {
+		return this.gameState.players[playerIndex];
+	}
+
+	public static isPlayersTurn(playerIndex: number): boolean {
+		return this.gameState.whosTurn === playerIndex;
 	}
 };

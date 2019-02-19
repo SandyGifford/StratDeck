@@ -5,8 +5,8 @@ export default {
 		gameReset: "game state reset",
 	},
 	toServer: {
-		setPlayerState: "set player state",
-		updateGameState: "update game state",
+		initializePlayer: "initialize player state",
 		resetGame: "reset game",
+		takeTurn: "take turn",
 	},
 };

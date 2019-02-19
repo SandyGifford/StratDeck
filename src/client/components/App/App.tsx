@@ -99,6 +99,7 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	};
 
 	private gameStateUpdated = (gameState: GameState): void => {
+		console.log("game state updated", gameState);
 		this.setState({
 			gameState: gameState,
 		});

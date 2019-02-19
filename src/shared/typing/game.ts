@@ -4,6 +4,7 @@ export default interface GameState {
 	screen: GameScreen;
 	players: PlayerState[];
 	playerCount: number;
+	playerReadyState: boolean[];
 	whosTurn: number;
 }
 
