@@ -1,4 +1,6 @@
 .Hand {
+	white-space: nowrap;
+	
 	&__card {
 		display: inline-block;
 		margin-left: -2em;

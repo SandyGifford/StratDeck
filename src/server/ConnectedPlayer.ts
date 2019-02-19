@@ -1,6 +1,9 @@
 import GameStateManager from "./GameStateManager";
 import emitTypes from "@shared/emitTypes";
 import { PlayerState, CardType } from "@typings/game";
+import ArrayUtils from "@utils/ArrayUtils";
+import LoopUtils from "@utils/LoopUtils";
+import PlayerUtils from "@utils/PlayerUtils";
 
 const { fromServer, toServer } = emitTypes;
 
@@ -35,8 +38,8 @@ export default class ConnectedPlayer {
 		GameStateManager.takeTurn(this.playerIndex, boughtCard);
 	};
 
-	private initialize = (playerIndex: number, playerState: PlayerState) => {
-		console.log(`initializing player ${playerIndex + 1}`, playerState);
+	private initialize = (playerIndex: number, partialPlayerState: Pick<PlayerState, "chars" | "name">) => {
+		console.log(`initializing player ${playerIndex + 1}`, partialPlayerState);
 
 		const player = GameStateManager.getPlayer(playerIndex);
 
@@ -46,10 +49,23 @@ export default class ConnectedPlayer {
 		}
 
 		this.playerIndex = playerIndex;
+
+		const playerState: PlayerState = {
+			...partialPlayerState,
+			hand: [],
+			deck: ArrayUtils.shuffle([
+				...this.makeCards(6, "hand"),
+				...this.makeCards(4, "weapon")
+			]),
+			discard: [],
+		};
+
+		PlayerUtils.dealCards(playerState, 5);
+
 		const waitinOnCount = GameStateManager.initializePlayer(playerIndex, playerState);
 
 		console.log(
-			`Player ${this.getPlayerNumber()} (${playerState.name}) has selected characters, ` + (
+			`Player ${this.getPlayerNumber()} (${partialPlayerState.name}) has selected characters, ` + (
 				waitinOnCount === 0 ? "all players ready" : (
 					`still waiting on ${waitinOnCount} player` + (waitinOnCount === 1 ? "" : "s")
 				)
@@ -67,5 +83,9 @@ export default class ConnectedPlayer {
 
 	private getAddress(): string {
 		return this.socket.handshake.address;
+	}
+
+	private makeCards(num: number, type: CardType): CardType[] {
+		return LoopUtils.mapTimes(num, () => type);
 	}
 }

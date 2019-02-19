@@ -22,7 +22,7 @@ export default class Hand extends React.PureComponent<HandProps, HandState> {
 		return (
 			<div className="Hand">
 				{
-					cards.map((cardType, index) => <div key={index} className="Hand__Card">
+					cards.map((cardType, index) => <div key={index} className="Hand__card">
 						<Card
 							type={cardType}
 							facedown={facedown}

@@ -13,20 +13,17 @@
 	}
 
 	&__player {
+		white-space: nowrap;
+		font-size: 1vw;
+
 		&__hand {
-			position: absolute;
-			right: 50%;
+			display: inline-block;
+			bottom: 1em;
+			margin-right: 1em;
 		}
 
 		&__decks {
-			&__deck {
-				display: inline-block;
-				margin-left: 1em;
-			}
-		}
-
-		&__hand {
-			bottom: 1em;
+			display: inline-block;
 		}
 	}
 

@@ -8,9 +8,6 @@ import WeaponDice from "@components/WeaponDice/WeaponDice";
 import AbilityStatItem from "./subComponents/AbilityStatItem/AbilityStatItem";
 import SimpleButton from "@components/SimpleButton/SimpleButton";
 import ServerConnect from "@client/connection/ServerConnect";
-import ArrayUtils from "@utils/ArrayUtils";
-import LoopUtils from "@utils/LoopUtils";
-import { CardType } from "@typings/game";
 
 
 export interface CharacterSelectProps {
@@ -150,16 +147,6 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 		ServerConnect.initializePlayer(playerIndex, {
 			chars: selected.map(charIndex => characters[charIndex]) as PlayerCharacters,
 			name: playerName,
-			hand: [],
-			deck: ArrayUtils.shuffle([
-				...this.makeCards(6, "hand"),
-				...this.makeCards(4, "weapon")
-			]),
-			discard: [],
 		});
 	};
-
-	private makeCards(num: number, type: CardType): CardType[] {
-		return LoopUtils.mapTimes(num, () => type);
-	}
 }

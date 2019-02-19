@@ -6,7 +6,14 @@ import { TablePlayerCharacters } from "@typings/character";
 
 export default class PlayerUtils {
 	public static dealCards(player: PlayerState, cardCount: number): void {
-		DeckUtils.dealCardsToDeck(player.deck, player.hand, cardCount);
+		const deckSize = player.deck.length;
+		if (cardCount > deckSize) {
+			DeckUtils.dealCardsToDeck(player.deck, player.hand, deckSize);
+			this.shuffleDiscardToDeck(player);
+			DeckUtils.dealCardsToDeck(player.deck, player.hand, cardCount - deckSize)
+		} else {
+			DeckUtils.dealCardsToDeck(player.deck, player.hand, cardCount);
+		}
 	}
 
 	public static discardHand(player: PlayerState): void {

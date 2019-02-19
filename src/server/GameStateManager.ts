@@ -71,6 +71,7 @@ export default class GameStateManager {
 		const player = players[playerIndex];
 		PlayerUtils.discardHand(player);
 		PlayerUtils.addCardToDiscard(player, boughtCard);
+		PlayerUtils.dealCards(player, 5);
 
 		let { whosTurn } = this.gameState;
 		whosTurn = (whosTurn + 1) % this.gameState.playerCount;
