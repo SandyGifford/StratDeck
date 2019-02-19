@@ -11,10 +11,7 @@ export type GameResetEventHandler = (gameState: GameState) => void;
 
 export default class ServerConnect {
 	public static initializePlayer = (playerIndex: number, playerState: PlayerState): void => {
-		socket.emit(toServer.initializePlayer, {
-			playerIndex: playerIndex,
-			playerState: playerState,
-		});
+		socket.emit(toServer.initializePlayer, playerIndex, playerState);
 	};
 
 	public static resetGame = (playerCount: number): void => {

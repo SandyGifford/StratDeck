@@ -13,6 +13,8 @@ import ServerConnect from "@client/connection/ServerConnect";
 
 export interface AppProps {
 	initialGameState: GameState;
+	boardWidth: number;
+	boardHeight: number;
 }
 export interface AppState {
 	gameState: GameState;
@@ -52,6 +54,7 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	}
 
 	private renderScreen(): React.ReactNode {
+		const { boardHeight, boardWidth } = this.props;
 		const { myPlayerIndex, selectingPlayer, gameState } = this.state;
 		const { screen, players, playerCount } = gameState;
 
@@ -76,15 +79,14 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 			switch (screen) {
 				case "characterSelect":
 					return <CharacterSelect
+						boardWidth={boardWidth}
+						boardHeight={boardHeight}
 						playerIndex={myPlayerIndex}
 						alreadySelected={!!players[myPlayerIndex]} />;
 				case "table":
 					return <PlayTable
-						playersInit={players}
 						gameState={gameState}
-						myPlayerIndex={myPlayerIndex}
-						boardWidth={30}
-						boardHeight={20} />;
+						myPlayerIndex={myPlayerIndex} />;
 				default:
 					return null; // should never be hit
 			}
@@ -99,7 +101,6 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	};
 
 	private gameStateUpdated = (gameState: GameState): void => {
-		console.log("game state updated", gameState);
 		this.setState({
 			gameState: gameState,
 		});

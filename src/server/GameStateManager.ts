@@ -47,9 +47,9 @@ export default class GameStateManager {
 	}
 
 	public static initializePlayer(playerIndex: number, playerState: PlayerState): number {
-		const { players } = this.gameState;
+		const { players, boardWidth, boardHeight } = this.gameState;
 
-		players[playerIndex] = playerState;
+		players[playerIndex] = PlayerUtils.makeTablePlayer(playerState, playerIndex, boardWidth, boardHeight);
 
 		const waitingOnPlayers = players.reduce((playerCount, player) => {
 			if (player) playerCount--;
@@ -65,13 +65,6 @@ export default class GameStateManager {
 		return waitingOnPlayers;
 	}
 
-	public static dealCards(playerIndex: number, cardCount: number) {
-		const player = this.gameState.players[playerIndex];
-		PlayerUtils.dealCards(player, cardCount);
-
-		this.initializePlayer(playerIndex, player);
-	}
-
 	public static takeTurn(playerIndex: number, boughtCard: CardType): void {
 		const { players } = this.gameState;
 
@@ -81,6 +74,8 @@ export default class GameStateManager {
 
 		let { whosTurn } = this.gameState;
 		whosTurn = (whosTurn + 1) % this.gameState.playerCount;
+
+		console.log(player, players);
 
 		GameStateManager.updatePartialGameState({
 			players: players,

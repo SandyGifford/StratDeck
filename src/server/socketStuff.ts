@@ -1,9 +1,8 @@
 import { Server } from "http";
 
-import { CardType } from "@typings/game";
+import { CardType, PlayerState } from "@typings/game";
 import GameStateManager from "@server/gameStateManager";
 import emitTypes from "@shared/emitTypes";
-import { SetPlayerStateMessage } from "@typings/connection";
 
 const { fromServer, toServer } = emitTypes;
 
@@ -20,10 +19,6 @@ export default (server: Server) => {
 
 		let connectedPlayerIndex: number = null;
 
-		// function getConnectedPlayer(): PlayerState {
-		// 	return GameStateManager.getPlayer(connectedPlayerIndex);
-		// }
-
 		function isMyTurn(): boolean {
 			return GameStateManager.isPlayersTurn(connectedPlayerIndex);
 		}
@@ -36,9 +31,8 @@ export default (server: Server) => {
 			GameStateManager.resetGame(playerCount);
 		});
 
-		socket.on(toServer.initializePlayer, (playerInfo: SetPlayerStateMessage) => {
-			console.log("initializing player state", playerInfo);
-			const { playerIndex, playerState } = playerInfo;
+		socket.on(toServer.initializePlayer, (playerIndex: number, playerState: PlayerState) => {
+			console.log(`initializing player ${playerIndex + 1}`, playerState);
 
 			const player = GameStateManager.getPlayer(playerIndex);
 

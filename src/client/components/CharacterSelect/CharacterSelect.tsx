@@ -16,6 +16,8 @@ import { CardType } from "@typings/game";
 export interface CharacterSelectProps {
 	playerIndex: number;
 	alreadySelected: boolean;
+	boardWidth: number;
+	boardHeight: number;
 }
 
 export interface CharacterSelectState {

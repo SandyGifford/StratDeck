@@ -1,8 +1,7 @@
 import "./PlayTable.style";
 
 import * as React from "react";
-import GameState, { PlayerState, TablePlayerState } from "@typings/game";
-import { TablePlayerCharacters } from "@typings/character";
+import GameState from "@typings/game";
 import TableDrawer from "@components/TableDrawer/TableDrawer";
 import Rotado from "@components/Rotado/Rotado";
 import CardPool from "./subComponents/CardPool/CardPool";
@@ -13,21 +12,16 @@ import SimpleSelect, { SimpleSelectMakeLabel, SimpleSelectChangedHandler } from 
 import LoopUtils from "@utils/LoopUtils";
 import SimpleButton from "@components/SimpleButton/SimpleButton";
 import PopMessenger from "@components/PopMessage/PopMessenger";
-import { Vector2 } from "@typings/vector";
 import ServerConnect from "@client/connection/ServerConnect";
 
 export type PlayPhase = "buy" | "play";
 export type PlayMode = "move" | "use";
 
 export interface PlayTableProps {
-	playersInit: PlayerState[];
 	gameState: GameState;
-	boardWidth: number;
-	boardHeight: number;
 	myPlayerIndex: number;
 }
 export interface PlayTableState {
-	players: TablePlayerState[];
 	newGamePlayerCount: number;
 	playPhase: PlayPhase;
 	playMode: PlayMode;
@@ -37,24 +31,8 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 	constructor(props: PlayTableProps) {
 		super(props);
 
-		const { playersInit } = props;
-
-		const players: TablePlayerState[] = playersInit.map((player, p) => {
-			const charLocs = this.getStartLocations(p);
-
-			return {
-				...player,
-				chars: player.chars.map((char, c) => ({
-					...char,
-					...(charLocs[c]),
-					maxHP: char.hp,
-				})) as TablePlayerCharacters,
-			};
-		});
-
 		this.state = {
-			players: players,
-			newGamePlayerCount: props.playersInit.length,
+			newGamePlayerCount: props.gameState.playerCount,
 			playPhase: "buy",
 			playMode: null,
 		};
@@ -69,8 +47,9 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 	}
 
 	public render(): React.ReactNode {
-		const { boardWidth, boardHeight, myPlayerIndex } = this.props;
-		const { players, newGamePlayerCount, playPhase } = this.state;
+		const { myPlayerIndex, gameState } = this.props;
+		const { newGamePlayerCount, playPhase } = this.state;
+		const { boardWidth, boardHeight, players } = gameState
 
 		const me = players[myPlayerIndex];
 
@@ -160,39 +139,6 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 
 	private isMyTurn(): boolean {
 		return this.props.gameState.whosTurn === this.props.myPlayerIndex;
-	}
-
-	private getStartLocations(playerIndex: number): [Vector2, Vector2, Vector2] {
-		const { boardHeight, boardWidth } = this.props;
-
-		switch (playerIndex) {
-			case 0:
-				return [
-					{ x: 0, y: 0 },
-					{ x: 0, y: 1 },
-					{ x: 0, y: 2 },
-				];
-			case 1:
-				return [
-					{ x: boardWidth - 1, y: boardHeight - 1 },
-					{ x: boardWidth - 1, y: boardHeight - 2 },
-					{ x: boardWidth - 1, y: boardHeight - 3 },
-				];
-			case 2:
-				return [
-					{ x: 0, y: boardHeight - 1 },
-					{ x: 1, y: boardHeight - 1 },
-					{ x: 2, y: boardHeight - 1 },
-				];
-			case 3:
-				return [
-					{ x: boardWidth - 1, y: 0 },
-					{ x: boardWidth - 2, y: 0 },
-					{ x: boardWidth - 3, y: 0 },
-				];
-			default:
-				throw `Board does not support this many players.  Requested start location for player ${playerIndex + 1},  max player count is 2`;
-		}
 	}
 
 	private makeNewPlayerCountLabel: SimpleSelectMakeLabel<number> = playerNumber => {

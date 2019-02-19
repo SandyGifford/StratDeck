@@ -18,7 +18,10 @@ function render(gameState: GameState): void {
 	}
 
 	ReactDOM.render(
-		<App initialGameState={gameState} />,
+		<App
+			boardHeight={20}
+			boardWidth={30}
+			initialGameState={gameState} />,
 		target
 	);
 }

@@ -7,6 +7,8 @@ const initialGameState = (playerCount: number): GameState => ({
 	screen: "characterSelect",
 	playerCount: playerCount,
 	whosTurn: 0,
+	boardHeight: 20,
+	boardWidth: 30,
 });
 
 export default initialGameState;

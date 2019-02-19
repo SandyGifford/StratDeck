@@ -2,10 +2,12 @@ import { PlayerCharacters, TablePlayerCharacters } from "@typings/character";
 
 export default interface GameState {
 	screen: GameScreen;
-	players: PlayerState[];
+	players: TablePlayerState[];
 	playerCount: number;
 	playerReadyState: boolean[];
 	whosTurn: number;
+	boardWidth: number;
+	boardHeight: number;
 }
 
 export type CardType = "hand" | "weapon" | "ability1" | "ability2" | "ability3";
