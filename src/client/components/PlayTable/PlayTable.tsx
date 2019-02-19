@@ -69,7 +69,7 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 						height={boardHeight}
 						players={players} />
 				</div>
-				<TableDrawer side="bottom" forceState="open">
+				<TableDrawer side="bottom">
 					<div className="PlayTable__player">
 						<div className="PlayTable__player__hand">
 							<Hand
