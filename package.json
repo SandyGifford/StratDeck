@@ -32,7 +32,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
-    "start": "node ./dist/build/server.js",
+    "start": "npm run build; node ./dist/build/server.js;",
     "watchClient": "webpack --watch --config webpack.client.config.js",
     "watchServer": "webpack --watch --config webpack.server.config.js",
     "build": "webpack",
