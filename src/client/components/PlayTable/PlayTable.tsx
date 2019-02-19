@@ -2,9 +2,9 @@ import "./PlayTable.style";
 
 import * as React from "react";
 import GameState from "@typings/game";
-import TableDrawer from "@components/TableDrawer/TableDrawer";
+import TableDrawer, { TableDrawerOpenState } from "@components/TableDrawer/TableDrawer";
 import Rotado from "@components/Rotado/Rotado";
-import CardPool from "./subComponents/CardPool/CardPool";
+import CardPool, { CardPoolClicked } from "./subComponents/CardPool/CardPool";
 import Board from "./subComponents/Board/Board";
 import Hand from "./subComponents/Hand/Hand";
 import PlayerDecks from "./subComponents/PlayerDecks/PlayerDecks";
@@ -52,13 +52,14 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 		const { boardWidth, boardHeight, players } = gameState
 
 		const me = players[myPlayerIndex];
+		const poolOpen: TableDrawerOpenState = this.isMyTurn() && playPhase === "buy" ? "open" : null;
 
 		return (
 			<div className="PlayTable">
-				<TableDrawer side="left" forceState={this.isMyTurn() && playPhase === "buy" ? "open" : null}>
+				<TableDrawer side="left" forceState={poolOpen}>
 					<Rotado angle={-90} watchResize={true}>
 						<div className="PlayTable__cardPool">
-							<CardPool />
+							<CardPool onClick={this.poolClicked} />
 						</div>
 					</Rotado>
 				</TableDrawer>
@@ -68,7 +69,7 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 						height={boardHeight}
 						players={players} />
 				</div>
-				<TableDrawer side="bottom">
+				<TableDrawer side="bottom" forceState="open">
 					<div className="PlayTable__player">
 						<div className="PlayTable__player__hand">
 							<Hand
@@ -116,6 +117,12 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 			</div>
 		)
 	}
+
+	private poolClicked: CardPoolClicked = (cardType) => {
+		if (this.isMyTurn()) {
+			ServerConnect.takeTurn(cardType);
+		}
+	};
 
 	private updateMessage(prevState?: Partial<PlayTableState>): void {
 		const { gameState } = this.props;
