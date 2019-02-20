@@ -111,8 +111,7 @@ class ConnectedPlayer {
     constructor(socket) {
         this.socket = socket;
         this.resetGame = (playerCount) => {
-            const playerNumber = this.getPlayerNumber();
-            console.log(`${this.getAddress()} ${playerNumber ? `(player ${playerNumber}) ` : ""}reset the game with ${playerCount} player${playerCount === 1 ? "" : "s"}`);
+            console.log(`${this.getPlayerDisplayText()} reset the game with ${playerCount} player${playerCount === 1 ? "" : "s"}`);
             _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].resetGame(playerCount);
         };
         this.takeTurn = (boughtCard) => {
@@ -131,6 +130,7 @@ class ConnectedPlayer {
                 return;
             }
             this.playerIndex = playerIndex;
+            this.playerName = partialPlayerState.name;
             const playerState = Object.assign({}, partialPlayerState, { hand: [], deck: _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_2__["default"].shuffle([
                     ...this.makeCards(6, "hand"),
                     ...this.makeCards(4, "weapon")
@@ -139,7 +139,7 @@ class ConnectedPlayer {
             const waitinOnCount = _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].initializePlayer(playerIndex, playerState);
             console.log(`Player ${this.getPlayerNumber()} (${partialPlayerState.name}) has selected characters, ` + (waitinOnCount === 0 ? "all players ready" : (`still waiting on ${waitinOnCount} player` + (waitinOnCount === 1 ? "" : "s"))));
         };
-        console.log(`a user connected (${this.getAddress()})`);
+        console.log(`${this.getPlayerDisplayText()} connected`);
         socket.emit(fromServer.playerConnected, _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].getGameState());
         socket.on(toServer.resetGame, this.resetGame);
         socket.on(toServer.initializePlayer, this.initialize);
@@ -150,6 +150,13 @@ class ConnectedPlayer {
     }
     isMyTurn() {
         return _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].isPlayersTurn(this.playerIndex);
+    }
+    getPlayerDisplayText() {
+        return this.getNumberedPlayerText() + `(${typeof this.playerName === "string" ? `${this.playerName} @ ` : ""}${this.getAddress()})`;
+    }
+    getNumberedPlayerText(noTrailingSpace) {
+        const playerNumber = this.getPlayerNumber();
+        return playerNumber ? `player ${playerNumber}${noTrailingSpace ? "" : " "}` : "";
     }
     getAddress() {
         return this.socket.handshake.address;

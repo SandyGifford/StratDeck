@@ -9,9 +9,10 @@ const { fromServer, toServer } = emitTypes;
 
 export default class ConnectedPlayer {
 	private playerIndex: number;
+	private playerName: string;
 
 	constructor(private socket: SocketIO.Socket) {
-		console.log(`a user connected (${this.getAddress()})`);
+		console.log(`${this.getPlayerDisplayText()} connected`);
 
 		socket.emit(fromServer.playerConnected, GameStateManager.getGameState());
 
@@ -21,8 +22,7 @@ export default class ConnectedPlayer {
 	}
 
 	private resetGame = (playerCount: number) => {
-		const playerNumber = this.getPlayerNumber();
-		console.log(`${this.getAddress()} ${playerNumber ? `(player ${playerNumber}) ` : ""}reset the game with ${playerCount} player${playerCount === 1 ? "" : "s"}`);
+		console.log(`${this.getPlayerDisplayText()} reset the game with ${playerCount} player${playerCount === 1 ? "" : "s"}`);
 
 		GameStateManager.resetGame(playerCount);
 	};
@@ -49,6 +49,7 @@ export default class ConnectedPlayer {
 		}
 
 		this.playerIndex = playerIndex;
+		this.playerName = partialPlayerState.name;
 
 		const playerState: PlayerState = {
 			...partialPlayerState,
@@ -79,6 +80,15 @@ export default class ConnectedPlayer {
 
 	private isMyTurn(): boolean {
 		return GameStateManager.isPlayersTurn(this.playerIndex);
+	}
+
+	private getPlayerDisplayText(): string {
+		return this.getNumberedPlayerText() + `(${typeof this.playerName === "string" ? `${this.playerName} @ ` : ""}${this.getAddress()})`
+	}
+
+	private getNumberedPlayerText(noTrailingSpace?: boolean): string {
+		const playerNumber = this.getPlayerNumber();
+		return playerNumber ? `player ${playerNumber}${noTrailingSpace ? "" : " "}` : ""
 	}
 
 	private getAddress(): string {
