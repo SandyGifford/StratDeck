@@ -70,9 +70,7 @@ export default class GameStateManager {
 		const { players } = this.gameState;
 
 		const player = players[playerIndex];
-		PlayerUtils.discardHand(player);
 		PlayerUtils.addCardToDiscard(player, boughtCard);
-		PlayerUtils.dealCards(player, 5);
 
 		GameStateManager.updatePartialGameState({
 			players: players,
@@ -85,9 +83,12 @@ export default class GameStateManager {
 
 		const player = players[playerIndex];
 		PlayerUtils.moveChars(player, moves);
+		PlayerUtils.discardHand(player);
+		PlayerUtils.dealCards(player, 5);
 
 		let { whosTurn } = this.gameState;
 		whosTurn = (whosTurn + 1) % this.gameState.playerCount;
+
 
 		GameStateManager.updatePartialGameState({
 			players: players,

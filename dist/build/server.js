@@ -250,9 +250,7 @@ class GameStateManager {
     static buyCard(playerIndex, boughtCard) {
         const { players } = this.gameState;
         const player = players[playerIndex];
-        _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].discardHand(player);
         _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].addCardToDiscard(player, boughtCard);
-        _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].dealCards(player, 5);
         GameStateManager.updatePartialGameState({
             players: players,
             playPhase: "move",
@@ -262,6 +260,8 @@ class GameStateManager {
         const { players } = this.gameState;
         const player = players[playerIndex];
         _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].moveChars(player, moves);
+        _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].discardHand(player);
+        _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].dealCards(player, 5);
         let { whosTurn } = this.gameState;
         whosTurn = (whosTurn + 1) % this.gameState.playerCount;
         GameStateManager.updatePartialGameState({
