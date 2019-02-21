@@ -1,11 +1,11 @@
 import "./AbilityStatItem.style";
 
 import * as React from "react";
-import { CharacterAbility } from "@typings/character";
+import { ImmutableCharacterAbility } from "@typings/character";
 import AbilityViewer from "@components/AbilityViewer/AbilityViewer";
 
 export interface AbilityStatItemProps {
-	ability: CharacterAbility;
+	ability: ImmutableCharacterAbility;
 }
 export interface AbilityStatItemState {
 	viewerVisible: boolean;
@@ -29,7 +29,7 @@ export default class AbilityStatItem extends React.PureComponent<AbilityStatItem
 
 		return (
 			<div className="AbilityStatItem" onMouseEnter={this.mouseOver} onMouseLeave={this.mouseOut}>
-				<div className="AbilityStatItem__name">{ability.name}</div>
+				<div className="AbilityStatItem__name">{ability.get("name")}</div>
 				<div className="AbilityStatItem__viewer" style={{
 					left: viewerX,
 					top: viewerY,

@@ -1,4 +1,5 @@
 import DiceRoll from "@typings/dice";
+import Immutalizer from "./immutalizer";
 
 export default interface CharacterDef {
 	name: string;
@@ -11,6 +12,8 @@ export default interface CharacterDef {
 	abilities: CharacterAbilities;
 	color: string;
 }
+
+export type CharacterDefs = CharacterDef[];
 
 export interface CharacterWeapon {
 	dmg: DiceRoll;
@@ -36,3 +39,18 @@ export interface TableCharacterDef extends CharacterDef {
 	y: number;
 	maxHP: number;
 }
+
+
+/**
+ * Immutable interfaces
+ */
+
+export type ImmutableCharacterDef = Immutalizer<CharacterDef>;
+export type ImmutableCharacterDefs = Immutalizer<CharacterDefs>;
+export type ImmutableCharacterWeapon = Immutalizer<CharacterWeapon>;
+export type ImmutableCharacterAbility = Immutalizer<CharacterAbility>;
+
+export type ImmutablePlayerCharacters = Immutalizer<PlayerCharacters>;
+export type ImmutableTablePlayerCharacters = Immutalizer<TablePlayerCharacters>;
+
+export type ImmutableTableCharacterDef = Immutalizer<TableCharacterDef>;

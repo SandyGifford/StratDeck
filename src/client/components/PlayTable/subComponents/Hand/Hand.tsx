@@ -1,11 +1,11 @@
 import "./Hand.style";
 
 import * as React from "react";
-import { CardType } from "@typings/game";
+import { ImmutableCardTypes } from "@typings/game";
 import Card from "../Card/Card";
 
 export interface HandProps {
-	cards: CardType[];
+	cards: ImmutableCardTypes;
 	facedown: boolean;
 }
 export interface HandState { }

@@ -1,10 +1,10 @@
 import "./WeaponDice.style";
 
 import * as React from "react";
-import { CharacterWeapon } from "@typings/character";
+import { ImmutableCharacterWeapon } from "@typings/character";
 
 export interface WeaponDiceProps {
-	weapon: CharacterWeapon;
+	weapon: ImmutableCharacterWeapon;
 }
 export interface WeaponDiceState { }
 
@@ -16,8 +16,10 @@ export default class WeaponDice extends React.PureComponent<WeaponDiceProps, Wea
 
 	public render(): React.ReactNode {
 		const { weapon } = this.props;
-		const { count, sides } = weapon.dmg;
-		const { hit } = weapon;
+		const dmg = weapon.get("dmg");
+		const hit = weapon.get("hit");
+		const count = dmg.get("count");
+		const sides = dmg.get("sides");
 
 		return (
 			<span className="WeaponDice">

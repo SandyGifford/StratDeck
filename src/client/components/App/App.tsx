@@ -1,7 +1,7 @@
 import "./App.style";
 
 import * as React from "react";
-import GameState from "@typings/game";
+import { ImmutableGameState } from "@typings/game";
 import PopMessage from "@components/PopMessage/PopMessage";
 import SimpleSelect, { SimpleSelectMakeLabel, SimpleSelectChangedHandler } from "@components/SimpleSelect/SimpleSelect";
 import LoopUtils from "@utils/LoopUtils";
@@ -12,12 +12,12 @@ import ServerConnect from "@client/connection/ServerConnect";
 
 
 export interface AppProps {
-	initialGameState: GameState;
+	initialGameState: ImmutableGameState;
 	boardWidth: number;
 	boardHeight: number;
 }
 export interface AppState {
-	gameState: GameState;
+	gameState: ImmutableGameState;
 	myPlayerIndex: number;
 	selectingPlayer: boolean;
 }
@@ -56,7 +56,9 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	private renderScreen(): React.ReactNode {
 		const { boardHeight, boardWidth } = this.props;
 		const { myPlayerIndex, selectingPlayer, gameState } = this.state;
-		const { screen, players, playerCount } = gameState;
+		const screen = gameState.get("screen");
+		const players = gameState.get("players");
+		const playerCount = gameState.get("playerCount");
 
 		if (selectingPlayer) {
 			return <div className="App_playerPicker">
@@ -82,7 +84,7 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 						boardWidth={boardWidth}
 						boardHeight={boardHeight}
 						playerIndex={myPlayerIndex}
-						alreadySelected={!!players[myPlayerIndex]} />;
+						alreadySelected={!!players.get(myPlayerIndex)} />;
 				case "table":
 					return <PlayTable
 						gameState={gameState}
@@ -93,14 +95,14 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 		}
 	}
 
-	private gameReset = (gameState: GameState): void => {
+	private gameReset = (gameState: ImmutableGameState): void => {
 		this.setState({
 			...this.getDefaultState(),
 			gameState: gameState,
 		});
 	};
 
-	private gameStateUpdated = (gameState: GameState): void => {
+	private gameStateUpdated = (gameState: ImmutableGameState): void => {
 		this.setState({
 			gameState: gameState,
 		});
@@ -119,8 +121,11 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	}
 
 	private makeSelectPlayerLabel: SimpleSelectMakeLabel<number> = playerIndex => {
-		const player = this.state.gameState.players[playerIndex];
-		if (player && player.name) return player.name;
+		const player = this.state.gameState.get("players").get(playerIndex);
+		if (player) {
+			return player.get("name");
+		}
+
 		return `player ${playerIndex + 1}`;
 	};
 

@@ -1,15 +1,15 @@
 import "./Board.style";
 
 import * as React from "react";
-import { TablePlayerState } from "@typings/game";
+import { ImmutableTablePlayerStates } from "@typings/game";
 import LoopUtils from "@utils/LoopUtils";
-import { TableCharacterDef } from "@typings/character";
+import { ImmutableTableCharacterDef } from "@typings/character";
 import BoardSpace from "../BoardSpace/BoardSpace";
 
 export interface BoardProps {
 	width: number;
 	height: number;
-	players: TablePlayerState[];
+	players: ImmutableTablePlayerStates;
 }
 export interface BoardState { }
 
@@ -31,17 +31,17 @@ export default class Board extends React.PureComponent<BoardProps, BoardState> {
 					LoopUtils.mapTimes(height, r => {
 						return LoopUtils.mapTimes(width, c => {
 
-							let charOnSpot: TableCharacterDef;
+							let charOnSpot: ImmutableTableCharacterDef;
 
 							players.every(player => {
-								return player.chars.every(char => {
-									const found = char.x === c && char.y === r;
+								return player.get("chars").every(char => {
+									const found = char.get("x") === c && char.get("y") === r;
 									if (found) charOnSpot = char;
 									return !found;
 								});
 							});
 
-							const spotColor = charOnSpot ? charOnSpot.color : null;
+							const spotColor = charOnSpot ? charOnSpot.get("color") : null;
 
 							return <BoardSpace x={c} y={r} key={`${c}-${r}`} playerColor={spotColor} />
 						})

@@ -3,7 +3,7 @@ import * as  ReactDOM from "react-dom";
 
 import "./index.style";
 import ServerConnect from "@client/connection/ServerConnect";
-import GameState from "@typings/game";
+import { ImmutableGameState } from "@typings/game";
 import App from "@components/App/App";
 
 ServerConnect.addConnectedListener(render);
@@ -11,8 +11,8 @@ ServerConnect.addConnectedListener(render);
 const target = document.createElement("div");
 document.body.appendChild(target);
 
-function render(gameState: GameState): void {
-	if (!gameState) {
+function render(gameState: ImmutableGameState): void {
+	if (gameState.isEmpty()) {
 		ServerConnect.resetGame(2);
 		return;
 	}

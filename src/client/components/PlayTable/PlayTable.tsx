@@ -1,7 +1,7 @@
 import "./PlayTable.style";
 
 import * as React from "react";
-import GameState from "@typings/game";
+import { ImmutableGameState } from "@typings/game";
 import TableDrawer, { TableDrawerOpenState } from "@components/TableDrawer/TableDrawer";
 import Rotado from "@components/Rotado/Rotado";
 import CardPool, { CardPoolClicked } from "./subComponents/CardPool/CardPool";
@@ -15,7 +15,7 @@ import PopMessenger from "@components/PopMessage/PopMessenger";
 import ServerConnect from "@client/connection/ServerConnect";
 
 export interface PlayTableProps {
-	gameState: GameState;
+	gameState: ImmutableGameState;
 	myPlayerIndex: number;
 }
 export interface PlayTableState {
@@ -27,7 +27,7 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 		super(props);
 
 		this.state = {
-			newGamePlayerCount: props.gameState.playerCount,
+			newGamePlayerCount: props.gameState.get("playerCount"),
 		};
 	}
 
@@ -42,9 +42,12 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 	public render(): React.ReactNode {
 		const { myPlayerIndex, gameState } = this.props;
 		const { newGamePlayerCount } = this.state;
-		const { boardWidth, boardHeight, players, playPhase } = gameState
+		const boardWidth = gameState.get("boardWidth");
+		const boardHeight = gameState.get("boardHeight");
+		const players = gameState.get("players");
+		const playPhase = gameState.get("playPhase");
 
-		const me = players[myPlayerIndex];
+		const me = players.get(myPlayerIndex);
 		const poolOpen: TableDrawerOpenState = this.isMyTurn() && playPhase === "buy" ? "open" : null;
 
 		return (
@@ -67,7 +70,7 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 						<div className="PlayTable__player__hand">
 							<Hand
 								facedown={false}
-								cards={me.hand} />
+								cards={me.get("hand")} />
 						</div>
 						<div className="PlayTable__player__decks">
 							<PlayerDecks player={me} />
@@ -82,10 +85,11 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 									players.map((player, index) => {
 										if (index === myPlayerIndex) return null;
 
+										const playerName = player.get("name");
 										const genericLabel = `player ${index + 1}`;
-										const label = genericLabel === player.name ?
+										const label = genericLabel === playerName ?
 											genericLabel :
-											`${player.name} (${genericLabel})`;
+											`${playerName} (${genericLabel})`;
 
 										return <div className="PlayTable__opponentDecks__rot__opp" key={index}>
 											<PlayerDecks
@@ -120,11 +124,15 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 	private updateMessage(prevProps: Partial<PlayTableProps> = {}): void {
 		const { gameState } = this.props;
 		const { gameState: prevGameState } = prevProps;
-		const { whosTurn, players, playPhase } = gameState;
-		const prevPlayPhase = prevGameState ? prevGameState.playPhase : null;
+
+		const whosTurn = gameState.get("whosTurn");
+		const players = gameState.get("players");
+		const playPhase = gameState.get("playPhase");
+
+		const prevPlayPhase = prevGameState ? prevGameState.get("playPhase") : null;
 
 		if (!this.isMyTurn()) {
-			PopMessenger.message(`${players[whosTurn].name}'s turn`);
+			PopMessenger.message(`${players.get(whosTurn).get("name")}'s turn`);
 		} else if (playPhase !== prevPlayPhase) {
 			switch (playPhase) {
 				case "buy":
@@ -138,7 +146,7 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 	}
 
 	private isMyTurn(): boolean {
-		return this.props.gameState.whosTurn === this.props.myPlayerIndex;
+		return this.props.gameState.get("whosTurn") === this.props.myPlayerIndex;
 	}
 
 	private makeNewPlayerCountLabel: SimpleSelectMakeLabel<number> = playerNumber => {

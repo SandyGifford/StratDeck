@@ -2,13 +2,13 @@ import "./DeckDeck.style";
 
 import * as React from "react";
 import { CardClickEventHandler } from "../Card/Card";
-import { CardType } from "@typings/game";
+import { ImmutableCardTypes } from "@typings/game";
 import Deck from "../Deck/Deck";
 
 export interface DeckDeckProps {
 	facedown: boolean;
 	onMouseDown?: CardClickEventHandler;
-	deck: CardType[];
+	deck: ImmutableCardTypes;
 	label?: React.ReactNode;
 	disabled?: boolean;
 }
@@ -25,8 +25,8 @@ export default class DeckDeck extends React.PureComponent<DeckDeckProps, DeckDec
 
 		return (
 			<Deck
-				cardCount={deck.length}
-				topType={deck[deck.length - 1]}
+				cardCount={deck.size}
+				topType={deck.last()}
 				{...otherProps} />
 		)
 	}

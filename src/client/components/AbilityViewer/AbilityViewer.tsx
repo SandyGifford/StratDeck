@@ -1,10 +1,10 @@
 import "./AbilityViewer.style";
 
 import * as React from "react";
-import { CharacterAbility } from "@typings/character";
+import { ImmutableCharacterAbility } from "@typings/character";
 
 export interface AbilityViewerProps {
-	ability: CharacterAbility;
+	ability: ImmutableCharacterAbility;
 }
 export interface AbilityViewerState { }
 
@@ -19,17 +19,17 @@ export default class AbilityViewer extends React.PureComponent<AbilityViewerProp
 
 		return (
 			<div className="AbilityViewer">
-				<div className="AbilityViewer__name">{ability.name}</div>
+				<div className="AbilityViewer__name">{ability.get("name")}</div>
 				<div className="AbilityViewer__content">
-					<div className="AbilityViewer__content__description">{ability.description}</div>
+					<div className="AbilityViewer__content__description">{ability.get("description")}</div>
 					<div className="AbilityViewer__content__stats">
 						<div className="AbilityViewer__content__stats__stat">
 							<div className="AbilityViewer__content__stats__stat__name">use</div>
-							<div className="AbilityViewer__content__stats__stat__value">{ability.use || "action"}</div>
+							<div className="AbilityViewer__content__stats__stat__value">{ability.get("use", "action")}</div>
 						</div>
 						<div className="AbilityViewer__content__stats__stat">
 							<div className="AbilityViewer__content__stats__stat__name">range</div>
-							<div className="AbilityViewer__content__stats__stat__value">{ability.range || "melee"}</div>
+							<div className="AbilityViewer__content__stats__stat__value">{ability.get("range", 0) || "melee"}</div>
 						</div>
 					</div>
 				</div>

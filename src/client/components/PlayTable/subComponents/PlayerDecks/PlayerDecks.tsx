@@ -1,13 +1,13 @@
 import "./PlayerDecks.style";
 
 import * as React from "react";
-import { PlayerState } from "@typings/game";
+import { ImmutablePlayerState } from "@typings/game";
 import { CardClickEventHandler } from "../Card/Card";
 import DeckDeck from "../DeckDeck/DeckDeck";
 
 export interface PlayerDecksProps {
 	label?: React.ReactNode;
-	player: PlayerState;
+	player: ImmutablePlayerState;
 	onDiscardMouseDown?: CardClickEventHandler;
 	onDeckMouseDown?: CardClickEventHandler;
 }
@@ -27,21 +27,22 @@ export default class PlayerDecks extends React.PureComponent<PlayerDecksProps, P
 			label
 		} = this.props;
 
-		const { deck, discard } = player;
+		const deck = player.get("deck");
+		const discard = player.get("discard");
 
 		return (
 			<div className="PlayerDecks">
 				<div className="PlayerDecks__deck">
 					<DeckDeck
 						onMouseDown={onDeckMouseDown}
-						label={`deck (${deck.length})`}
+						label={`deck (${deck.size})`}
 						facedown={true}
 						deck={deck} />
 				</div>
 				<div className="PlayerDecks__discard">
 					<DeckDeck
 						onMouseDown={onDiscardMouseDown}
-						label={`discard (${discard.length})`}
+						label={`discard (${discard.size})`}
 						facedown={false}
 						deck={discard} />
 				</div>

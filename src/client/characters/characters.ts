@@ -1,7 +1,7 @@
-import CharacterDef from "@typings/character";
+import { CharacterDefs, ImmutableCharacterDefs } from "@typings/character";
 import Abilities from "./Abilities";
 
-const characters: CharacterDef[] = [
+const characters: CharacterDefs = [
 	{
 		name: "Boop",
 		color: "red",
@@ -156,4 +156,4 @@ const characters: CharacterDef[] = [
 	},
 ];
 
-export default characters;
+export default Immutable.fromJS(characters) as ImmutableCharacterDefs;

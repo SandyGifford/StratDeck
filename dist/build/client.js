@@ -34541,7 +34541,7 @@ const characters = [
         ],
     },
 ];
-/* harmony default export */ __webpack_exports__["default"] = (characters);
+/* harmony default export */ __webpack_exports__["default"] = (Immutable.fromJS(characters));
 
 
 /***/ }),
@@ -34600,16 +34600,16 @@ class AbilityViewer extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] 
     render() {
         const { ability } = this.props;
         return (react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityViewer" },
-            react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityViewer__name" }, ability.name),
+            react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityViewer__name" }, ability.get("name")),
             react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityViewer__content" },
-                react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityViewer__content__description" }, ability.description),
+                react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityViewer__content__description" }, ability.get("description")),
                 react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityViewer__content__stats" },
                     react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityViewer__content__stats__stat" },
                         react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityViewer__content__stats__stat__name" }, "use"),
-                        react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityViewer__content__stats__stat__value" }, ability.use || "action")),
+                        react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityViewer__content__stats__stat__value" }, ability.get("use", "action"))),
                     react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityViewer__content__stats__stat" },
                         react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityViewer__content__stats__stat__name" }, "range"),
-                        react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityViewer__content__stats__stat__value" }, ability.range || "melee"))))));
+                        react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityViewer__content__stats__stat__value" }, ability.get("range", 0) || "melee"))))));
     }
 }
 
@@ -34688,9 +34688,10 @@ class App extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
             });
         };
         this.makeSelectPlayerLabel = playerIndex => {
-            const player = this.state.gameState.players[playerIndex];
-            if (player && player.name)
-                return player.name;
+            const player = this.state.gameState.get("players").get(playerIndex);
+            if (player) {
+                return player.get("name");
+            }
             return `player ${playerIndex + 1}`;
         };
         this.changeSelectedPlayer = playerIndex => {
@@ -34722,7 +34723,9 @@ class App extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
     renderScreen() {
         const { boardHeight, boardWidth } = this.props;
         const { myPlayerIndex, selectingPlayer, gameState } = this.state;
-        const { screen, players, playerCount } = gameState;
+        const screen = gameState.get("screen");
+        const players = gameState.get("players");
+        const playerCount = gameState.get("playerCount");
         if (selectingPlayer) {
             return react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "App_playerPicker" },
                 react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "App_playerPicker__header" }, "which player are you?"),
@@ -34733,7 +34736,7 @@ class App extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
         else {
             switch (screen) {
                 case "characterSelect":
-                    return react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_components_CharacterSelect_CharacterSelect__WEBPACK_IMPORTED_MODULE_6__["default"], { boardWidth: boardWidth, boardHeight: boardHeight, playerIndex: myPlayerIndex, alreadySelected: !!players[myPlayerIndex] });
+                    return react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_components_CharacterSelect_CharacterSelect__WEBPACK_IMPORTED_MODULE_6__["default"], { boardWidth: boardWidth, boardHeight: boardHeight, playerIndex: myPlayerIndex, alreadySelected: !!players.get(myPlayerIndex) });
                 case "table":
                     return react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_components_PlayTable_PlayTable__WEBPACK_IMPORTED_MODULE_7__["default"], { gameState: gameState, myPlayerIndex: myPlayerIndex });
                 default:
@@ -34824,32 +34827,30 @@ class CharacterSelect extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"
             });
         };
         this.toggleSelect = (index) => {
-            const selected = [...this.state.selected];
+            const { selected } = this.state;
             const selectionSlot = selected.indexOf(index);
             const firstOpen = selected.indexOf(null);
             if (selectionSlot === -1 && firstOpen !== -1) {
-                selected[firstOpen] = index;
                 this.setState({
-                    selected: selected,
+                    selected: selected.set(firstOpen, index),
                 });
             }
             else if (selectionSlot !== -1) {
-                selected[selectionSlot] = null;
                 this.setState({
-                    selected: selected,
+                    selected: selected.set(selectionSlot, null),
                 });
             }
         };
         this.continue = () => {
             const { playerIndex } = this.props;
             const { selected, playerName } = this.state;
-            _client_connection_ServerConnect__WEBPACK_IMPORTED_MODULE_7__["default"].initializePlayer(playerIndex, {
-                chars: selected.map(charIndex => _client_characters_characters__WEBPACK_IMPORTED_MODULE_3__["default"][charIndex]),
+            _client_connection_ServerConnect__WEBPACK_IMPORTED_MODULE_7__["default"].initializePlayer(playerIndex, Immutable.fromJS({
+                chars: selected.map(charIndex => _client_characters_characters__WEBPACK_IMPORTED_MODULE_3__["default"].get(charIndex)),
                 name: playerName,
-            });
+            }));
         };
         this.state = {
-            selected: [0, 1, 2],
+            selected: Immutable.fromJS([0, 1, 2]),
             playerName: `player ${props.playerIndex + 1}`
         };
     }
@@ -34872,23 +34873,23 @@ class CharacterSelect extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"
                 const selectionSlot = selected.indexOf(index);
                 const isSelected = selectionSlot !== -1;
                 return react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "CharacterSelect__characters__character", key: index, onClick: () => this.toggleSelect(index) },
-                    react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "CharacterSelect__characters__character__name" }, char.name),
+                    react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "CharacterSelect__characters__character__name" }, char.get("name")),
                     react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "CharacterSelect__characters__character__stats" },
                         react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_subComponents_CharacterSelectStat_CharacterSelectStat__WEBPACK_IMPORTED_MODULE_2__["default"], { name: "HP" },
-                            react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("span", { className: "CharacterSelect__characters__character__stats__mono" }, char.hp)),
+                            react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("span", { className: "CharacterSelect__characters__character__stats__mono" }, char.get("hp"))),
                         react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_subComponents_CharacterSelectStat_CharacterSelectStat__WEBPACK_IMPORTED_MODULE_2__["default"], { name: "armor" },
-                            react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("span", { className: "CharacterSelect__characters__character__stats__mono" }, char.armor)),
+                            react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("span", { className: "CharacterSelect__characters__character__stats__mono" }, char.get("armor"))),
                         react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_subComponents_CharacterSelectStat_CharacterSelectStat__WEBPACK_IMPORTED_MODULE_2__["default"], { name: "evasion" },
-                            react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("span", { className: "CharacterSelect__characters__character__stats__mono" }, char.evasion)),
+                            react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("span", { className: "CharacterSelect__characters__character__stats__mono" }, char.get("evasion"))),
                         react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_subComponents_CharacterSelectStat_CharacterSelectStat__WEBPACK_IMPORTED_MODULE_2__["default"], { name: "speed" },
-                            react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("span", { className: "CharacterSelect__characters__character__stats__mono" }, char.movement)),
+                            react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("span", { className: "CharacterSelect__characters__character__stats__mono" }, char.get("movement"))),
                         react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_subComponents_CharacterSelectStat_CharacterSelectStat__WEBPACK_IMPORTED_MODULE_2__["default"], { name: "weapon" },
-                            react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_components_WeaponDice_WeaponDice__WEBPACK_IMPORTED_MODULE_4__["default"], { weapon: char.weapon })),
+                            react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_components_WeaponDice_WeaponDice__WEBPACK_IMPORTED_MODULE_4__["default"], { weapon: char.get("weapon") })),
                         react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_subComponents_CharacterSelectStat_CharacterSelectStat__WEBPACK_IMPORTED_MODULE_2__["default"], { name: "hand" },
-                            react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_components_WeaponDice_WeaponDice__WEBPACK_IMPORTED_MODULE_4__["default"], { weapon: char.hand || CharacterSelect.DEFAULT_HAND_DAMAGE })),
-                        react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_subComponents_CharacterSelectStat_CharacterSelectStat__WEBPACK_IMPORTED_MODULE_2__["default"], { name: "abilities" }, char.abilities.map((abil, index) => react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_subComponents_AbilityStatItem_AbilityStatItem__WEBPACK_IMPORTED_MODULE_5__["default"], { ability: abil, key: index })))),
+                            react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_components_WeaponDice_WeaponDice__WEBPACK_IMPORTED_MODULE_4__["default"], { weapon: char.get("hand", CharacterSelect.IMMUTABLE_DEFAULT_HAND_DAMAGE) })),
+                        react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_subComponents_CharacterSelectStat_CharacterSelectStat__WEBPACK_IMPORTED_MODULE_2__["default"], { name: "abilities" }, char.get("abilities").map((abil, index) => react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_subComponents_AbilityStatItem_AbilityStatItem__WEBPACK_IMPORTED_MODULE_5__["default"], { ability: abil, key: index })))),
                     react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "CharacterSelect__characters__character__border", style: {
-                            borderColor: isSelected ? char.color : "transparent",
+                            borderColor: isSelected ? char.get("color") : "transparent",
                         } }));
             })),
             react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "CharacterSelect__controls", key: "controls" },
@@ -34900,6 +34901,7 @@ CharacterSelect.DEFAULT_HAND_DAMAGE = {
     dmg: { sides: 4 },
     hit: 2,
 };
+CharacterSelect.IMMUTABLE_DEFAULT_HAND_DAMAGE = Immutable.fromJS(CharacterSelect.DEFAULT_HAND_DAMAGE);
 
 
 /***/ }),
@@ -34979,7 +34981,7 @@ class AbilityStatItem extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"
         const { ability } = this.props;
         const { viewerVisible, viewerX, viewerY } = this.state;
         return (react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityStatItem", onMouseEnter: this.mouseOver, onMouseLeave: this.mouseOut },
-            react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityStatItem__name" }, ability.name),
+            react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityStatItem__name" }, ability.get("name")),
             react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "AbilityStatItem__viewer", style: {
                     left: viewerX,
                     top: viewerY,
@@ -35141,7 +35143,7 @@ class PlayTable extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
             _client_connection_ServerConnect__WEBPACK_IMPORTED_MODULE_12__["default"].resetGame(this.state.newGamePlayerCount);
         };
         this.state = {
-            newGamePlayerCount: props.gameState.playerCount,
+            newGamePlayerCount: props.gameState.get("playerCount"),
         };
     }
     componentDidUpdate(prevProps) {
@@ -35153,8 +35155,11 @@ class PlayTable extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
     render() {
         const { myPlayerIndex, gameState } = this.props;
         const { newGamePlayerCount } = this.state;
-        const { boardWidth, boardHeight, players, playPhase } = gameState;
-        const me = players[myPlayerIndex];
+        const boardWidth = gameState.get("boardWidth");
+        const boardHeight = gameState.get("boardHeight");
+        const players = gameState.get("players");
+        const playPhase = gameState.get("playPhase");
+        const me = players.get(myPlayerIndex);
         const poolOpen = this.isMyTurn() && playPhase === "buy" ? "open" : null;
         return (react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "PlayTable" },
             react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_components_TableDrawer_TableDrawer__WEBPACK_IMPORTED_MODULE_2__["default"], { side: "left", forceState: poolOpen },
@@ -35166,7 +35171,7 @@ class PlayTable extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
             react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_components_TableDrawer_TableDrawer__WEBPACK_IMPORTED_MODULE_2__["default"], { side: "bottom" },
                 react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "PlayTable__player" },
                     react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "PlayTable__player__hand" },
-                        react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_subComponents_Hand_Hand__WEBPACK_IMPORTED_MODULE_6__["default"], { facedown: false, cards: me.hand })),
+                        react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_subComponents_Hand_Hand__WEBPACK_IMPORTED_MODULE_6__["default"], { facedown: false, cards: me.get("hand") })),
                     react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "PlayTable__player__decks" },
                         react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_subComponents_PlayerDecks_PlayerDecks__WEBPACK_IMPORTED_MODULE_7__["default"], { player: me })))),
             react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_components_TableDrawer_TableDrawer__WEBPACK_IMPORTED_MODULE_2__["default"], { side: "right" },
@@ -35175,10 +35180,11 @@ class PlayTable extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
                         react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "PlayTable__opponentDecks__rot" }, players.map((player, index) => {
                             if (index === myPlayerIndex)
                                 return null;
+                            const playerName = player.get("name");
                             const genericLabel = `player ${index + 1}`;
-                            const label = genericLabel === player.name ?
+                            const label = genericLabel === playerName ?
                                 genericLabel :
-                                `${player.name} (${genericLabel})`;
+                                `${playerName} (${genericLabel})`;
                             return react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "PlayTable__opponentDecks__rot__opp", key: index },
                                 react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_subComponents_PlayerDecks_PlayerDecks__WEBPACK_IMPORTED_MODULE_7__["default"], { label: label, player: player }));
                         }))))),
@@ -35189,10 +35195,12 @@ class PlayTable extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
     updateMessage(prevProps = {}) {
         const { gameState } = this.props;
         const { gameState: prevGameState } = prevProps;
-        const { whosTurn, players, playPhase } = gameState;
-        const prevPlayPhase = prevGameState ? prevGameState.playPhase : null;
+        const whosTurn = gameState.get("whosTurn");
+        const players = gameState.get("players");
+        const playPhase = gameState.get("playPhase");
+        const prevPlayPhase = prevGameState ? prevGameState.get("playPhase") : null;
         if (!this.isMyTurn()) {
-            _components_PopMessage_PopMessenger__WEBPACK_IMPORTED_MODULE_11__["default"].message(`${players[whosTurn].name}'s turn`);
+            _components_PopMessage_PopMessenger__WEBPACK_IMPORTED_MODULE_11__["default"].message(`${players.get(whosTurn).get("name")}'s turn`);
         }
         else if (playPhase !== prevPlayPhase) {
             switch (playPhase) {
@@ -35206,7 +35214,7 @@ class PlayTable extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
         }
     }
     isMyTurn() {
-        return this.props.gameState.whosTurn === this.props.myPlayerIndex;
+        return this.props.gameState.get("whosTurn") === this.props.myPlayerIndex;
     }
 }
 
@@ -35277,14 +35285,14 @@ class Board extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
             return _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_2__["default"].mapTimes(width, c => {
                 let charOnSpot;
                 players.every(player => {
-                    return player.chars.every(char => {
-                        const found = char.x === c && char.y === r;
+                    return player.get("chars").every(char => {
+                        const found = char.get("x") === c && char.get("y") === r;
                         if (found)
                             charOnSpot = char;
                         return !found;
                     });
                 });
-                const spotColor = charOnSpot ? charOnSpot.color : null;
+                const spotColor = charOnSpot ? charOnSpot.get("color") : null;
                 return react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_BoardSpace_BoardSpace__WEBPACK_IMPORTED_MODULE_3__["default"], { x: c, y: r, key: `${c}-${r}`, playerColor: spotColor });
             });
         })));
@@ -35670,7 +35678,7 @@ class DeckDeck extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
     }
     render() {
         const _a = this.props, { deck } = _a, otherProps = __rest(_a, ["deck"]);
-        return (react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_Deck_Deck__WEBPACK_IMPORTED_MODULE_2__["default"], Object.assign({ cardCount: deck.length, topType: deck[deck.length - 1] }, otherProps)));
+        return (react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_Deck_Deck__WEBPACK_IMPORTED_MODULE_2__["default"], Object.assign({ cardCount: deck.size, topType: deck.last() }, otherProps)));
     }
 }
 
@@ -35795,12 +35803,13 @@ class PlayerDecks extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
     }
     render() {
         const { player, onDiscardMouseDown, onDeckMouseDown, label } = this.props;
-        const { deck, discard } = player;
+        const deck = player.get("deck");
+        const discard = player.get("discard");
         return (react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "PlayerDecks" },
             react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "PlayerDecks__deck" },
-                react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_DeckDeck_DeckDeck__WEBPACK_IMPORTED_MODULE_2__["default"], { onMouseDown: onDeckMouseDown, label: `deck (${deck.length})`, facedown: true, deck: deck })),
+                react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_DeckDeck_DeckDeck__WEBPACK_IMPORTED_MODULE_2__["default"], { onMouseDown: onDeckMouseDown, label: `deck (${deck.size})`, facedown: true, deck: deck })),
             react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "PlayerDecks__discard" },
-                react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_DeckDeck_DeckDeck__WEBPACK_IMPORTED_MODULE_2__["default"], { onMouseDown: onDiscardMouseDown, label: `discard (${discard.length})`, facedown: false, deck: discard })),
+                react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_DeckDeck_DeckDeck__WEBPACK_IMPORTED_MODULE_2__["default"], { onMouseDown: onDiscardMouseDown, label: `discard (${discard.size})`, facedown: false, deck: discard })),
             label ?
                 react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "PlayerDecks__label" }, label) : null));
     }
@@ -36356,8 +36365,10 @@ class WeaponDice extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
     }
     render() {
         const { weapon } = this.props;
-        const { count, sides } = weapon.dmg;
-        const { hit } = weapon;
+        const dmg = weapon.get("dmg");
+        const hit = weapon.get("hit");
+        const count = dmg.get("count");
+        const sides = dmg.get("sides");
         return (react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("span", { className: "WeaponDice" },
             react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("span", { className: "WeaponDice__mono" }, count || 1),
             "d",
@@ -36386,14 +36397,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _shared_emitTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @shared/emitTypes */ "./src/shared/emitTypes.ts");
+/* harmony import */ var _utils_EventDelegate__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @utils/EventDelegate */ "./src/shared/utils/EventDelegate.ts");
+
 
 
 const { fromServer, toServer } = _shared_emitTypes__WEBPACK_IMPORTED_MODULE_1__["default"];
 const socket = socket_io_client__WEBPACK_IMPORTED_MODULE_0__();
+const connectedDelegate = new _utils_EventDelegate__WEBPACK_IMPORTED_MODULE_2__["default"]();
+const gameUpdatedDelegate = new _utils_EventDelegate__WEBPACK_IMPORTED_MODULE_2__["default"]();
+const gameResetDelegate = new _utils_EventDelegate__WEBPACK_IMPORTED_MODULE_2__["default"]();
+const onConnected = (gameState) => connectedDelegate.trigger(Immutable.fromJS(gameState));
+const onGameUpdated = (gameState) => gameUpdatedDelegate.trigger(Immutable.fromJS(gameState));
+const onGameReset = (gameState) => gameResetDelegate.trigger(Immutable.fromJS(gameState));
+socket.addEventListener(fromServer.playerConnected, onConnected);
+socket.addEventListener(fromServer.gameStateUpdated, onGameUpdated);
+socket.addEventListener(fromServer.gameReset, onGameReset);
 class ServerConnect {
 }
 ServerConnect.initializePlayer = (playerIndex, playerState) => {
-    socket.emit(toServer.initializePlayer, playerIndex, playerState);
+    socket.emit(toServer.initializePlayer, playerIndex, playerState.toJS());
 };
 ServerConnect.resetGame = (playerCount) => {
     socket.emit(toServer.resetGame, playerCount);
@@ -36402,24 +36424,30 @@ ServerConnect.buyCard = (boughtCard) => {
     socket.emit(toServer.buyCard, boughtCard);
 };
 ServerConnect.moveChars = (moves) => {
-    socket.emit(toServer.moveChars, moves);
+    socket.emit(toServer.moveChars, moves.toJS());
 };
 ServerConnect.addConnectedListener = (listener) => {
+    connectedDelegate.addEventListener(listener);
     socket.addEventListener(fromServer.playerConnected, listener);
 };
 ServerConnect.addGameUpdatedListener = (listener) => {
+    gameUpdatedDelegate.addEventListener(listener);
     socket.addEventListener(fromServer.gameStateUpdated, listener);
 };
 ServerConnect.addGameResetListener = (listener) => {
+    gameResetDelegate.addEventListener(listener);
     socket.addEventListener(fromServer.gameReset, listener);
 };
 ServerConnect.removeConnectedListener = (listener) => {
+    connectedDelegate.removeEventListener(listener);
     socket.removeEventListener(fromServer.playerConnected, listener);
 };
 ServerConnect.removeGameUpdatedListener = (listener) => {
+    gameUpdatedDelegate.removeEventListener(listener);
     socket.removeEventListener(fromServer.gameStateUpdated, listener);
 };
 ServerConnect.removeGameResetListener = (listener) => {
+    gameResetDelegate.removeEventListener(listener);
     socket.removeEventListener(fromServer.gameReset, listener);
 };
 window.SC = ServerConnect;
@@ -36483,7 +36511,7 @@ _client_connection_ServerConnect__WEBPACK_IMPORTED_MODULE_3__["default"].addConn
 const target = document.createElement("div");
 document.body.appendChild(target);
 function render(gameState) {
-    if (!gameState) {
+    if (gameState.isEmpty()) {
         _client_connection_ServerConnect__WEBPACK_IMPORTED_MODULE_3__["default"].resetGame(2);
         return;
     }
