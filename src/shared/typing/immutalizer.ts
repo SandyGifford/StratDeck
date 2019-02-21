@@ -1,10 +1,5 @@
-// import * as Immutable from "immutable";
-
-module Immutable {
-	export type Map<A, B> = any;
-	export type Iterable<A, B> = any;
-	export type List<A> = any;
-};
+///<reference path="../../../node_modules/immutable/dist/immutable.d.ts" />
+import * as Immutable from "immutable";
 
 // TODO: actual logic in Immutable is if the object has a constructor
 export type ImmutablePrimitive = string | number | boolean | symbol | String | Number | Boolean | Symbol | Element;
@@ -26,7 +21,7 @@ export interface ImmutalizerObject<
 	set<PROP_NAME extends MUTABLE_KEYS>(prop: PROP_NAME, value: ImmutablePrimitiveSwitch<MUTABLE_TYPE, PROP_NAME>): this;
 
 	setIn(keyPath: [MUTABLE_KEYS, ...any[]], value: any): this;
-	setIn(keyPath: Immutable.Iterable<any, any>, value: any): this;
+	setIn(keyPath: Immutable.List<any>, value: any): this;
 
 	toJS(): MUTABLE_TYPE;
 	fromJS(obj: MUTABLE_TYPE): this;
@@ -42,7 +37,7 @@ export interface ImmutalizerList<
 	set(index: number, value: ImmutablePrimitiveSwitchValue<VALUE_TYPE>): this;
 
 	setIn(keyPath: [number, ...any[]], value: any): this;
-	setIn(keyPath: Immutable.Iterable<any, any>, value: any): this;
+	setIn(keyPath: Immutable.List<any>, value: any): this;
 
 	slice(begin?: number, end?: number): this;
 	push(...values: VALUE_TYPE[]): this;
