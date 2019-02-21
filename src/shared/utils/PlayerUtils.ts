@@ -3,6 +3,7 @@ import DeckUtils from "@utils/DeckUtils";
 import ArrayUtils from "@utils/ArrayUtils";
 import { Vector2 } from "@typings/vector";
 import { TablePlayerCharacters } from "@typings/character";
+import { MoveCharsMessage } from "@typings/connection";
 
 export default class PlayerUtils {
 	public static dealCards(player: PlayerState, cardCount: number): void {
@@ -41,6 +42,14 @@ export default class PlayerUtils {
 				y: positions[c].y,
 			})) as TablePlayerCharacters,
 		}
+	}
+
+	public static moveChars(player: TablePlayerState, charMoves: MoveCharsMessage): void {
+		player.chars.forEach((char, index) => {
+			const move = charMoves[index];
+			char.x = move.x;
+			char.y = move.y;
+		});
 	}
 
 	public static getPlayerPosition(playerIndex: number, boardWidth: number, boardHeight: number): [Vector2, Vector2, Vector2] {

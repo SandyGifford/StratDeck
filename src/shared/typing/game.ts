@@ -1,10 +1,13 @@
 import { PlayerCharacters, TablePlayerCharacters } from "@typings/character";
 
+export type PlayPhase = "buy" | "move";
+
 export default interface GameState {
 	screen: GameScreen;
 	players: TablePlayerState[];
 	playerCount: number;
 	playerReadyState: boolean[];
+	playPhase: PlayPhase;
 	whosTurn: number;
 	boardWidth: number;
 	boardHeight: number;

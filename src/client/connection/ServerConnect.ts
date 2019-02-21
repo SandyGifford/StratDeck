@@ -1,6 +1,7 @@
 import * as io from "socket.io-client";
 import GameState, { PlayerState, CardType } from "@typings/game";
 import emitTypes from "@shared/emitTypes";
+import { MoveCharsMessage } from "@typings/connection";
 const { fromServer, toServer } = emitTypes;
 
 const socket = io();
@@ -18,8 +19,12 @@ export default class ServerConnect {
 		socket.emit(toServer.resetGame, playerCount);
 	};
 
-	public static takeTurn = (boughtCard: CardType): void => {
-		socket.emit(toServer.takeTurn, boughtCard);
+	public static buyCard = (boughtCard: CardType): void => {
+		socket.emit(toServer.buyCard, boughtCard);
+	};
+
+	public static moveChars = (moves: MoveCharsMessage): void => {
+		socket.emit(toServer.moveChars, moves);
 	};
 
 

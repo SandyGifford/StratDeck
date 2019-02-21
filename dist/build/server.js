@@ -114,13 +114,31 @@ class ConnectedPlayer {
             console.log(`${this.getPlayerDisplayText()} reset the game with ${playerCount} player${playerCount === 1 ? "" : "s"}`);
             _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].resetGame(playerCount);
         };
-        this.takeTurn = (boughtCard) => {
+        this.buyCard = (boughtCard) => {
             if (!this.isMyTurn()) {
-                console.log(`Player ${this.getPlayerNumber()} tried to take a turn illegally.`);
+                console.log(`Player ${this.getPlayerNumber()} tried to buy a card out of turn.`);
                 return;
             }
-            console.log(`Player ${this.getPlayerNumber()} took a turn and bought a ${boughtCard} card.`);
-            _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].takeTurn(this.playerIndex, boughtCard);
+            const playPhase = _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].getPlayPhase();
+            if (playPhase !== "buy") {
+                console.log(`Player ${this.getPlayerNumber()} tried to buy a card but play phase is ${playPhase}.`);
+                return;
+            }
+            console.log(`Player ${this.getPlayerNumber()} bought a ${boughtCard} card.`);
+            _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].buyCard(this.playerIndex, boughtCard);
+        };
+        this.moveChars = (moves) => {
+            if (!this.isMyTurn()) {
+                console.log(`Player ${this.getPlayerNumber()} tried to move their chars out of turn.`);
+                return;
+            }
+            const playPhase = _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].getPlayPhase();
+            if (playPhase !== "move") {
+                console.log(`Player ${this.getPlayerNumber()} tried to move their chars but play phase is ${playPhase}.`);
+                return;
+            }
+            console.log(`Player ${this.getPlayerNumber()} moved their chars.`);
+            _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].moveChars(this.playerIndex, moves);
         };
         this.initialize = (playerIndex, partialPlayerState) => {
             console.log(`initializing player ${playerIndex + 1}`, partialPlayerState);
@@ -143,7 +161,8 @@ class ConnectedPlayer {
         socket.emit(fromServer.playerConnected, _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].getGameState());
         socket.on(toServer.resetGame, this.resetGame);
         socket.on(toServer.initializePlayer, this.initialize);
-        socket.on(toServer.takeTurn, this.takeTurn);
+        socket.on(toServer.buyCard, this.buyCard);
+        socket.on(toServer.moveChars, this.moveChars);
     }
     getPlayerNumber() {
         return this.playerIndex + 1;
@@ -181,7 +200,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return GameStateManager; });
 /* harmony import */ var _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @utils/PlayerUtils */ "./src/shared/utils/PlayerUtils.ts");
 /* harmony import */ var _utils_EventDelegate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @utils/EventDelegate */ "./src/shared/utils/EventDelegate.ts");
-/* harmony import */ var _initialGameState__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./initialGameState */ "./src/server/initialGameState.ts");
+/* harmony import */ var _server_initialGameState__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @server/initialGameState */ "./src/server/initialGameState.ts");
 
 
 
@@ -203,7 +222,7 @@ class GameStateManager {
         this.updateDelegate.trigger(this.gameState);
     }
     static resetGame(playerCount) {
-        this.gameState = Object(_initialGameState__WEBPACK_IMPORTED_MODULE_2__["default"])(playerCount);
+        this.gameState = Object(_server_initialGameState__WEBPACK_IMPORTED_MODULE_2__["default"])(playerCount);
         this.resetDelegate.trigger(this.gameState);
     }
     static updatePartialGameState(partialGameState) {
@@ -228,18 +247,27 @@ class GameStateManager {
         });
         return waitingOnPlayers;
     }
-    static takeTurn(playerIndex, boughtCard) {
+    static buyCard(playerIndex, boughtCard) {
         const { players } = this.gameState;
         const player = players[playerIndex];
         _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].discardHand(player);
         _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].addCardToDiscard(player, boughtCard);
         _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].dealCards(player, 5);
+        GameStateManager.updatePartialGameState({
+            players: players,
+            playPhase: "move",
+        });
+    }
+    static moveChars(playerIndex, moves) {
+        const { players } = this.gameState;
+        const player = players[playerIndex];
+        _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].moveChars(player, moves);
         let { whosTurn } = this.gameState;
         whosTurn = (whosTurn + 1) % this.gameState.playerCount;
-        console.log(player, players);
         GameStateManager.updatePartialGameState({
             players: players,
             whosTurn: whosTurn,
+            playPhase: "buy",
         });
     }
     static getGameState() {
@@ -250,6 +278,9 @@ class GameStateManager {
     }
     static isPlayersTurn(playerIndex) {
         return this.gameState.whosTurn === playerIndex;
+    }
+    static getPlayPhase() {
+        return this.gameState.playPhase;
     }
 }
 GameStateManager.gameState = null;
@@ -276,6 +307,7 @@ const initialGameState = (playerCount) => ({
     playerReadyState: _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_0__["default"].mapTimes(playerCount, () => false),
     screen: "characterSelect",
     playerCount: playerCount,
+    playPhase: "buy",
     whosTurn: 0,
     boardHeight: 20,
     boardWidth: 30,
@@ -382,7 +414,8 @@ __webpack_require__.r(__webpack_exports__);
     toServer: {
         initializePlayer: "initialize player state",
         resetGame: "reset game",
-        takeTurn: "take turn",
+        buyCard: "buy card",
+        moveChars: "move chars",
     },
 });
 
@@ -550,6 +583,13 @@ class PlayerUtils {
     static makeTablePlayer(player, playerIndex, boardWidth, boardHeight) {
         const positions = this.getPlayerPosition(playerIndex, boardWidth, boardHeight);
         return Object.assign({}, player, { chars: player.chars.map((char, c) => (Object.assign({}, char, { maxHP: char.hp, x: positions[c].x, y: positions[c].y }))) });
+    }
+    static moveChars(player, charMoves) {
+        player.chars.forEach((char, index) => {
+            const move = charMoves[index];
+            char.x = move.x;
+            char.y = move.y;
+        });
     }
     static getPlayerPosition(playerIndex, boardWidth, boardHeight) {
         switch (playerIndex) {

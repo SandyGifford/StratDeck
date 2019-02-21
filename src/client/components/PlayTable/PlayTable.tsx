@@ -14,17 +14,12 @@ import SimpleButton from "@components/SimpleButton/SimpleButton";
 import PopMessenger from "@components/PopMessage/PopMessenger";
 import ServerConnect from "@client/connection/ServerConnect";
 
-export type PlayPhase = "buy" | "play";
-export type PlayMode = "move" | "use";
-
 export interface PlayTableProps {
 	gameState: GameState;
 	myPlayerIndex: number;
 }
 export interface PlayTableState {
 	newGamePlayerCount: number;
-	playPhase: PlayPhase;
-	playMode: PlayMode;
 }
 
 export default class PlayTable extends React.PureComponent<PlayTableProps, PlayTableState> {
@@ -33,13 +28,11 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 
 		this.state = {
 			newGamePlayerCount: props.gameState.playerCount,
-			playPhase: "buy",
-			playMode: null,
 		};
 	}
 
-	public componentDidUpdate(prevProps: PlayTableProps, prevState: PlayTableState) {
-		this.updateMessage(prevState);
+	public componentDidUpdate(prevProps: PlayTableProps) {
+		this.updateMessage(prevProps);
 	}
 
 	public componentDidMount() {
@@ -48,8 +41,8 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 
 	public render(): React.ReactNode {
 		const { myPlayerIndex, gameState } = this.props;
-		const { newGamePlayerCount, playPhase } = this.state;
-		const { boardWidth, boardHeight, players } = gameState
+		const { newGamePlayerCount } = this.state;
+		const { boardWidth, boardHeight, players, playPhase } = gameState
 
 		const me = players[myPlayerIndex];
 		const poolOpen: TableDrawerOpenState = this.isMyTurn() && playPhase === "buy" ? "open" : null;
@@ -120,25 +113,25 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 
 	private poolClicked: CardPoolClicked = (cardType) => {
 		if (this.isMyTurn()) {
-			ServerConnect.takeTurn(cardType);
+			ServerConnect.buyCard(cardType);
 		}
 	};
 
-	private updateMessage(prevState?: Partial<PlayTableState>): void {
+	private updateMessage(prevProps: Partial<PlayTableProps> = {}): void {
 		const { gameState } = this.props;
-		const { whosTurn, players } = gameState;
-		const { playPhase } = this.state;
-		prevState = prevState || {};
+		const { gameState: prevGameState } = prevProps;
+		const { whosTurn, players, playPhase } = gameState;
+		const prevPlayPhase = prevGameState ? prevGameState.playPhase : null;
 
 		if (!this.isMyTurn()) {
 			PopMessenger.message(`${players[whosTurn].name}'s turn`);
-		} else if (playPhase !== prevState.playPhase) {
+		} else if (playPhase !== prevPlayPhase) {
 			switch (playPhase) {
 				case "buy":
 					PopMessenger.message("buy a card");
 					break;
-				case "play":
-					PopMessenger.message("play");
+				case "move":
+					PopMessenger.message("move your characters");
 					break;
 			}
 		}

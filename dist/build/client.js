@@ -35126,7 +35126,7 @@ class PlayTable extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
         super(props);
         this.poolClicked = (cardType) => {
             if (this.isMyTurn()) {
-                _client_connection_ServerConnect__WEBPACK_IMPORTED_MODULE_12__["default"].takeTurn(cardType);
+                _client_connection_ServerConnect__WEBPACK_IMPORTED_MODULE_12__["default"].buyCard(cardType);
             }
         };
         this.makeNewPlayerCountLabel = playerNumber => {
@@ -35142,20 +35142,18 @@ class PlayTable extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
         };
         this.state = {
             newGamePlayerCount: props.gameState.playerCount,
-            playPhase: "buy",
-            playMode: null,
         };
     }
-    componentDidUpdate(prevProps, prevState) {
-        this.updateMessage(prevState);
+    componentDidUpdate(prevProps) {
+        this.updateMessage(prevProps);
     }
     componentDidMount() {
         this.updateMessage();
     }
     render() {
         const { myPlayerIndex, gameState } = this.props;
-        const { newGamePlayerCount, playPhase } = this.state;
-        const { boardWidth, boardHeight, players } = gameState;
+        const { newGamePlayerCount } = this.state;
+        const { boardWidth, boardHeight, players, playPhase } = gameState;
         const me = players[myPlayerIndex];
         const poolOpen = this.isMyTurn() && playPhase === "buy" ? "open" : null;
         return (react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "PlayTable" },
@@ -35188,21 +35186,21 @@ class PlayTable extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
                 react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_components_SimpleSelect_SimpleSelect__WEBPACK_IMPORTED_MODULE_8__["default"], { className: "PlayTable__newGamePanel__playerCountSelect", items: _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_9__["default"].mapTimes(3, p => p + 2), makeLabel: this.makeNewPlayerCountLabel, value: newGamePlayerCount, onChange: this.onNewGamePlayerCountChange }),
                 react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_components_SimpleButton_SimpleButton__WEBPACK_IMPORTED_MODULE_10__["default"], { className: "PlayTable__newGamePanel__start", onClick: this.resetGame }, "start"))));
     }
-    updateMessage(prevState) {
+    updateMessage(prevProps = {}) {
         const { gameState } = this.props;
-        const { whosTurn, players } = gameState;
-        const { playPhase } = this.state;
-        prevState = prevState || {};
+        const { gameState: prevGameState } = prevProps;
+        const { whosTurn, players, playPhase } = gameState;
+        const prevPlayPhase = prevGameState ? prevGameState.playPhase : null;
         if (!this.isMyTurn()) {
             _components_PopMessage_PopMessenger__WEBPACK_IMPORTED_MODULE_11__["default"].message(`${players[whosTurn].name}'s turn`);
         }
-        else if (playPhase !== prevState.playPhase) {
+        else if (playPhase !== prevPlayPhase) {
             switch (playPhase) {
                 case "buy":
                     _components_PopMessage_PopMessenger__WEBPACK_IMPORTED_MODULE_11__["default"].message("buy a card");
                     break;
-                case "play":
-                    _components_PopMessage_PopMessenger__WEBPACK_IMPORTED_MODULE_11__["default"].message("play");
+                case "move":
+                    _components_PopMessage_PopMessenger__WEBPACK_IMPORTED_MODULE_11__["default"].message("move your characters");
                     break;
             }
         }
@@ -36400,8 +36398,11 @@ ServerConnect.initializePlayer = (playerIndex, playerState) => {
 ServerConnect.resetGame = (playerCount) => {
     socket.emit(toServer.resetGame, playerCount);
 };
-ServerConnect.takeTurn = (boughtCard) => {
-    socket.emit(toServer.takeTurn, boughtCard);
+ServerConnect.buyCard = (boughtCard) => {
+    socket.emit(toServer.buyCard, boughtCard);
+};
+ServerConnect.moveChars = (moves) => {
+    socket.emit(toServer.moveChars, moves);
 };
 ServerConnect.addConnectedListener = (listener) => {
     socket.addEventListener(fromServer.playerConnected, listener);
@@ -36510,7 +36511,8 @@ __webpack_require__.r(__webpack_exports__);
     toServer: {
         initializePlayer: "initialize player state",
         resetGame: "reset game",
-        takeTurn: "take turn",
+        buyCard: "buy card",
+        moveChars: "move chars",
     },
 });
 

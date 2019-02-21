@@ -1,4 +1,10 @@
-import * as Immutable from "immutable";
+// import * as Immutable from "immutable";
+
+module Immutable {
+	export type Map<A, B> = any;
+	export type Iterable<A, B> = any;
+	export type List<A> = any;
+};
 
 // TODO: actual logic in Immutable is if the object has a constructor
 export type ImmutablePrimitive = string | number | boolean | symbol | String | Number | Boolean | Symbol | Element;

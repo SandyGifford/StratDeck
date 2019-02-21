@@ -6,6 +6,7 @@ const initialGameState = (playerCount: number): GameState => ({
 	playerReadyState: LoopUtils.mapTimes(playerCount, () => false),
 	screen: "characterSelect",
 	playerCount: playerCount,
+	playPhase: "buy",
 	whosTurn: 0,
 	boardHeight: 20,
 	boardWidth: 30,

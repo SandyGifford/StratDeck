@@ -7,6 +7,7 @@ export default {
 	toServer: {
 		initializePlayer: "initialize player state",
 		resetGame: "reset game",
-		takeTurn: "take turn",
+		buyCard: "buy card",
+		moveChars: "move chars",
 	},
 };

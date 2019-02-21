@@ -4,6 +4,7 @@ import { PlayerState, CardType } from "@typings/game";
 import ArrayUtils from "@utils/ArrayUtils";
 import LoopUtils from "@utils/LoopUtils";
 import PlayerUtils from "@utils/PlayerUtils";
+import { MoveCharsMessage } from "@typings/connection";
 
 const { fromServer, toServer } = emitTypes;
 
@@ -18,7 +19,8 @@ export default class ConnectedPlayer {
 
 		socket.on(toServer.resetGame, this.resetGame);
 		socket.on(toServer.initializePlayer, this.initialize);
-		socket.on(toServer.takeTurn, this.takeTurn);
+		socket.on(toServer.buyCard, this.buyCard);
+		socket.on(toServer.moveChars, this.moveChars);
 	}
 
 	private resetGame = (playerCount: number) => {
@@ -27,15 +29,40 @@ export default class ConnectedPlayer {
 		GameStateManager.resetGame(playerCount);
 	};
 
-	private takeTurn = (boughtCard: CardType) => {
+	private buyCard = (boughtCard: CardType) => {
 		if (!this.isMyTurn()) {
-			console.log(`Player ${this.getPlayerNumber()} tried to take a turn illegally.`);
+			console.log(`Player ${this.getPlayerNumber()} tried to buy a card out of turn.`);
 			return;
 		}
 
-		console.log(`Player ${this.getPlayerNumber()} took a turn and bought a ${boughtCard} card.`);
+		const playPhase = GameStateManager.getPlayPhase();
 
-		GameStateManager.takeTurn(this.playerIndex, boughtCard);
+		if (playPhase !== "buy") {
+			console.log(`Player ${this.getPlayerNumber()} tried to buy a card but play phase is ${playPhase}.`);
+			return;
+		}
+
+		console.log(`Player ${this.getPlayerNumber()} bought a ${boughtCard} card.`);
+
+		GameStateManager.buyCard(this.playerIndex, boughtCard);
+	};
+
+	private moveChars = (moves: MoveCharsMessage) => {
+		if (!this.isMyTurn()) {
+			console.log(`Player ${this.getPlayerNumber()} tried to move their chars out of turn.`);
+			return;
+		}
+
+		const playPhase = GameStateManager.getPlayPhase();
+
+		if (playPhase !== "move") {
+			console.log(`Player ${this.getPlayerNumber()} tried to move their chars but play phase is ${playPhase}.`);
+			return;
+		}
+
+		console.log(`Player ${this.getPlayerNumber()} moved their chars.`);
+
+		GameStateManager.moveChars(this.playerIndex, moves);
 	};
 
 	private initialize = (playerIndex: number, partialPlayerState: Pick<PlayerState, "chars" | "name">) => {

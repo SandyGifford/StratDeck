@@ -1,7 +1,8 @@
-import GameState, { PlayerState, CardType } from "@typings/game";
+import GameState, { PlayerState, CardType, PlayPhase } from "@typings/game";
 import PlayerUtils from "@utils/PlayerUtils";
 import EventDelegate, { GenericEventListener } from "@utils/EventDelegate";
-import initialGameState from "./initialGameState";
+import initialGameState from "@server/initialGameState";
+import { MoveCharsMessage } from "@typings/connection";
 
 export default class GameStateManager {
 	private static gameState: GameState = null;
@@ -65,7 +66,7 @@ export default class GameStateManager {
 		return waitingOnPlayers;
 	}
 
-	public static takeTurn(playerIndex: number, boughtCard: CardType): void {
+	public static buyCard(playerIndex: number, boughtCard: CardType): void {
 		const { players } = this.gameState;
 
 		const player = players[playerIndex];
@@ -73,14 +74,25 @@ export default class GameStateManager {
 		PlayerUtils.addCardToDiscard(player, boughtCard);
 		PlayerUtils.dealCards(player, 5);
 
+		GameStateManager.updatePartialGameState({
+			players: players,
+			playPhase: "move",
+		});
+	}
+
+	public static moveChars(playerIndex: number, moves: MoveCharsMessage): void {
+		const { players } = this.gameState;
+
+		const player = players[playerIndex];
+		PlayerUtils.moveChars(player, moves);
+
 		let { whosTurn } = this.gameState;
 		whosTurn = (whosTurn + 1) % this.gameState.playerCount;
-
-		console.log(player, players);
 
 		GameStateManager.updatePartialGameState({
 			players: players,
 			whosTurn: whosTurn,
+			playPhase: "buy",
 		});
 	}
 
@@ -94,5 +106,9 @@ export default class GameStateManager {
 
 	public static isPlayersTurn(playerIndex: number): boolean {
 		return this.gameState.whosTurn === playerIndex;
+	}
+
+	public static getPlayPhase(): PlayPhase {
+		return this.gameState.playPhase;
 	}
 };
