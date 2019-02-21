@@ -12,7 +12,7 @@ const target = document.createElement("div");
 document.body.appendChild(target);
 
 function render(gameState: ImmutableGameState): void {
-	if (gameState.isEmpty()) {
+	if (!gameState || gameState.isEmpty()) {
 		ServerConnect.resetGame(2);
 		return;
 	}

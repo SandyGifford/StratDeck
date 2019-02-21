@@ -1,3 +1,5 @@
+import * as Immutable from "immutable";
+
 import { CharacterDefs, ImmutableCharacterDefs } from "@typings/character";
 import Abilities from "./Abilities";
 

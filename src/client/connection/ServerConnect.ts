@@ -1,4 +1,6 @@
+import * as Immutable from "immutable";
 import * as io from "socket.io-client";
+
 import GameState, { CardType, ImmutableGameState, ImmutablePlayerInitializer } from "@typings/game";
 import emitTypes from "@shared/emitTypes";
 import { ImmutableMoveCharsMessage } from "@typings/connection";
@@ -47,32 +49,26 @@ export default class ServerConnect {
 
 	public static addConnectedListener = (listener: ConnectedEventHandler): void => {
 		connectedDelegate.addEventListener(listener);
-		socket.addEventListener(fromServer.playerConnected, listener);
 	};
 
 	public static addGameUpdatedListener = (listener: GameUpdatedEventHandler): void => {
 		gameUpdatedDelegate.addEventListener(listener);
-		socket.addEventListener(fromServer.gameStateUpdated, listener);
 	};
 
 	public static addGameResetListener = (listener: GameResetEventHandler): void => {
 		gameResetDelegate.addEventListener(listener);
-		socket.addEventListener(fromServer.gameReset, listener);
 	};
 
 	public static removeConnectedListener = (listener: ConnectedEventHandler): void => {
 		connectedDelegate.removeEventListener(listener);
-		socket.removeEventListener(fromServer.playerConnected, listener);
 	};
 
 	public static removeGameUpdatedListener = (listener: GameUpdatedEventHandler): void => {
 		gameUpdatedDelegate.removeEventListener(listener);
-		socket.removeEventListener(fromServer.gameStateUpdated, listener);
 	};
 
 	public static removeGameResetListener = (listener: GameResetEventHandler): void => {
 		gameResetDelegate.removeEventListener(listener);
-		socket.removeEventListener(fromServer.gameReset, listener);
 	};
 }
 

@@ -1,5 +1,6 @@
 import "./CharacterSelect.style";
 
+import * as Immutable from "immutable";
 import * as React from "react";
 import { CharacterWeapon, ImmutableCharacterWeapon } from "@typings/character";
 import CharacterSelectStat from "./subComponents/CharacterSelectStat/CharacterSelectStat";
