@@ -229,10 +229,10 @@ class GameStateManager {
         this.resetDelegate.trigger(this.gameState);
     }
     static initializePlayer(playerIndex, playerState) {
-        const players = this.gameState.get("players");
+        let players = this.gameState.get("players");
         const boardWidth = this.gameState.get("boardWidth");
         const boardHeight = this.gameState.get("boardHeight");
-        players.set(playerIndex, _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].makeTablePlayer(playerState, playerIndex, boardWidth, boardHeight));
+        players = players.set(playerIndex, _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].makeTablePlayer(playerState, playerIndex, boardWidth, boardHeight));
         const waitingOnPlayers = players.reduce((playerCount, player) => {
             if (player)
                 playerCount--;

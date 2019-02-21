@@ -36,11 +36,11 @@ export default class GameStateManager {
 	}
 
 	public static initializePlayer(playerIndex: number, playerState: ImmutablePlayerState): number {
-		const players = this.gameState.get("players");
+		let players = this.gameState.get("players");
 		const boardWidth = this.gameState.get("boardWidth");
 		const boardHeight = this.gameState.get("boardHeight");
 
-		players.set(playerIndex, PlayerUtils.makeTablePlayer(playerState, playerIndex, boardWidth, boardHeight));
+		players = players.set(playerIndex, PlayerUtils.makeTablePlayer(playerState, playerIndex, boardWidth, boardHeight));
 
 		const waitingOnPlayers = players.reduce((playerCount, player) => {
 			if (player) playerCount--;
