@@ -1,10 +1,12 @@
+import * as Immutable from "immutable";
+
 import GameStateManager from "./GameStateManager";
 import emitTypes from "@shared/emitTypes";
 import { PlayerState, CardType } from "@typings/game";
 import ArrayUtils from "@utils/ArrayUtils";
 import LoopUtils from "@utils/LoopUtils";
 import PlayerUtils from "@utils/PlayerUtils";
-import { MoveCharsMessage } from "@typings/connection";
+import { CharPositions } from "@typings/connection";
 
 const { fromServer, toServer } = emitTypes;
 
@@ -47,22 +49,22 @@ export default class ConnectedPlayer {
 		GameStateManager.buyCard(this.playerIndex, boughtCard);
 	};
 
-	private moveChars = (moves: MoveCharsMessage) => {
-		if (!this.isMyTurn()) {
-			console.log(`Player ${this.getPlayerNumber()} tried to move their chars out of turn.`);
-			return;
-		}
+	private moveChars = (moves: CharPositions) => {
+		// if (!this.isMyTurn()) {
+		// 	console.log(`Player ${this.getPlayerNumber()} tried to move their chars out of turn.`);
+		// 	return;
+		// }
 
-		const playPhase = GameStateManager.getPlayPhase();
+		// const playPhase = GameStateManager.getPlayPhase();
 
-		if (playPhase !== "move") {
-			console.log(`Player ${this.getPlayerNumber()} tried to move their chars but play phase is ${playPhase}.`);
-			return;
-		}
+		// if (playPhase !== "move") {
+		// 	console.log(`Player ${this.getPlayerNumber()} tried to move their chars but play phase is ${playPhase}.`);
+		// 	return;
+		// }
 
-		console.log(`Player ${this.getPlayerNumber()} moved their chars.`);
+		// console.log(`Player ${this.getPlayerNumber()} moved their chars.`);
 
-		GameStateManager.moveChars(this.playerIndex, moves);
+		// GameStateManager.moveChars(this.playerIndex, moves);
 	};
 
 	private initialize = (playerIndex: number, partialPlayerState: Pick<PlayerState, "chars" | "name">) => {
@@ -78,7 +80,7 @@ export default class ConnectedPlayer {
 		this.playerIndex = playerIndex;
 		this.playerName = partialPlayerState.name;
 
-		const playerState: PlayerState = {
+		let playerState: PlayerState = {
 			...partialPlayerState,
 			hand: [],
 			deck: ArrayUtils.shuffle([
@@ -88,14 +90,14 @@ export default class ConnectedPlayer {
 			discard: [],
 		};
 
-		PlayerUtils.dealCards(playerState, 5);
+		const immutablePlayerState = PlayerUtils.dealCards(Immutable.fromJS(playerState), 5);
 
-		const waitinOnCount = GameStateManager.initializePlayer(playerIndex, playerState);
+		const waitingOnCount = GameStateManager.initializePlayer(playerIndex, immutablePlayerState);
 
 		console.log(
 			`Player ${this.getPlayerNumber()} (${partialPlayerState.name}) has selected characters, ` + (
-				waitinOnCount === 0 ? "all players ready" : (
-					`still waiting on ${waitinOnCount} player` + (waitinOnCount === 1 ? "" : "s")
+				waitingOnCount === 0 ? "all players ready" : (
+					`still waiting on ${waitingOnCount} player` + (waitingOnCount === 1 ? "" : "s")
 				)
 			)
 		);

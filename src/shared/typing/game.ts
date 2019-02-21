@@ -5,7 +5,7 @@ export type PlayPhase = "buy" | "move";
 
 export default interface GameState {
 	screen: GameScreen;
-	players: TablePlayerState[];
+	players: TablePlayerStates;
 	playerCount: number;
 	playerReadyState: boolean[];
 	playPhase: PlayPhase;

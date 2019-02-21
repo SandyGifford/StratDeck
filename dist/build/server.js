@@ -96,69 +96,72 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ConnectedPlayer; });
-/* harmony import */ var _GameStateManager__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./GameStateManager */ "./src/server/GameStateManager.ts");
-/* harmony import */ var _shared_emitTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @shared/emitTypes */ "./src/shared/emitTypes.ts");
-/* harmony import */ var _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @utils/ArrayUtils */ "./src/shared/utils/ArrayUtils.ts");
-/* harmony import */ var _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @utils/LoopUtils */ "./src/shared/utils/LoopUtils.ts");
-/* harmony import */ var _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @utils/PlayerUtils */ "./src/shared/utils/PlayerUtils.ts");
+/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! immutable */ "immutable");
+/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(immutable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _GameStateManager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./GameStateManager */ "./src/server/GameStateManager.ts");
+/* harmony import */ var _shared_emitTypes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @shared/emitTypes */ "./src/shared/emitTypes.ts");
+/* harmony import */ var _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @utils/ArrayUtils */ "./src/shared/utils/ArrayUtils.ts");
+/* harmony import */ var _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @utils/LoopUtils */ "./src/shared/utils/LoopUtils.ts");
+/* harmony import */ var _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @utils/PlayerUtils */ "./src/shared/utils/PlayerUtils.ts");
 
 
 
 
 
-const { fromServer, toServer } = _shared_emitTypes__WEBPACK_IMPORTED_MODULE_1__["default"];
+
+const { fromServer, toServer } = _shared_emitTypes__WEBPACK_IMPORTED_MODULE_2__["default"];
 class ConnectedPlayer {
     constructor(socket) {
         this.socket = socket;
         this.resetGame = (playerCount) => {
             console.log(`${this.getPlayerDisplayText()} reset the game with ${playerCount} player${playerCount === 1 ? "" : "s"}`);
-            _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].resetGame(playerCount);
+            _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].resetGame(playerCount);
         };
         this.buyCard = (boughtCard) => {
             if (!this.isMyTurn()) {
                 console.log(`Player ${this.getPlayerNumber()} tried to buy a card out of turn.`);
                 return;
             }
-            const playPhase = _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].getPlayPhase();
+            const playPhase = _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].getPlayPhase();
             if (playPhase !== "buy") {
                 console.log(`Player ${this.getPlayerNumber()} tried to buy a card but play phase is ${playPhase}.`);
                 return;
             }
             console.log(`Player ${this.getPlayerNumber()} bought a ${boughtCard} card.`);
-            _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].buyCard(this.playerIndex, boughtCard);
+            _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].buyCard(this.playerIndex, boughtCard);
         };
         this.moveChars = (moves) => {
-            if (!this.isMyTurn()) {
-                console.log(`Player ${this.getPlayerNumber()} tried to move their chars out of turn.`);
-                return;
-            }
-            const playPhase = _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].getPlayPhase();
-            if (playPhase !== "move") {
-                console.log(`Player ${this.getPlayerNumber()} tried to move their chars but play phase is ${playPhase}.`);
-                return;
-            }
-            console.log(`Player ${this.getPlayerNumber()} moved their chars.`);
-            _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].moveChars(this.playerIndex, moves);
+            // if (!this.isMyTurn()) {
+            // 	console.log(`Player ${this.getPlayerNumber()} tried to move their chars out of turn.`);
+            // 	return;
+            // }
+            // const playPhase = GameStateManager.getPlayPhase();
+            // if (playPhase !== "move") {
+            // 	console.log(`Player ${this.getPlayerNumber()} tried to move their chars but play phase is ${playPhase}.`);
+            // 	return;
+            // }
+            // console.log(`Player ${this.getPlayerNumber()} moved their chars.`);
+            // GameStateManager.moveChars(this.playerIndex, moves);
         };
         this.initialize = (playerIndex, partialPlayerState) => {
             console.log(`initializing player ${playerIndex + 1}`, partialPlayerState);
-            const player = _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].getPlayer(playerIndex);
+            const player = _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].getPlayer(playerIndex);
             if (player) {
                 console.log(`Attempt to initialize player ${playerIndex + 1} failed.  Player is already initialized.`);
                 return;
             }
             this.playerIndex = playerIndex;
             this.playerName = partialPlayerState.name;
-            const playerState = Object.assign({}, partialPlayerState, { hand: [], deck: _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_2__["default"].shuffle([
+            let playerState = Object.assign({}, partialPlayerState, { hand: [], deck: _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_3__["default"].shuffle([
                     ...this.makeCards(6, "hand"),
                     ...this.makeCards(4, "weapon")
                 ]), discard: [] });
-            _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_4__["default"].dealCards(playerState, 5);
-            const waitinOnCount = _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].initializePlayer(playerIndex, playerState);
-            console.log(`Player ${this.getPlayerNumber()} (${partialPlayerState.name}) has selected characters, ` + (waitinOnCount === 0 ? "all players ready" : (`still waiting on ${waitinOnCount} player` + (waitinOnCount === 1 ? "" : "s"))));
+            const immutablePlayerState = _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_5__["default"].dealCards(immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"](playerState), 5);
+            const waitingOnCount = _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].initializePlayer(playerIndex, immutablePlayerState);
+            console.log(`Player ${this.getPlayerNumber()} (${partialPlayerState.name}) has selected characters, ` + (waitingOnCount === 0 ? "all players ready" : (`still waiting on ${waitingOnCount} player` + (waitingOnCount === 1 ? "" : "s"))));
         };
         console.log(`${this.getPlayerDisplayText()} connected`);
-        socket.emit(fromServer.playerConnected, _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].getGameState());
+        socket.emit(fromServer.playerConnected, _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].getGameState());
         socket.on(toServer.resetGame, this.resetGame);
         socket.on(toServer.initializePlayer, this.initialize);
         socket.on(toServer.buyCard, this.buyCard);
@@ -168,7 +171,7 @@ class ConnectedPlayer {
         return this.playerIndex + 1;
     }
     isMyTurn() {
-        return _GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].isPlayersTurn(this.playerIndex);
+        return _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].isPlayersTurn(this.playerIndex);
     }
     getPlayerDisplayText() {
         return this.getNumberedPlayerText() + `(${typeof this.playerName === "string" ? `${this.playerName} @ ` : ""}${this.getAddress()})`;
@@ -181,7 +184,7 @@ class ConnectedPlayer {
         return this.socket.handshake.address;
     }
     makeCards(num, type) {
-        return _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_3__["default"].mapTimes(num, () => type);
+        return _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_4__["default"].mapTimes(num, () => type);
     }
 }
 
@@ -222,65 +225,60 @@ class GameStateManager {
         this.updateDelegate.trigger(this.gameState);
     }
     static resetGame(playerCount) {
-        this.gameState = Object(_server_initialGameState__WEBPACK_IMPORTED_MODULE_2__["default"])(playerCount);
+        this.gameState = Object(_server_initialGameState__WEBPACK_IMPORTED_MODULE_2__["immutableInitialGameState"])(playerCount);
         this.resetDelegate.trigger(this.gameState);
     }
-    static updatePartialGameState(partialGameState) {
-        const newGameState = Object.assign({}, this.gameState);
-        Object.keys(partialGameState).forEach((key) => {
-            newGameState[key] = partialGameState[key];
-        });
-        this.updateGameState(newGameState);
-    }
     static initializePlayer(playerIndex, playerState) {
-        const { players, boardWidth, boardHeight } = this.gameState;
-        players[playerIndex] = _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].makeTablePlayer(playerState, playerIndex, boardWidth, boardHeight);
+        const players = this.gameState.get("players");
+        const boardWidth = this.gameState.get("boardWidth");
+        const boardHeight = this.gameState.get("boardHeight");
+        players.set(playerIndex, _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].makeTablePlayer(playerState, playerIndex, boardWidth, boardHeight));
         const waitingOnPlayers = players.reduce((playerCount, player) => {
             if (player)
                 playerCount--;
             return playerCount;
-        }, players.length);
+        }, players.size);
         const allPicked = waitingOnPlayers === 0;
-        GameStateManager.updatePartialGameState({
-            players: players,
-            screen: allPicked ? "table" : "characterSelect",
-        });
+        let gameState = this.gameState;
+        gameState = gameState.set("players", players);
+        gameState = gameState.set("screen", allPicked ? "table" : "characterSelect");
+        GameStateManager.updateGameState(gameState);
         return waitingOnPlayers;
     }
     static buyCard(playerIndex, boughtCard) {
-        const { players } = this.gameState;
-        const player = players[playerIndex];
+        const players = this.gameState.get("players");
+        const player = players.get(playerIndex);
         _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].addCardToDiscard(player, boughtCard);
-        GameStateManager.updatePartialGameState({
-            players: players,
-            playPhase: "move",
-        });
+        let gameState = this.gameState;
+        gameState = gameState.set("players", players);
+        gameState = gameState.set("playPhase", "move");
+        GameStateManager.updateGameState(gameState);
     }
     static moveChars(playerIndex, moves) {
-        const { players } = this.gameState;
-        const player = players[playerIndex];
+        const players = this.gameState.get("players");
+        let whosTurn = this.gameState.get("whosTurn");
+        const player = players.get(playerIndex);
         _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].moveChars(player, moves);
         _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].discardHand(player);
         _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].dealCards(player, 5);
-        let { whosTurn } = this.gameState;
-        whosTurn = (whosTurn + 1) % this.gameState.playerCount;
-        GameStateManager.updatePartialGameState({
-            players: players,
-            whosTurn: whosTurn,
-            playPhase: "buy",
-        });
+        whosTurn = (whosTurn + 1) % this.gameState.get("playerCount");
+        let gameState = this.gameState;
+        gameState = gameState.set("players", players);
+        gameState = gameState.set("whosTurn", whosTurn);
+        gameState = gameState.set("playPhase", "buy");
+        GameStateManager.updateGameState(gameState);
     }
     static getGameState() {
         return this.gameState;
     }
     static getPlayer(playerIndex) {
-        return this.gameState.players[playerIndex];
+        return this.gameState.get("players").get(playerIndex);
     }
     static isPlayersTurn(playerIndex) {
-        return this.gameState.whosTurn === playerIndex;
+        return this.gameState.get("whosTurn") === playerIndex;
     }
     static getPlayPhase() {
-        return this.gameState.playPhase;
+        return this.gameState.get("playPhase");
     }
 }
 GameStateManager.gameState = null;
@@ -295,16 +293,20 @@ GameStateManager.resetDelegate = new _utils_EventDelegate__WEBPACK_IMPORTED_MODU
 /*!****************************************!*\
   !*** ./src/server/initialGameState.ts ***!
   \****************************************/
-/*! exports provided: default */
+/*! exports provided: immutableInitialGameState, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @utils/LoopUtils */ "./src/shared/utils/LoopUtils.ts");
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "immutableInitialGameState", function() { return immutableInitialGameState; });
+/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! immutable */ "immutable");
+/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(immutable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @utils/LoopUtils */ "./src/shared/utils/LoopUtils.ts");
+
 
 const initialGameState = (playerCount) => ({
-    players: _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_0__["default"].mapTimes(playerCount, () => null),
-    playerReadyState: _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_0__["default"].mapTimes(playerCount, () => false),
+    players: _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_1__["default"].mapTimes(playerCount, () => null),
+    playerReadyState: _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_1__["default"].mapTimes(playerCount, () => false),
     screen: "characterSelect",
     playerCount: playerCount,
     playPhase: "buy",
@@ -312,6 +314,7 @@ const initialGameState = (playerCount) => ({
     boardHeight: 20,
     boardWidth: 30,
 });
+const immutableInitialGameState = (playerCount) => immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"](initialGameState(playerCount));
 /* harmony default export */ __webpack_exports__["default"] = (initialGameState);
 
 
@@ -385,8 +388,8 @@ __webpack_require__.r(__webpack_exports__);
 const { fromServer } = _shared_emitTypes__WEBPACK_IMPORTED_MODULE_1__["default"];
 /* harmony default export */ __webpack_exports__["default"] = ((server) => {
     const io = __webpack_require__(/*! socket.io */ "socket.io")(server);
-    _server_GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].addResetListener(gameState => io.emit(fromServer.gameReset, gameState));
-    _server_GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].addUpdateListener(gameState => io.emit(fromServer.gameStateUpdated, gameState));
+    _server_GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].addResetListener((gameState) => io.emit(fromServer.gameReset, gameState.toJS()));
+    _server_GameStateManager__WEBPACK_IMPORTED_MODULE_0__["default"].addUpdateListener((gameState) => io.emit(fromServer.gameStateUpdated, gameState.toJS()));
     io.emit(fromServer.gameReset);
     io.on("connection", socket => {
         new _ConnectedPlayer__WEBPACK_IMPORTED_MODULE_2__["default"](socket);
@@ -432,6 +435,9 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ArrayUtils; });
+/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! immutable */ "immutable");
+/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(immutable__WEBPACK_IMPORTED_MODULE_0__);
+
 class ArrayUtils {
     static shuffle(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
@@ -439,6 +445,10 @@ class ArrayUtils {
             [arr[i], arr[j]] = [arr[j], arr[i]];
         }
         return arr;
+    }
+    static shuffleImmutable(arr) {
+        // ughhh
+        return immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"](this.shuffle(arr.toJS()));
     }
 }
 
@@ -455,24 +465,31 @@ class ArrayUtils {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return DeckUtils; });
+/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! immutable */ "immutable");
+/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(immutable__WEBPACK_IMPORTED_MODULE_0__);
+
 class DeckUtils {
     static dealAllCardsToDeck(fromDeck, toDeck) {
-        this.dealCardsToDeck(fromDeck, toDeck, fromDeck.length);
+        return this.dealCardsToDeck(fromDeck, toDeck, fromDeck.size);
     }
     static dealCardsToDeck(fromDeck, toDeck, cardCount) {
-        const cards = DeckUtils.dealCards(fromDeck, cardCount);
-        this.addCardsToTop(toDeck, cards);
+        const dealtCards = DeckUtils.dealCards(fromDeck, cardCount);
+        const newToDeck = this.addCardsToTop(toDeck, dealtCards.dealt);
+        return { fromDeck: dealtCards.deck, toDeck: newToDeck };
     }
     static dealCards(deck, cardCount) {
-        return deck.splice(-1 * cardCount);
+        return {
+            deck: deck.slice(0, cardCount),
+            dealt: deck.slice(-cardCount),
+        };
     }
     static addCardsToTop(deck, cards) {
-        const multiCards = typeof cards === "string" ? [cards] : cards;
-        deck.push(...multiCards);
+        const multiCards = typeof cards === "string" ? immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"]([cards]) : cards;
+        return deck.concat(multiCards);
     }
     static addCardsToBottom(deck, cards) {
-        const multiCards = typeof cards === "string" ? [cards] : cards;
-        deck.unshift(...multiCards);
+        const multiCards = typeof cards === "string" ? immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"]([cards]) : cards;
+        return multiCards.concat(deck);
     }
 }
 
@@ -554,69 +571,97 @@ class LoopUtils {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return PlayerUtils; });
-/* harmony import */ var _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @utils/DeckUtils */ "./src/shared/utils/DeckUtils.ts");
-/* harmony import */ var _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @utils/ArrayUtils */ "./src/shared/utils/ArrayUtils.ts");
+/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! immutable */ "immutable");
+/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(immutable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @utils/DeckUtils */ "./src/shared/utils/DeckUtils.ts");
+/* harmony import */ var _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @utils/ArrayUtils */ "./src/shared/utils/ArrayUtils.ts");
+
 
 
 class PlayerUtils {
     static dealCards(player, cardCount) {
-        const deckSize = player.deck.length;
+        const deckSize = player.get("deck").size;
         if (cardCount > deckSize) {
-            _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_0__["default"].dealCardsToDeck(player.deck, player.hand, deckSize);
-            this.shuffleDiscardToDeck(player);
-            _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_0__["default"].dealCardsToDeck(player.deck, player.hand, cardCount - deckSize);
+            player = this.dealCardsFromDeckToDeck(player, "deck", "hand", deckSize);
+            player = this.shuffleDiscardToDeck(player);
+            player = this.dealCardsFromDeckToDeck(player, "deck", "hand", cardCount - deckSize);
         }
         else {
-            _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_0__["default"].dealCardsToDeck(player.deck, player.hand, cardCount);
+            player = this.dealCardsFromDeckToDeck(player, "deck", "hand", cardCount);
         }
+        return player;
+    }
+    static dealCardsFromDeckToDeck(player, fromDeck, toDeck, cardCount) {
+        const fromTo = _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_1__["default"].dealCardsToDeck(player.get(fromDeck), player.get(toDeck), cardCount);
+        player = player.set(fromDeck, fromTo.fromDeck);
+        player = player.set(toDeck, fromTo.toDeck);
+        return player;
+    }
+    static dealAllCardsFromDeckToDeck(player, fromDeck, toDeck) {
+        return this.dealCardsFromDeckToDeck(player, fromDeck, toDeck, player.get(fromDeck).size);
+    }
+    static shuffleDeck(player, deck) {
+        return player.set(deck, _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_2__["default"].shuffleImmutable(player.get(deck)));
     }
     static discardHand(player) {
-        _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_0__["default"].dealAllCardsToDeck(player.hand, player.discard);
+        return this.dealAllCardsFromDeckToDeck(player, "hand", "discard");
     }
     static shuffleDiscardToDeck(player) {
-        _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_0__["default"].dealAllCardsToDeck(player.discard, player.deck);
-        player.deck = _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_1__["default"].shuffle(player.deck);
+        player = this.dealAllCardsFromDeckToDeck(player, "discard", "deck");
+        return this.shuffleDeck(player, "deck");
     }
     static addCardToDiscard(player, card) {
-        _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_0__["default"].addCardsToTop(player.discard, card);
+        return player.set("discard", _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_1__["default"].addCardsToTop(player.get("discard"), card));
     }
     static makeTablePlayer(player, playerIndex, boardWidth, boardHeight) {
         const positions = this.getPlayerPosition(playerIndex, boardWidth, boardHeight);
-        return Object.assign({}, player, { chars: player.chars.map((char, c) => (Object.assign({}, char, { maxHP: char.hp, x: positions[c].x, y: positions[c].y }))) });
+        const tablePlayer = player;
+        const chars = player.get("chars");
+        const tableChars = chars.map((char, c) => {
+            const pos = positions.get(c);
+            let tableChar = char;
+            tableChar = tableChar.set("maxHP", char.get("hp"));
+            tableChar = tableChar.set("x", pos.get("x"));
+            tableChar = tableChar.set("y", pos.get("y"));
+            return tableChar;
+        });
+        // FIXME: baaaad typing
+        return tablePlayer.set("chars", tableChars);
     }
     static moveChars(player, charMoves) {
-        player.chars.forEach((char, index) => {
-            const move = charMoves[index];
-            char.x = move.x;
-            char.y = move.y;
-        });
+        return null;
+        // player.chars.forEach((char, index) => {
+        // 	const move = charMoves[index];
+        // 	char.x = move.x;
+        // 	char.y = move.y;
+        // });
     }
     static getPlayerPosition(playerIndex, boardWidth, boardHeight) {
         switch (playerIndex) {
             case 0:
-                return [
+                return immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"]([
                     { x: 0, y: 0 },
                     { x: 0, y: 1 },
                     { x: 0, y: 2 },
-                ];
+                ]);
             case 1:
-                return [
+                return immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"]([
                     { x: boardWidth - 1, y: boardHeight - 1 },
                     { x: boardWidth - 1, y: boardHeight - 2 },
                     { x: boardWidth - 1, y: boardHeight - 3 },
-                ];
+                ]);
             case 2:
-                return [
+                return immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"]([
                     { x: 0, y: boardHeight - 1 },
                     { x: 1, y: boardHeight - 1 },
                     { x: 2, y: boardHeight - 1 },
-                ];
+                ]);
             case 3:
-                return [
+                return immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"]([
                     { x: boardWidth - 1, y: 0 },
                     { x: boardWidth - 2, y: 0 },
                     { x: boardWidth - 3, y: 0 },
-                ];
+                ]);
             default:
                 throw `Board does not support this many players.  Requested start location for player ${playerIndex + 1},  max player count is 2`;
         }
@@ -645,6 +690,17 @@ module.exports = require("express");
 /***/ (function(module, exports) {
 
 module.exports = require("http");
+
+/***/ }),
+
+/***/ "immutable":
+/*!****************************!*\
+  !*** external "immutable" ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("immutable");
 
 /***/ }),
 

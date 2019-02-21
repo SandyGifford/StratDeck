@@ -1,4 +1,6 @@
-import GameState from "@typings/game";
+import * as Immutable from "immutable";
+
+import GameState, { ImmutableGameState } from "@typings/game";
 import LoopUtils from "@utils/LoopUtils";
 
 const initialGameState = (playerCount: number): GameState => ({
@@ -12,4 +14,5 @@ const initialGameState = (playerCount: number): GameState => ({
 	boardWidth: 30,
 });
 
+export const immutableInitialGameState = (playerCount: number): ImmutableGameState => Immutable.fromJS(initialGameState(playerCount));
 export default initialGameState;

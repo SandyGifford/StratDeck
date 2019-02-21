@@ -12,40 +12,45 @@ export default Immutalizer;
 
 export interface ImmutalizerObject<
 	MUTABLE_TYPE,
-	MUTABLE_KEYS extends keyof MUTABLE_TYPE = keyof MUTABLE_TYPE,
 	> {
 	size: number;
 	isEmpty(): boolean;
 
-	get<PROP_NAME extends MUTABLE_KEYS>(prop: PROP_NAME, notSetValue?: ImmutablePrimitiveSwitch<MUTABLE_TYPE, PROP_NAME>): ImmutablePrimitiveSwitch<MUTABLE_TYPE, PROP_NAME>;
-	set<PROP_NAME extends MUTABLE_KEYS>(prop: PROP_NAME, value: ImmutablePrimitiveSwitch<MUTABLE_TYPE, PROP_NAME>): this;
+	get<PROP_NAME extends (keyof MUTABLE_TYPE)>(prop: PROP_NAME, notSetValue?: ImmutablePrimitiveSwitch<MUTABLE_TYPE, PROP_NAME>): ImmutablePrimitiveSwitch<MUTABLE_TYPE, PROP_NAME>;
+	set<PROP_NAME extends (keyof MUTABLE_TYPE)>(prop: PROP_NAME, value: ImmutablePrimitiveSwitch<MUTABLE_TYPE, PROP_NAME>): this;
 
-	setIn(keyPath: [MUTABLE_KEYS, ...any[]], value: any): this;
+	setIn(keyPath: [(keyof MUTABLE_TYPE), ...any[]], value: any): this;
 	setIn(keyPath: Immutable.List<any>, value: any): this;
 
 	toJS(): MUTABLE_TYPE;
-	fromJS(obj: MUTABLE_TYPE): this;
 }
 
 export interface ImmutalizerList<
 	MUTABLE_TYPE extends any[],
-	VALUE_TYPE = MUTABLE_TYPE[number],
-	> {
+	> extends Immutable.List<MUTABLE_TYPE[number]> {
 	size: number;
 	isEmpty(): boolean;
 
-	get(index: number, notSetValue?: ImmutablePrimitiveSwitchValue<VALUE_TYPE>): ImmutablePrimitiveSwitchValue<VALUE_TYPE>;
-	set(index: number, value: ImmutablePrimitiveSwitchValue<VALUE_TYPE>): this;
+	get(index: number, notSetValue?: ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[number]>): ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[number]>;
+	set(index: number, value: ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[number]>): this;
 
 	setIn(keyPath: [number, ...any[]], value: any): this;
 	setIn(keyPath: Immutable.List<any>, value: any): this;
 
 	slice(begin?: number, end?: number): this;
-	push(...values: VALUE_TYPE[]): this;
-	map<M>(mapper: (value: ImmutablePrimitiveSwitchValue<VALUE_TYPE>, key: number, iter: this) => M, context?: any): Immutable.List<M>;
-	every(predicate: (value: ImmutablePrimitiveSwitchValue<VALUE_TYPE>, key: number, iter: this) => boolean, context?: any): boolean;
-	last(notSetValue?: ImmutablePrimitiveSwitchValue<VALUE_TYPE>): ImmutablePrimitiveSwitchValue<VALUE_TYPE>;
+	push(...values: MUTABLE_TYPE[number][]): this;
+	map<M>(mapper: (value: ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[number]>, key: number, iter: this) => M, context?: any): Immutable.List<M>;
+	every(predicate: (value: ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[number]>, key: number, iter: this) => boolean, context?: any): boolean;
+	last(notSetValue?: ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[number]>): ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[number]>;
+	reduce<R>(
+		reducer: (reduction: R, value: MUTABLE_TYPE[number], key: number, iter: this) => R,
+		initialReduction: R,
+		context?: any
+	): R;
+	reduce<R>(
+		reducer: (reduction: MUTABLE_TYPE[number] | R, value: MUTABLE_TYPE[number], key: number, iter: this) => R
+	): R;
+	concat(...valuesOrCollections: this[]): this;
 
 	toJS(): MUTABLE_TYPE;
-	fromJS(obj: MUTABLE_TYPE): this;
 }

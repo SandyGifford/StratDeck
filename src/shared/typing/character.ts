@@ -31,8 +31,8 @@ export interface CharacterAbility {
 export type CharacterAbilityUse = "action" | "reaction";
 export type CharacterAbilities = [CharacterAbility, CharacterAbility, CharacterAbility];
 
-export type PlayerCharacters = [CharacterDef, CharacterDef, CharacterDef];
-export type TablePlayerCharacters = [TableCharacterDef, TableCharacterDef, TableCharacterDef];
+export type PlayerCharacters = CharacterDef[];
+export type TablePlayerCharacters = TableCharacterDef[];
 
 export interface TableCharacterDef extends CharacterDef {
 	x: number;

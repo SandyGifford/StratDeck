@@ -1,115 +1,108 @@
-import GameState, { PlayerState, CardType, PlayPhase } from "@typings/game";
+import { CardType, PlayPhase, ImmutableGameState, ImmutablePlayerState } from "@typings/game";
 import PlayerUtils from "@utils/PlayerUtils";
 import EventDelegate, { GenericEventListener } from "@utils/EventDelegate";
-import initialGameState from "@server/initialGameState";
-import { MoveCharsMessage } from "@typings/connection";
+import { immutableInitialGameState } from "@server/initialGameState";
+import { ImmutableCharPositions } from "@typings/connection";
 
 export default class GameStateManager {
-	private static gameState: GameState = null;
-	private static updateDelegate: EventDelegate<GameState> = new EventDelegate();
-	private static resetDelegate: EventDelegate<GameState> = new EventDelegate();
+	private static gameState: ImmutableGameState = null;
+	private static updateDelegate: EventDelegate<ImmutableGameState> = new EventDelegate();
+	private static resetDelegate: EventDelegate<ImmutableGameState> = new EventDelegate();
 
-	public static addUpdateListener(listener: GenericEventListener<GameState>) {
+	public static addUpdateListener(listener: GenericEventListener<ImmutableGameState>) {
 		this.updateDelegate.addEventListener(listener);
 	}
 
-	public static removeUpdateListener(listener: GenericEventListener<GameState>) {
+	public static removeUpdateListener(listener: GenericEventListener<ImmutableGameState>) {
 		this.updateDelegate.removeEventListener(listener);
 	}
 
-	public static addResetListener(listener: GenericEventListener<GameState>) {
+	public static addResetListener(listener: GenericEventListener<ImmutableGameState>) {
 		this.resetDelegate.addEventListener(listener);
 	}
 
-	public static removeResetListener(listener: GenericEventListener<GameState>) {
+	public static removeResetListener(listener: GenericEventListener<ImmutableGameState>) {
 		this.resetDelegate.removeEventListener(listener);
 	}
 
-	public static updateGameState(newGameState: GameState) {
+	public static updateGameState(newGameState: ImmutableGameState) {
 		this.gameState = newGameState;
 		this.updateDelegate.trigger(this.gameState);
 	}
 
 	public static resetGame(playerCount: number) {
-		this.gameState = initialGameState(playerCount);
+		this.gameState = immutableInitialGameState(playerCount);
 		this.resetDelegate.trigger(this.gameState);
 	}
 
-	public static updatePartialGameState(partialGameState: Partial<GameState>) {
-		const newGameState: GameState = {
-			...this.gameState,
-		};
+	public static initializePlayer(playerIndex: number, playerState: ImmutablePlayerState): number {
+		const players = this.gameState.get("players");
+		const boardWidth = this.gameState.get("boardWidth");
+		const boardHeight = this.gameState.get("boardHeight");
 
-		Object.keys(partialGameState).forEach((key: keyof GameState) => {
-			newGameState[key] = partialGameState[key];
-		});
-
-		this.updateGameState(newGameState);
-	}
-
-	public static initializePlayer(playerIndex: number, playerState: PlayerState): number {
-		const { players, boardWidth, boardHeight } = this.gameState;
-
-		players[playerIndex] = PlayerUtils.makeTablePlayer(playerState, playerIndex, boardWidth, boardHeight);
+		players.set(playerIndex, PlayerUtils.makeTablePlayer(playerState, playerIndex, boardWidth, boardHeight));
 
 		const waitingOnPlayers = players.reduce((playerCount, player) => {
 			if (player) playerCount--;
 			return playerCount;
-		}, players.length);
+		}, players.size);
+
 		const allPicked = waitingOnPlayers === 0;
 
-		GameStateManager.updatePartialGameState({
-			players: players,
-			screen: allPicked ? "table" : "characterSelect",
-		});
+		let gameState = this.gameState;
+		gameState = gameState.set("players", players);
+		gameState = gameState.set("screen", allPicked ? "table" : "characterSelect");
+
+		GameStateManager.updateGameState(gameState);
 
 		return waitingOnPlayers;
 	}
 
 	public static buyCard(playerIndex: number, boughtCard: CardType): void {
-		const { players } = this.gameState;
+		const players = this.gameState.get("players");
+		const player = players.get(playerIndex);
 
-		const player = players[playerIndex];
 		PlayerUtils.addCardToDiscard(player, boughtCard);
 
-		GameStateManager.updatePartialGameState({
-			players: players,
-			playPhase: "move",
-		});
+		let gameState = this.gameState;
+		gameState = gameState.set("players", players);
+		gameState = gameState.set("playPhase", "move");
+
+		GameStateManager.updateGameState(gameState);
 	}
 
-	public static moveChars(playerIndex: number, moves: MoveCharsMessage): void {
-		const { players } = this.gameState;
+	public static moveChars(playerIndex: number, moves: ImmutableCharPositions): void {
+		const players = this.gameState.get("players");
+		let whosTurn = this.gameState.get("whosTurn");
+		const player = players.get(playerIndex);
 
-		const player = players[playerIndex];
 		PlayerUtils.moveChars(player, moves);
 		PlayerUtils.discardHand(player);
 		PlayerUtils.dealCards(player, 5);
 
-		let { whosTurn } = this.gameState;
-		whosTurn = (whosTurn + 1) % this.gameState.playerCount;
+		whosTurn = (whosTurn + 1) % this.gameState.get("playerCount");
 
+		let gameState = this.gameState;
+		gameState = gameState.set("players", players);
+		gameState = gameState.set("whosTurn", whosTurn);
+		gameState = gameState.set("playPhase", "buy");
 
-		GameStateManager.updatePartialGameState({
-			players: players,
-			whosTurn: whosTurn,
-			playPhase: "buy",
-		});
+		GameStateManager.updateGameState(gameState);
 	}
 
-	public static getGameState(): GameState {
+	public static getGameState(): ImmutableGameState {
 		return this.gameState;
 	}
 
-	public static getPlayer(playerIndex: number): PlayerState {
-		return this.gameState.players[playerIndex];
+	public static getPlayer(playerIndex: number): ImmutablePlayerState {
+		return this.gameState.get("players").get(playerIndex);
 	}
 
 	public static isPlayersTurn(playerIndex: number): boolean {
-		return this.gameState.whosTurn === playerIndex;
+		return this.gameState.get("whosTurn") === playerIndex;
 	}
 
 	public static getPlayPhase(): PlayPhase {
-		return this.gameState.playPhase;
+		return this.gameState.get("playPhase");
 	}
 };
