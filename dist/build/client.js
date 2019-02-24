@@ -42376,6 +42376,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 _client_connection_ServerConnect__WEBPACK_IMPORTED_MODULE_3__["default"].addConnectedListener(render);
+_client_connection_ServerConnect__WEBPACK_IMPORTED_MODULE_3__["default"].addGameResetListener(render);
 const target = document.createElement("div");
 document.body.appendChild(target);
 function render(gameState) {

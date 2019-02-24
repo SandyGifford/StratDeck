@@ -7,6 +7,7 @@ import { ImmutableGameState } from "@typings/game";
 import App from "@components/App/App";
 
 ServerConnect.addConnectedListener(render);
+ServerConnect.addGameResetListener(render);
 
 const target = document.createElement("div");
 document.body.appendChild(target);
