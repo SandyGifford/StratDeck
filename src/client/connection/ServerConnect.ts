@@ -3,8 +3,8 @@ import * as io from "socket.io-client";
 
 import GameState, { CardType, ImmutableGameState, ImmutablePlayerInitializer } from "@typings/game";
 import emitTypes from "@shared/emitTypes";
-import { ImmutableCharPositions } from "@typings/connection";
 import EventDelegate, { GenericEventListener } from "@utils/EventDelegate";
+import { Vector2 } from "@typings/vector";
 const { fromServer, toServer } = emitTypes;
 
 const socket = io();
@@ -38,8 +38,8 @@ export default class ServerConnect {
 		socket.emit(toServer.buyCard, boughtCard);
 	};
 
-	public static moveChars = (moves: ImmutableCharPositions): void => {
-		socket.emit(toServer.moveChars, moves.toJS());
+	public static moveChar = (charIndex: number, move: Vector2): void => {
+		socket.emit(toServer.moveChar, charIndex, move);
 	};
 
 

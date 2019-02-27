@@ -130,18 +130,18 @@ class ConnectedPlayer {
             console.log(`Player ${this.getPlayerNumber()} bought a ${boughtCard} card.`);
             _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].buyCard(this.playerIndex, boughtCard);
         };
-        this.moveChars = (moves) => {
-            // if (!this.isMyTurn()) {
-            // 	console.log(`Player ${this.getPlayerNumber()} tried to move their chars out of turn.`);
-            // 	return;
-            // }
-            // const playPhase = GameStateManager.getPlayPhase();
-            // if (playPhase !== "move") {
-            // 	console.log(`Player ${this.getPlayerNumber()} tried to move their chars but play phase is ${playPhase}.`);
-            // 	return;
-            // }
-            // console.log(`Player ${this.getPlayerNumber()} moved their chars.`);
-            // GameStateManager.moveChars(this.playerIndex, moves);
+        this.moveChar = (charIndex, move) => {
+            if (!this.isMyTurn()) {
+                console.log(`Player ${this.getPlayerNumber()} tried to move their char ${charIndex + 1} out of turn.`);
+                return;
+            }
+            const playPhase = _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].getPlayPhase();
+            if (playPhase !== "move") {
+                console.log(`Player ${this.getPlayerNumber()} tried to move their chars but play phase is ${playPhase}.`);
+                return;
+            }
+            console.log(`Player ${this.getPlayerNumber()} moved char ${charIndex + 1} to (${move.x}, ${move.y}).`);
+            _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].moveChar(this.playerIndex, charIndex, move);
         };
         this.initialize = (playerIndex, partialPlayerState) => {
             console.log(`initializing player ${playerIndex + 1}`, partialPlayerState);
@@ -165,7 +165,7 @@ class ConnectedPlayer {
         socket.on(toServer.resetGame, this.resetGame);
         socket.on(toServer.initializePlayer, this.initialize);
         socket.on(toServer.buyCard, this.buyCard);
-        socket.on(toServer.moveChars, this.moveChars);
+        socket.on(toServer.moveChar, this.moveChar);
     }
     getPlayerNumber() {
         return this.playerIndex + 1;
@@ -204,6 +204,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @utils/PlayerUtils */ "./src/shared/utils/PlayerUtils.ts");
 /* harmony import */ var _utils_EventDelegate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @utils/EventDelegate */ "./src/shared/utils/EventDelegate.ts");
 /* harmony import */ var _server_initialGameState__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @server/initialGameState */ "./src/server/initialGameState.ts");
+/* harmony import */ var _utils_GameUtils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @utils/GameUtils */ "./src/shared/utils/GameUtils.ts");
+
 
 
 
@@ -254,19 +256,13 @@ class GameStateManager {
         gameState = gameState.set("playPhase", "move");
         GameStateManager.updateGameState(gameState);
     }
-    static moveChars(playerIndex, moves) {
-        const players = this.gameState.get("players");
+    static moveChar(playerIndex, charIndex, move) {
+        GameStateManager.updateGameState(_utils_GameUtils__WEBPACK_IMPORTED_MODULE_3__["default"].moveChar(this.gameState, playerIndex, charIndex, move));
+    }
+    static incrementTurn() {
         let whosTurn = this.gameState.get("whosTurn");
-        const player = players.get(playerIndex);
-        _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].moveChars(player, moves);
-        _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].discardHand(player);
-        _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].dealCards(player, 5);
         whosTurn = (whosTurn + 1) % this.gameState.get("playerCount");
-        let gameState = this.gameState;
-        gameState = gameState.set("players", players);
-        gameState = gameState.set("whosTurn", whosTurn);
-        gameState = gameState.set("playPhase", "buy");
-        GameStateManager.updateGameState(gameState);
+        this.updateGameState(this.gameState.set("whosTurn", whosTurn));
     }
     static getGameState() {
         return this.gameState;
@@ -418,7 +414,7 @@ __webpack_require__.r(__webpack_exports__);
         initializePlayer: "initialize player state",
         resetGame: "reset game",
         buyCard: "buy card",
-        moveChars: "move chars",
+        moveChar: "move char",
     },
 });
 
@@ -538,6 +534,28 @@ class EventDelegate {
 
 /***/ }),
 
+/***/ "./src/shared/utils/GameUtils.ts":
+/*!***************************************!*\
+  !*** ./src/shared/utils/GameUtils.ts ***!
+  \***************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Gameutils; });
+/* harmony import */ var _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PlayerUtils */ "./src/shared/utils/PlayerUtils.ts");
+
+class Gameutils {
+    static moveChar(gameState, playerIndex, charIndex, move) {
+        const players = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].moveCharInPlayers(gameState.get("players"), playerIndex, charIndex, move);
+        return gameState.set("players", players);
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/shared/utils/LoopUtils.ts":
 /*!***************************************!*\
   !*** ./src/shared/utils/LoopUtils.ts ***!
@@ -628,13 +646,20 @@ class PlayerUtils {
         // FIXME: baaaad typing
         return tablePlayer.set("chars", tableChars);
     }
-    static moveChars(player, charMoves) {
-        return null;
-        // player.chars.forEach((char, index) => {
-        // 	const move = charMoves[index];
-        // 	char.x = move.x;
-        // 	char.y = move.y;
-        // });
+    static moveCharInPlayers(players, playerIndex, charIndex, move) {
+        const player = this.moveCharInPlayer(players.get(playerIndex), charIndex, move);
+        return players.set(playerIndex, player);
+    }
+    static moveCharInPlayer(player, charIndex, move) {
+        const chars = this.moveCharInChars(player.get("chars"), charIndex, move);
+        return player.set("chars", chars);
+    }
+    static moveCharInChars(chars, charIndex, move) {
+        const char = this.moveChar(chars.get(charIndex), move);
+        return chars.set(charIndex, char);
+    }
+    static moveChar(character, move) {
+        return character.set("x", move.x).set("y", move.y);
     }
     static getPlayerPosition(playerIndex, boardWidth, boardHeight) {
         switch (playerIndex) {

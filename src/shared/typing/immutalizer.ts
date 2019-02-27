@@ -52,5 +52,12 @@ export interface ImmutalizerList<
 	): R;
 	concat(...valuesOrCollections: this[]): this;
 
+
+	find(
+		predicate: (value: ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[number]>, key: number, iter: this) => boolean,
+		context?: any,
+		notSetValue?: ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[number]>
+	): ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[number]> | undefined;
+
 	toJS(): MUTABLE_TYPE;
 }

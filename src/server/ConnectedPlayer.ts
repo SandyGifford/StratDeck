@@ -6,7 +6,7 @@ import { PlayerState, CardType } from "@typings/game";
 import ArrayUtils from "@utils/ArrayUtils";
 import LoopUtils from "@utils/LoopUtils";
 import PlayerUtils from "@utils/PlayerUtils";
-import { CharPositions } from "@typings/connection";
+import { Vector2 } from "@typings/vector";
 
 const { fromServer, toServer } = emitTypes;
 
@@ -22,7 +22,7 @@ export default class ConnectedPlayer {
 		socket.on(toServer.resetGame, this.resetGame);
 		socket.on(toServer.initializePlayer, this.initialize);
 		socket.on(toServer.buyCard, this.buyCard);
-		socket.on(toServer.moveChars, this.moveChars);
+		socket.on(toServer.moveChar, this.moveChar);
 	}
 
 	private resetGame = (playerCount: number) => {
@@ -49,22 +49,22 @@ export default class ConnectedPlayer {
 		GameStateManager.buyCard(this.playerIndex, boughtCard);
 	};
 
-	private moveChars = (moves: CharPositions) => {
-		// if (!this.isMyTurn()) {
-		// 	console.log(`Player ${this.getPlayerNumber()} tried to move their chars out of turn.`);
-		// 	return;
-		// }
+	private moveChar = (charIndex: number, move: Vector2) => {
+		if (!this.isMyTurn()) {
+			console.log(`Player ${this.getPlayerNumber()} tried to move their char ${charIndex + 1} out of turn.`);
+			return;
+		}
 
-		// const playPhase = GameStateManager.getPlayPhase();
+		const playPhase = GameStateManager.getPlayPhase();
 
-		// if (playPhase !== "move") {
-		// 	console.log(`Player ${this.getPlayerNumber()} tried to move their chars but play phase is ${playPhase}.`);
-		// 	return;
-		// }
+		if (playPhase !== "move") {
+			console.log(`Player ${this.getPlayerNumber()} tried to move their chars but play phase is ${playPhase}.`);
+			return;
+		}
 
-		// console.log(`Player ${this.getPlayerNumber()} moved their chars.`);
+		console.log(`Player ${this.getPlayerNumber()} moved char ${charIndex + 1} to (${move.x}, ${move.y}).`);
 
-		// GameStateManager.moveChars(this.playerIndex, moves);
+		GameStateManager.moveChar(this.playerIndex, charIndex, move);
 	};
 
 	private initialize = (playerIndex: number, partialPlayerState: Pick<PlayerState, "chars" | "name">) => {
@@ -91,7 +91,6 @@ export default class ConnectedPlayer {
 		};
 
 		const immutablePlayerState = PlayerUtils.dealCards(Immutable.fromJS(playerState), 5);
-
 		const waitingOnCount = GameStateManager.initializePlayer(playerIndex, immutablePlayerState);
 
 		console.log(

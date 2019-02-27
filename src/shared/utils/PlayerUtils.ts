@@ -1,10 +1,11 @@
 import * as Immutable from "immutable";
 
-import { CardType, ImmutableTablePlayerState, ImmutablePlayerState } from "@typings/game";
+import { CardType, ImmutableTablePlayerState, ImmutablePlayerState, ImmutableTablePlayerStates } from "@typings/game";
 import DeckUtils from "@utils/DeckUtils";
 import ArrayUtils from "@utils/ArrayUtils";
-import { ImmutableTableCharacterDef } from "@typings/character";
+import { ImmutableTableCharacterDef, ImmutableTablePlayerCharacters } from "@typings/character";
 import { ImmutableCharPositions } from "@typings/connection";
+import { Vector2 } from "@typings/vector";
 
 export type PlayerDeckType = "deck" | "hand" | "discard";
 
@@ -72,13 +73,23 @@ export default class PlayerUtils {
 		return tablePlayer.set("chars", tableChars as any);
 	}
 
-	public static moveChars(player: ImmutableTablePlayerState, charMoves: ImmutableCharPositions): ImmutablePlayerState {
-		return null;
-		// player.chars.forEach((char, index) => {
-		// 	const move = charMoves[index];
-		// 	char.x = move.x;
-		// 	char.y = move.y;
-		// });
+	public static moveCharInPlayers(players: ImmutableTablePlayerStates, playerIndex: number, charIndex: number, move: Vector2): ImmutableTablePlayerStates {
+		const player = this.moveCharInPlayer(players.get(playerIndex), charIndex, move);
+		return players.set(playerIndex, player);
+	}
+
+	public static moveCharInPlayer(player: ImmutableTablePlayerState, charIndex: number, move: Vector2): ImmutableTablePlayerState {
+		const chars = this.moveCharInChars(player.get("chars"), charIndex, move);
+		return player.set("chars", chars);
+	}
+
+	public static moveCharInChars(chars: ImmutableTablePlayerCharacters, charIndex: number, move: Vector2): ImmutableTablePlayerCharacters {
+		const char = this.moveChar(chars.get(charIndex), move);
+		return chars.set(charIndex, char);
+	}
+
+	public static moveChar(character: ImmutableTableCharacterDef, move: Vector2): ImmutableTableCharacterDef {
+		return character.set("x", move.x).set("y", move.y);
 	}
 
 	public static getPlayerPosition(playerIndex: number, boardWidth: number, boardHeight: number): ImmutableCharPositions {

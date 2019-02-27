@@ -8,6 +8,6 @@ export default {
 		initializePlayer: "initialize player state",
 		resetGame: "reset game",
 		buyCard: "buy card",
-		moveChars: "move chars",
+		moveChar: "move char",
 	},
 };

@@ -2754,7 +2754,7 @@ exports.push([module.i, ".Board {\n  position: relative; }\n", ""]);
 
 exports = module.exports = __webpack_require__(/*! ../../../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, ".BoardSpace {\n  position: absolute;\n  width: 3em;\n  height: 3em;\n  background-color: #556;\n  border: 0.2em #223 solid;\n  border-radius: 0.5em;\n  box-sizing: border-box;\n  box-shadow: inset 0.3em 0.3em 0.3em 0 rgba(0, 0, 0, 0.25);\n  cursor: pointer; }\n  .BoardSpace__center {\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    border-radius: 50%;\n    height: 2em;\n    width: 2em;\n    background-color: #445;\n    box-shadow: inset 0.3em 0.3em 0.3em 0 rgba(0, 0, 0, 0.25); }\n", ""]);
+exports.push([module.i, ".BoardSpace {\n  position: absolute;\n  width: 3em;\n  height: 3em;\n  background-color: #556;\n  border: 0.2em #223 solid;\n  border-radius: 0.5em;\n  box-sizing: border-box;\n  box-shadow: inset 0.3em 0.3em 0.3em 0 rgba(0, 0, 0, 0.25);\n  cursor: pointer; }\n  .BoardSpace__center {\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    border-style: solid;\n    border-width: 0;\n    box-sizing: border-box;\n    border-radius: 50%;\n    height: 2em;\n    width: 2em;\n    background-color: #445;\n    box-shadow: inset 0.3em 0.3em 0.3em 0 rgba(0, 0, 0, 0.25); }\n    .BoardSpace__center--selected {\n      border-width: 0.2em; }\n", ""]);
 
 
 
@@ -41031,15 +41031,16 @@ class PlayTable extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
         const boardHeight = gameState.get("boardHeight");
         const players = gameState.get("players");
         const playPhase = gameState.get("playPhase");
+        const isMyTurn = this.isMyTurn();
         const me = players.get(myPlayerIndex);
-        const poolOpen = this.isMyTurn() && playPhase === "buy" ? "open" : null;
+        const poolOpen = isMyTurn && playPhase === "buy" ? "open" : null;
         return (react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "PlayTable" },
             react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_components_TableDrawer_TableDrawer__WEBPACK_IMPORTED_MODULE_2__["default"], { side: "left", forceState: poolOpen },
                 react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_components_Rotado_Rotado__WEBPACK_IMPORTED_MODULE_3__["default"], { angle: -90, watchResize: true },
                     react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "PlayTable__cardPool" },
                         react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_subComponents_CardPool_CardPool__WEBPACK_IMPORTED_MODULE_4__["default"], { onClick: this.poolClicked })))),
             react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "PlayTable__board" },
-                react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_subComponents_Board_Board__WEBPACK_IMPORTED_MODULE_5__["default"], { width: boardWidth, height: boardHeight, players: players })),
+                react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_subComponents_Board_Board__WEBPACK_IMPORTED_MODULE_5__["default"], { width: boardWidth, height: boardHeight, players: players, isMyTurn: isMyTurn, myPlayerIndex: myPlayerIndex, playPhase: playPhase })),
             react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_components_TableDrawer_TableDrawer__WEBPACK_IMPORTED_MODULE_2__["default"], { side: "bottom" },
                 react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "PlayTable__player" },
                     react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "PlayTable__player__hand" },
@@ -41139,6 +41140,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @utils/LoopUtils */ "./src/shared/utils/LoopUtils.ts");
 /* harmony import */ var _BoardSpace_BoardSpace__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../BoardSpace/BoardSpace */ "./src/client/components/PlayTable/subComponents/BoardSpace/BoardSpace.tsx");
+/* harmony import */ var _client_connection_ServerConnect__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @client/connection/ServerConnect */ "./src/client/connection/ServerConnect.ts");
+
 
 
 
@@ -41146,28 +41149,87 @@ __webpack_require__.r(__webpack_exports__);
 class Board extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            selectedCharIndex: null,
+        };
     }
     render() {
-        const { width, height, players } = this.props;
+        const { width, height, players, myPlayerIndex } = this.props;
+        const { selectedCharIndex } = this.state;
+        const canMove = this.canMove();
         return (react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "Board", style: {
                 width: `${width * 3}em`,
                 height: `${height * 3}em`,
-            } }, _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_2__["default"].mapTimes(height, r => {
-            return _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_2__["default"].mapTimes(width, c => {
-                let charOnSpot;
-                players.every(player => {
-                    return player.get("chars").every(char => {
-                        const found = char.get("x") === c && char.get("y") === r;
-                        if (found)
-                            charOnSpot = char;
-                        return !found;
-                    });
-                });
+            } }, _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_2__["default"].mapTimes(height, y => {
+            return _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_2__["default"].mapTimes(width, x => {
+                const { charIndex, playerIndex } = this.findCharAtPosition(x, y);
+                const charOnSpot = typeof playerIndex === "number" ?
+                    players.get(playerIndex).get("chars").get(charIndex) :
+                    null;
+                const isSelected = playerIndex === myPlayerIndex && charIndex === selectedCharIndex;
                 const spotColor = charOnSpot ? charOnSpot.get("color") : null;
-                return react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_BoardSpace_BoardSpace__WEBPACK_IMPORTED_MODULE_3__["default"], { x: c, y: r, key: `${c}-${r}`, playerColor: spotColor });
+                return react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_BoardSpace_BoardSpace__WEBPACK_IMPORTED_MODULE_3__["default"], { onClick: this.makeBoardSpaceClickedHandler(x, y, charIndex, playerIndex), canMove: canMove, charSelected: isSelected, x: x, y: y, key: `${x}-${y}`, charColor: spotColor });
             });
         })));
+    }
+    makeBoardSpaceClickedHandler(x, y, charIndex, playerIndex) {
+        const { myPlayerIndex, players } = this.props;
+        const { selectedCharIndex } = this.state;
+        const charOnSpot = typeof playerIndex === "number" ?
+            players.get(playerIndex).get("chars").get(charIndex) :
+            null;
+        const charIsSelected = typeof selectedCharIndex === "number";
+        return () => {
+            if (!this.canMove())
+                return;
+            if (typeof playerIndex === "number" && playerIndex !== myPlayerIndex)
+                return;
+            if (charIsSelected) {
+                if (selectedCharIndex === charIndex) {
+                    this.setState({
+                        selectedCharIndex: null,
+                    });
+                    return;
+                }
+                if (!charOnSpot) {
+                    _client_connection_ServerConnect__WEBPACK_IMPORTED_MODULE_4__["default"].moveChar(selectedCharIndex, { x, y });
+                    this.setState({
+                        selectedCharIndex: null,
+                    });
+                    return;
+                }
+            }
+            else {
+                if (charOnSpot && !charIsSelected) {
+                    this.setState({
+                        selectedCharIndex: charIndex,
+                    });
+                    return;
+                }
+            }
+        };
+    }
+    canMove() {
+        return this.props.isMyTurn && this.props.playPhase === "move";
+    }
+    findCharAtPosition(x, y) {
+        const { players } = this.props;
+        let charOnSpotIndex;
+        let charOnSpotPlayerIndex;
+        players.every((player, playerIndex) => {
+            return player.get("chars").every((char, charIndex) => {
+                const found = char.get("x") === x && char.get("y") === y;
+                if (found) {
+                    charOnSpotIndex = charIndex;
+                    charOnSpotPlayerIndex = playerIndex;
+                }
+                return !found;
+            });
+        });
+        return {
+            playerIndex: charOnSpotPlayerIndex,
+            charIndex: charOnSpotIndex,
+        };
     }
 }
 
@@ -41218,6 +41280,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _BoardSpace_style__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_BoardSpace_style__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _utils_DOMUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @utils/DOMUtils */ "./src/shared/utils/DOMUtils.ts");
+
 
 
 class BoardSpace extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
@@ -41226,14 +41290,18 @@ class BoardSpace extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
         this.state = {};
     }
     render() {
-        const { x, y, playerColor, spaceColor } = this.props;
+        const { x, y, charColor, spaceColor, charSelected, onClick } = this.props;
+        const centerClassName = _utils_DOMUtils__WEBPACK_IMPORTED_MODULE_2__["default"].BEMClassName("BoardSpace__center", {
+            selected: charSelected,
+        });
         return (react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "BoardSpace", style: {
                 left: `${x * 3}em`,
                 top: `${y * 3}em`,
                 backgroundColor: spaceColor,
-            } },
-            react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "BoardSpace__center", style: {
-                    backgroundColor: playerColor,
+            }, onClick: onClick },
+            react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: centerClassName, style: {
+                    backgroundColor: charSelected ? null : charColor,
+                    borderColor: charColor,
                 } })));
     }
 }
@@ -42297,8 +42365,8 @@ ServerConnect.resetGame = (playerCount) => {
 ServerConnect.buyCard = (boughtCard) => {
     socket.emit(toServer.buyCard, boughtCard);
 };
-ServerConnect.moveChars = (moves) => {
-    socket.emit(toServer.moveChars, moves.toJS());
+ServerConnect.moveChar = (charIndex, move) => {
+    socket.emit(toServer.moveChar, charIndex, move);
 };
 ServerConnect.addConnectedListener = (listener) => {
     connectedDelegate.addEventListener(listener);
@@ -42409,7 +42477,7 @@ __webpack_require__.r(__webpack_exports__);
         initializePlayer: "initialize player state",
         resetGame: "reset game",
         buyCard: "buy card",
-        moveChars: "move chars",
+        moveChar: "move char",
     },
 });
 

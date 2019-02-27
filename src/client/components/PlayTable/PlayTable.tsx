@@ -46,9 +46,10 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 		const boardHeight = gameState.get("boardHeight");
 		const players = gameState.get("players");
 		const playPhase = gameState.get("playPhase");
+		const isMyTurn = this.isMyTurn();
 
 		const me = players.get(myPlayerIndex);
-		const poolOpen: TableDrawerOpenState = this.isMyTurn() && playPhase === "buy" ? "open" : null;
+		const poolOpen: TableDrawerOpenState = isMyTurn && playPhase === "buy" ? "open" : null;
 
 		return (
 			<div className="PlayTable">
@@ -63,7 +64,10 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 					<Board
 						width={boardWidth}
 						height={boardHeight}
-						players={players} />
+						players={players}
+						isMyTurn={isMyTurn}
+						myPlayerIndex={myPlayerIndex}
+						playPhase={playPhase} />
 				</div>
 				<TableDrawer side="bottom">
 					<div className="PlayTable__player">

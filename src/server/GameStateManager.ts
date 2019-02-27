@@ -2,7 +2,8 @@ import { CardType, PlayPhase, ImmutableGameState, ImmutablePlayerState } from "@
 import PlayerUtils from "@utils/PlayerUtils";
 import EventDelegate, { GenericEventListener } from "@utils/EventDelegate";
 import { immutableInitialGameState } from "@server/initialGameState";
-import { ImmutableCharPositions } from "@typings/connection";
+import { Vector2 } from "@typings/vector";
+import Gameutils from "@utils/GameUtils";
 
 export default class GameStateManager {
 	private static gameState: ImmutableGameState = null;
@@ -71,23 +72,14 @@ export default class GameStateManager {
 		GameStateManager.updateGameState(gameState);
 	}
 
-	public static moveChars(playerIndex: number, moves: ImmutableCharPositions): void {
-		const players = this.gameState.get("players");
+	public static moveChar(playerIndex: number, charIndex: number, move: Vector2): void {
+		GameStateManager.updateGameState(Gameutils.moveChar(this.gameState, playerIndex, charIndex, move));
+	}
+
+	public static incrementTurn(): void {
 		let whosTurn = this.gameState.get("whosTurn");
-		const player = players.get(playerIndex);
-
-		PlayerUtils.moveChars(player, moves);
-		PlayerUtils.discardHand(player);
-		PlayerUtils.dealCards(player, 5);
-
 		whosTurn = (whosTurn + 1) % this.gameState.get("playerCount");
-
-		let gameState = this.gameState;
-		gameState = gameState.set("players", players);
-		gameState = gameState.set("whosTurn", whosTurn);
-		gameState = gameState.set("playPhase", "buy");
-
-		GameStateManager.updateGameState(gameState);
+		this.updateGameState(this.gameState.set("whosTurn", whosTurn));
 	}
 
 	public static getGameState(): ImmutableGameState {
