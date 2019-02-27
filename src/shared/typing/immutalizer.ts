@@ -43,7 +43,7 @@ export interface ImmutalizerList<
 	every(predicate: (value: ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[number]>, key: number, iter: this) => boolean, context?: any): boolean;
 	last(notSetValue?: ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[number]>): ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[number]>;
 	reduce<R>(
-		reducer: (reduction: R, value: MUTABLE_TYPE[number], key: number, iter: this) => R,
+		reducer: (reduction: R, value: ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[number]>, key: number, iter: this) => R,
 		initialReduction: R,
 		context?: any
 	): R;

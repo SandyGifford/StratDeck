@@ -1,4 +1,4 @@
-import { CardType, PlayPhase, ImmutableGameState, ImmutablePlayerState } from "@typings/game";
+import { CardType, PlayPhase, ImmutableGameState, ImmutablePlayerState, GameScreen } from "@typings/game";
 import EventDelegate, { GenericEventListener } from "@utils/EventDelegate";
 import { immutableInitialGameState } from "@server/initialGameState";
 import { Vector2 } from "@typings/vector";
@@ -44,24 +44,36 @@ export default class GameStateManager {
 		gameState = GameUtils.convertPlayerToTablePlayer(gameState, playerState, playerIndex);
 
 		const waitingOnPlayers = GameUtils.countUnreadyPlayers(gameState);
-		const allPicked = waitingOnPlayers === 0;
-
-		gameState = gameState.set("screen", allPicked ? "table" : "characterSelect");
 		GameStateManager.updateGameState(gameState);
 
 		return waitingOnPlayers;
 	}
 
+	public static setGameScreen(screen: GameScreen): void {
+		GameStateManager.updateGameState(this.gameState.set("screen", screen));
+	}
+
 	public static buyCard(playerIndex: number, boughtCard: CardType): void {
-		let gameState = GameUtils.addCardToDiscard(this.gameState, playerIndex, boughtCard);
-		gameState = gameState.set("playPhase", "move");
+		const gameState = GameUtils.addCardToDiscard(this.gameState, playerIndex, boughtCard);
 		GameStateManager.updateGameState(gameState);
 	}
 
-	public static moveChar(playerIndex: number, charIndex: number, move: Vector2): void {
+	public static setPlayPhase(gamePhase: PlayPhase): void {
+		GameStateManager.updateGameState(this.gameState.set("playPhase", gamePhase));
+	}
+
+	public static moveChar(playerIndex: number, charIndex: number, move: Vector2): number {
 		let gameState = GameUtils.moveChar(this.gameState, playerIndex, charIndex, move);
 		gameState = Gameutils.setCharMovedThisTurn(gameState, playerIndex, charIndex, true);
+
+		const waitingOnChars = GameUtils.countUnmovedPlayers(gameState, playerIndex);
 		GameStateManager.updateGameState(gameState);
+
+		return waitingOnChars;
+	}
+
+	public static setAllCharMovedThisTurn(playerIndex: number, movedThisTurn: boolean): void {
+		this.updateGameState(GameUtils.setAllCharMovedThisTurn(this.gameState, playerIndex, movedThisTurn));
 	}
 
 	public static incrementTurn(): void {

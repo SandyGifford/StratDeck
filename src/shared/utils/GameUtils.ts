@@ -18,6 +18,16 @@ export default class Gameutils {
 		return PlayerUtils.countUnreadyPlayers(gameState.get("players"));
 	}
 
+	public static countUnmovedPlayers(gameState: ImmutableGameState, playerIndex: number): number {
+		return PlayerUtils.countUnmovedPlayers(gameState.get("players").get(playerIndex));
+	}
+
+	public static setAllCharMovedThisTurn(gameState: ImmutableGameState, playerIndex: number, movedThisTurn: boolean): ImmutableGameState {
+		const player = PlayerUtils.setAllCharMovedThisTurn(gameState.get("players").get(playerIndex), movedThisTurn);
+		const players = gameState.get("players").set(playerIndex, player);
+		return gameState.set("players", players);
+	}
+
 	public static convertPlayerToTablePlayer(gameState: ImmutableGameState, player: ImmutablePlayerState, playerIndex: number): ImmutableGameState {
 		const tablePlayer = PlayerUtils.convertPlayerToTablePlayer(player, playerIndex, gameState.get("boardWidth"), gameState.get("boardHeight"));
 		const players = gameState.get("players").set(playerIndex, tablePlayer);

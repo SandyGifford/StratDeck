@@ -1,4 +1,4 @@
-import { ImmutableTableCharacterDef, ImmutableCharacterDef } from "@typings/character";
+import { ImmutableTableCharacterDef, ImmutableCharacterDef, ImmutableTablePlayerCharacters } from "@typings/character";
 import { Vector2 } from "@typings/vector";
 
 export default class CharUtils {
@@ -12,5 +12,12 @@ export default class CharUtils {
 			.set("x", position.x)
 			.set("y", position.y)
 			.set("movedThisTurn", false);
+	}
+
+	public static countUnmovedPlayers(chars: ImmutableTablePlayerCharacters): number {
+		return chars.reduce((charCount, char) => {
+			if (char.get("movedThisTurn")) charCount--;
+			return charCount;
+		}, chars.size);
 	}
 }

@@ -70,13 +70,22 @@ export default class PlayerUtils {
 		}, players.size);
 	}
 
+	public static countUnmovedPlayers(player: ImmutableTablePlayerState): number {
+		return CharUtils.countUnmovedPlayers(player.get("chars"));
+	}
+
 	public static moveCharInPlayer(player: ImmutableTablePlayerState, charIndex: number, move: Vector2): ImmutableTablePlayerState {
 		const char = CharUtils.moveChar(player.get("chars").get(charIndex), move);
 		const chars = player.get("chars").set(charIndex, char);
 		return player.set("chars", chars);
 	}
 
-	public static setCharMovedThisTurn(player: ImmutableTablePlayerState, charIndex: number, movedThisTurn: boolean) {
+	public static setAllCharMovedThisTurn(player: ImmutableTablePlayerState, movedThisTurn: boolean): ImmutableTablePlayerState {
+		const chars = player.get("chars").map(char => char.set("movedThisTurn", movedThisTurn));
+		return player.set("chars", chars as any);
+	}
+
+	public static setCharMovedThisTurn(player: ImmutableTablePlayerState, charIndex: number, movedThisTurn: boolean): ImmutableTablePlayerState {
 		const char = player.get("chars").get(charIndex).set("movedThisTurn", movedThisTurn);
 		const chars = player.get("chars").set(charIndex, char);
 		return player.set("chars", chars);

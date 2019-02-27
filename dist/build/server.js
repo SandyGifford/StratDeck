@@ -129,6 +129,7 @@ class ConnectedPlayer {
             }
             console.log(`Player ${this.getPlayerNumber()} bought a ${boughtCard} card.`);
             _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].buyCard(this.playerIndex, boughtCard);
+            _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].setPlayPhase("move");
         };
         this.moveChar = (charIndex, move) => {
             if (!this.isMyTurn()) {
@@ -145,7 +146,13 @@ class ConnectedPlayer {
                 return;
             }
             console.log(`Player ${this.getPlayerNumber()} moved char ${charIndex + 1} to (${move.x}, ${move.y}).`);
-            _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].moveChar(this.playerIndex, charIndex, move);
+            const waitingOnChars = _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].moveChar(this.playerIndex, charIndex, move);
+            const allMoved = waitingOnChars === 0;
+            if (allMoved) {
+                _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].setAllCharMovedThisTurn(this.playerIndex, false);
+                _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].setPlayPhase("buy");
+                _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].incrementTurn();
+            }
         };
         this.initialize = (playerIndex, partialPlayerState) => {
             console.log(`initializing player ${playerIndex + 1}`, partialPlayerState);
@@ -161,8 +168,10 @@ class ConnectedPlayer {
                     ...this.makeCards(4, "weapon")
                 ]), discard: [] });
             const immutablePlayerState = _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_5__["default"].dealCards(immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"](playerState), 5);
-            const waitingOnCount = _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].initializePlayer(playerIndex, immutablePlayerState);
-            console.log(`Player ${this.getPlayerNumber()} (${partialPlayerState.name}) has selected characters, ` + (waitingOnCount === 0 ? "all players ready" : (`still waiting on ${waitingOnCount} player` + (waitingOnCount === 1 ? "" : "s"))));
+            const waitingOnPlayers = _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].initializePlayer(playerIndex, immutablePlayerState);
+            const allPicked = waitingOnPlayers === 0;
+            _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].setGameScreen(allPicked ? "table" : "characterSelect");
+            console.log(`Player ${this.getPlayerNumber()} (${partialPlayerState.name}) has selected characters, ` + (waitingOnPlayers === 0 ? "all players ready" : (`still waiting on ${waitingOnPlayers} player` + (waitingOnPlayers === 1 ? "" : "s"))));
         };
         console.log(`${this.getPlayerDisplayText()} connected`);
         socket.emit(fromServer.playerConnected, _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].getGameState());
@@ -237,20 +246,28 @@ class GameStateManager {
         let gameState = this.gameState;
         gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].convertPlayerToTablePlayer(gameState, playerState, playerIndex);
         const waitingOnPlayers = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].countUnreadyPlayers(gameState);
-        const allPicked = waitingOnPlayers === 0;
-        gameState = gameState.set("screen", allPicked ? "table" : "characterSelect");
         GameStateManager.updateGameState(gameState);
         return waitingOnPlayers;
     }
+    static setGameScreen(screen) {
+        GameStateManager.updateGameState(this.gameState.set("screen", screen));
+    }
     static buyCard(playerIndex, boughtCard) {
-        let gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].addCardToDiscard(this.gameState, playerIndex, boughtCard);
-        gameState = gameState.set("playPhase", "move");
+        const gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].addCardToDiscard(this.gameState, playerIndex, boughtCard);
         GameStateManager.updateGameState(gameState);
+    }
+    static setPlayPhase(gamePhase) {
+        GameStateManager.updateGameState(this.gameState.set("playPhase", gamePhase));
     }
     static moveChar(playerIndex, charIndex, move) {
         let gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].moveChar(this.gameState, playerIndex, charIndex, move);
         gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].setCharMovedThisTurn(gameState, playerIndex, charIndex, true);
+        const waitingOnChars = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].countUnmovedPlayers(gameState, playerIndex);
         GameStateManager.updateGameState(gameState);
+        return waitingOnChars;
+    }
+    static setAllCharMovedThisTurn(playerIndex, movedThisTurn) {
+        this.updateGameState(_utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].setAllCharMovedThisTurn(this.gameState, playerIndex, movedThisTurn));
     }
     static incrementTurn() {
         let whosTurn = this.gameState.get("whosTurn");
@@ -468,6 +485,13 @@ class CharUtils {
             .set("y", position.y)
             .set("movedThisTurn", false);
     }
+    static countUnmovedPlayers(chars) {
+        return chars.reduce((charCount, char) => {
+            if (char.get("movedThisTurn"))
+                charCount--;
+            return charCount;
+        }, chars.size);
+    }
 }
 
 
@@ -581,6 +605,14 @@ class Gameutils {
     static countUnreadyPlayers(gameState) {
         return _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].countUnreadyPlayers(gameState.get("players"));
     }
+    static countUnmovedPlayers(gameState, playerIndex) {
+        return _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].countUnmovedPlayers(gameState.get("players").get(playerIndex));
+    }
+    static setAllCharMovedThisTurn(gameState, playerIndex, movedThisTurn) {
+        const player = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].setAllCharMovedThisTurn(gameState.get("players").get(playerIndex), movedThisTurn);
+        const players = gameState.get("players").set(playerIndex, player);
+        return gameState.set("players", players);
+    }
     static convertPlayerToTablePlayer(gameState, player, playerIndex) {
         const tablePlayer = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].convertPlayerToTablePlayer(player, playerIndex, gameState.get("boardWidth"), gameState.get("boardHeight"));
         const players = gameState.get("players").set(playerIndex, tablePlayer);
@@ -690,9 +722,16 @@ class PlayerUtils {
             return playerCount;
         }, players.size);
     }
+    static countUnmovedPlayers(player) {
+        return _CharUtils__WEBPACK_IMPORTED_MODULE_2__["default"].countUnmovedPlayers(player.get("chars"));
+    }
     static moveCharInPlayer(player, charIndex, move) {
         const char = _CharUtils__WEBPACK_IMPORTED_MODULE_2__["default"].moveChar(player.get("chars").get(charIndex), move);
         const chars = player.get("chars").set(charIndex, char);
+        return player.set("chars", chars);
+    }
+    static setAllCharMovedThisTurn(player, movedThisTurn) {
+        const chars = player.get("chars").map(char => char.set("movedThisTurn", movedThisTurn));
         return player.set("chars", chars);
     }
     static setCharMovedThisTurn(player, charIndex, movedThisTurn) {

@@ -47,6 +47,7 @@ export default class ConnectedPlayer {
 		console.log(`Player ${this.getPlayerNumber()} bought a ${boughtCard} card.`);
 
 		GameStateManager.buyCard(this.playerIndex, boughtCard);
+		GameStateManager.setPlayPhase("move");
 	};
 
 	private moveChar = (charIndex: number, move: Vector2) => {
@@ -69,7 +70,14 @@ export default class ConnectedPlayer {
 
 		console.log(`Player ${this.getPlayerNumber()} moved char ${charIndex + 1} to (${move.x}, ${move.y}).`);
 
-		GameStateManager.moveChar(this.playerIndex, charIndex, move);
+		const waitingOnChars = GameStateManager.moveChar(this.playerIndex, charIndex, move);
+		const allMoved = waitingOnChars === 0;
+
+		if (allMoved) {
+			GameStateManager.setAllCharMovedThisTurn(this.playerIndex, false);
+			GameStateManager.setPlayPhase("buy");
+			GameStateManager.incrementTurn();
+		}
 	};
 
 	private initialize = (playerIndex: number, partialPlayerState: Pick<PlayerState, "chars" | "name">) => {
@@ -96,12 +104,14 @@ export default class ConnectedPlayer {
 		};
 
 		const immutablePlayerState = PlayerUtils.dealCards(Immutable.fromJS(playerState), 5);
-		const waitingOnCount = GameStateManager.initializePlayer(playerIndex, immutablePlayerState);
+		const waitingOnPlayers = GameStateManager.initializePlayer(playerIndex, immutablePlayerState);
+		const allPicked = waitingOnPlayers === 0;
+		GameStateManager.setGameScreen(allPicked ? "table" : "characterSelect")
 
 		console.log(
 			`Player ${this.getPlayerNumber()} (${partialPlayerState.name}) has selected characters, ` + (
-				waitingOnCount === 0 ? "all players ready" : (
-					`still waiting on ${waitingOnCount} player` + (waitingOnCount === 1 ? "" : "s")
+				waitingOnPlayers === 0 ? "all players ready" : (
+					`still waiting on ${waitingOnPlayers} player` + (waitingOnPlayers === 1 ? "" : "s")
 				)
 			)
 		);
