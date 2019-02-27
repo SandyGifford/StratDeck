@@ -451,6 +451,13 @@ class CharUtils {
     static moveChar(character, move) {
         return character.set("x", move.x).set("y", move.y);
     }
+    static convertToTableChar(character, position) {
+        return character
+            .set("maxHP", character.get("hp"))
+            .set("x", position.x)
+            .set("y", position.y)
+            .set("movedThisTurn", false);
+    }
 }
 
 
@@ -612,12 +619,9 @@ class LoopUtils {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return PlayerUtils; });
-/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! immutable */ "immutable");
-/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(immutable__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @utils/DeckUtils */ "./src/shared/utils/DeckUtils.ts");
-/* harmony import */ var _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @utils/ArrayUtils */ "./src/shared/utils/ArrayUtils.ts");
-/* harmony import */ var _CharUtils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./CharUtils */ "./src/shared/utils/CharUtils.ts");
-
+/* harmony import */ var _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @utils/DeckUtils */ "./src/shared/utils/DeckUtils.ts");
+/* harmony import */ var _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @utils/ArrayUtils */ "./src/shared/utils/ArrayUtils.ts");
+/* harmony import */ var _CharUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CharUtils */ "./src/shared/utils/CharUtils.ts");
 
 
 
@@ -635,7 +639,7 @@ class PlayerUtils {
         return player;
     }
     static dealCardsFromDeckToDeck(player, fromDeck, toDeck, cardCount) {
-        const fromTo = _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_1__["default"].dealCardsToDeck(player.get(fromDeck), player.get(toDeck), cardCount);
+        const fromTo = _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_0__["default"].dealCardsToDeck(player.get(fromDeck), player.get(toDeck), cardCount);
         player = player.set(fromDeck, fromTo.fromDeck);
         player = player.set(toDeck, fromTo.toDeck);
         return player;
@@ -644,7 +648,7 @@ class PlayerUtils {
         return this.dealCardsFromDeckToDeck(player, fromDeck, toDeck, player.get(fromDeck).size);
     }
     static shuffleDeck(player, deck) {
-        return player.set(deck, _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_2__["default"].shuffleImmutable(player.get(deck)));
+        return player.set(deck, _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_1__["default"].shuffleImmutable(player.get(deck)));
     }
     static discardHand(player) {
         return this.dealAllCardsFromDeckToDeck(player, "hand", "discard");
@@ -654,20 +658,13 @@ class PlayerUtils {
         return this.shuffleDeck(player, "deck");
     }
     static addCardToDiscard(player, card) {
-        return player.set("discard", _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_1__["default"].addCardsToTop(player.get("discard"), card));
+        return player.set("discard", _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_0__["default"].addCardsToTop(player.get("discard"), card));
     }
     static convertPlayerToTablePlayer(player, playerIndex, boardWidth, boardHeight) {
         const positions = this.getPlayerPosition(playerIndex, boardWidth, boardHeight);
         const tablePlayer = player;
         const chars = player.get("chars");
-        const tableChars = chars.map((char, c) => {
-            const pos = positions.get(c);
-            let tableChar = char;
-            tableChar = tableChar.set("maxHP", char.get("hp"));
-            tableChar = tableChar.set("x", pos.get("x"));
-            tableChar = tableChar.set("y", pos.get("y"));
-            return tableChar;
-        });
+        const tableChars = chars.map((char, c) => _CharUtils__WEBPACK_IMPORTED_MODULE_2__["default"].convertToTableChar(char, positions[c]));
         // FIXME: baaaad typing
         return tablePlayer.set("chars", tableChars);
     }
@@ -679,36 +676,36 @@ class PlayerUtils {
         }, players.size);
     }
     static moveCharInPlayer(player, charIndex, move) {
-        const char = _CharUtils__WEBPACK_IMPORTED_MODULE_3__["default"].moveChar(player.get("chars").get(charIndex), move);
+        const char = _CharUtils__WEBPACK_IMPORTED_MODULE_2__["default"].moveChar(player.get("chars").get(charIndex), move);
         const chars = player.get("chars").set(charIndex, char);
         return player.set("chars", chars);
     }
     static getPlayerPosition(playerIndex, boardWidth, boardHeight) {
         switch (playerIndex) {
             case 0:
-                return immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"]([
+                return [
                     { x: 0, y: 0 },
                     { x: 0, y: 1 },
                     { x: 0, y: 2 },
-                ]);
+                ];
             case 1:
-                return immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"]([
+                return [
                     { x: boardWidth - 1, y: boardHeight - 1 },
                     { x: boardWidth - 1, y: boardHeight - 2 },
                     { x: boardWidth - 1, y: boardHeight - 3 },
-                ]);
+                ];
             case 2:
-                return immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"]([
+                return [
                     { x: 0, y: boardHeight - 1 },
                     { x: 1, y: boardHeight - 1 },
                     { x: 2, y: boardHeight - 1 },
-                ]);
+                ];
             case 3:
-                return immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"]([
+                return [
                     { x: boardWidth - 1, y: 0 },
                     { x: boardWidth - 2, y: 0 },
                     { x: boardWidth - 3, y: 0 },
-                ]);
+                ];
             default:
                 throw `Board does not support this many players.  Requested start location for player ${playerIndex + 1},  max player count is 2`;
         }

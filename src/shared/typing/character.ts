@@ -38,6 +38,7 @@ export interface TableCharacterDef extends CharacterDef {
 	x: number;
 	y: number;
 	maxHP: number;
+	movedThisTurn: boolean;
 }
 
 
