@@ -443,6 +443,25 @@ class ArrayUtils {
 
 /***/ }),
 
+/***/ "./src/shared/utils/CharUtils.ts":
+/*!***************************************!*\
+  !*** ./src/shared/utils/CharUtils.ts ***!
+  \***************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return CharUtils; });
+class CharUtils {
+    static moveChar(character, move) {
+        return character.set("x", move.x).set("y", move.y);
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/shared/utils/DeckUtils.ts":
 /*!***************************************!*\
   !*** ./src/shared/utils/DeckUtils.ts ***!
@@ -603,6 +622,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(immutable__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @utils/DeckUtils */ "./src/shared/utils/DeckUtils.ts");
 /* harmony import */ var _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @utils/ArrayUtils */ "./src/shared/utils/ArrayUtils.ts");
+/* harmony import */ var _CharUtils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./CharUtils */ "./src/shared/utils/CharUtils.ts");
+
 
 
 
@@ -664,15 +685,9 @@ class PlayerUtils {
         }, players.size);
     }
     static moveCharInPlayer(player, charIndex, move) {
-        const chars = this.moveCharInChars(player.get("chars"), charIndex, move);
+        const char = _CharUtils__WEBPACK_IMPORTED_MODULE_3__["default"].moveChar(player.get("chars").get(charIndex), move);
+        const chars = player.get("chars").set(charIndex, char);
         return player.set("chars", chars);
-    }
-    static moveCharInChars(chars, charIndex, move) {
-        const char = this.moveChar(chars.get(charIndex), move);
-        return chars.set(charIndex, char);
-    }
-    static moveChar(character, move) {
-        return character.set("x", move.x).set("y", move.y);
     }
     static getPlayerPosition(playerIndex, boardWidth, boardHeight) {
         switch (playerIndex) {

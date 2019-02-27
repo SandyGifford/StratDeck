@@ -3,9 +3,10 @@ import * as Immutable from "immutable";
 import { CardType, ImmutableTablePlayerState, ImmutablePlayerState, ImmutableTablePlayerStates } from "@typings/game";
 import DeckUtils from "@utils/DeckUtils";
 import ArrayUtils from "@utils/ArrayUtils";
-import { ImmutableTableCharacterDef, ImmutableTablePlayerCharacters } from "@typings/character";
+import { ImmutableTableCharacterDef } from "@typings/character";
 import { ImmutableCharPositions } from "@typings/connection";
 import { Vector2 } from "@typings/vector";
+import CharUtils from "./CharUtils";
 
 export type PlayerDeckType = "deck" | "hand" | "discard";
 
@@ -81,17 +82,9 @@ export default class PlayerUtils {
 	}
 
 	public static moveCharInPlayer(player: ImmutableTablePlayerState, charIndex: number, move: Vector2): ImmutableTablePlayerState {
-		const chars = this.moveCharInChars(player.get("chars"), charIndex, move);
+		const char = CharUtils.moveChar(player.get("chars").get(charIndex), move);
+		const chars = player.get("chars").set(charIndex, char);
 		return player.set("chars", chars);
-	}
-
-	public static moveCharInChars(chars: ImmutableTablePlayerCharacters, charIndex: number, move: Vector2): ImmutableTablePlayerCharacters {
-		const char = this.moveChar(chars.get(charIndex), move);
-		return chars.set(charIndex, char);
-	}
-
-	public static moveChar(character: ImmutableTableCharacterDef, move: Vector2): ImmutableTableCharacterDef {
-		return character.set("x", move.x).set("y", move.y);
 	}
 
 	public static getPlayerPosition(playerIndex: number, boardWidth: number, boardHeight: number): ImmutableCharPositions {
