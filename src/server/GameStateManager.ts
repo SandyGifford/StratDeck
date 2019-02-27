@@ -3,7 +3,7 @@ import PlayerUtils from "@utils/PlayerUtils";
 import EventDelegate, { GenericEventListener } from "@utils/EventDelegate";
 import { immutableInitialGameState } from "@server/initialGameState";
 import { Vector2 } from "@typings/vector";
-import Gameutils from "@utils/GameUtils";
+import GameUtils from "@utils/GameUtils";
 
 export default class GameStateManager {
 	private static gameState: ImmutableGameState = null;
@@ -26,6 +26,9 @@ export default class GameStateManager {
 		this.resetDelegate.removeEventListener(listener);
 	}
 
+
+
+
 	public static updateGameState(newGameState: ImmutableGameState) {
 		this.gameState = newGameState;
 		this.updateDelegate.trigger(this.gameState);
@@ -37,21 +40,12 @@ export default class GameStateManager {
 	}
 
 	public static initializePlayer(playerIndex: number, playerState: ImmutablePlayerState): number {
-		let players = this.gameState.get("players");
-		const boardWidth = this.gameState.get("boardWidth");
-		const boardHeight = this.gameState.get("boardHeight");
+		let gameState = this.gameState;
+		gameState = GameUtils.convertPlayerToTablePlayer(gameState, playerIndex);
 
-		players = players.set(playerIndex, PlayerUtils.makeTablePlayer(playerState, playerIndex, boardWidth, boardHeight));
-
-		const waitingOnPlayers = players.reduce((playerCount, player) => {
-			if (player) playerCount--;
-			return playerCount;
-		}, players.size);
-
+		const waitingOnPlayers = GameUtils.countUnreadyPlayers(gameState);
 		const allPicked = waitingOnPlayers === 0;
 
-		let gameState = this.gameState;
-		gameState = gameState.set("players", players);
 		gameState = gameState.set("screen", allPicked ? "table" : "characterSelect");
 
 		GameStateManager.updateGameState(gameState);
@@ -73,7 +67,7 @@ export default class GameStateManager {
 	}
 
 	public static moveChar(playerIndex: number, charIndex: number, move: Vector2): void {
-		GameStateManager.updateGameState(Gameutils.moveChar(this.gameState, playerIndex, charIndex, move));
+		GameStateManager.updateGameState(GameUtils.moveChar(this.gameState, playerIndex, charIndex, move));
 	}
 
 	public static incrementTurn(): void {

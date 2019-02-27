@@ -54,7 +54,12 @@ export default class PlayerUtils {
 		);
 	}
 
-	public static makeTablePlayer(player: ImmutablePlayerState, playerIndex: number, boardWidth: number, boardHeight: number): ImmutableTablePlayerState {
+	public static convertPlayerToTablePlayerInPlayers(players: ImmutableTablePlayerStates, playerIndex: number, boardWidth: number, boardHeight: number): ImmutableTablePlayerStates {
+		const player = this.convertPlayerToTablePlayer(players.get(playerIndex), playerIndex, boardWidth, boardHeight);
+		return players.set(playerIndex, player);
+	}
+
+	public static convertPlayerToTablePlayer(player: ImmutablePlayerState, playerIndex: number, boardWidth: number, boardHeight: number): ImmutableTablePlayerState {
 		const positions = this.getPlayerPosition(playerIndex, boardWidth, boardHeight);
 		const tablePlayer = player as ImmutableTablePlayerState;
 
@@ -71,6 +76,13 @@ export default class PlayerUtils {
 
 		// FIXME: baaaad typing
 		return tablePlayer.set("chars", tableChars as any);
+	}
+
+	public static countUnreadyPlayers(players: ImmutableTablePlayerStates): number {
+		return players.reduce((playerCount, player) => {
+			if (player) playerCount--;
+			return playerCount;
+		}, players.size);
 	}
 
 	public static moveCharInPlayers(players: ImmutableTablePlayerStates, playerIndex: number, charIndex: number, move: Vector2): ImmutableTablePlayerStates {

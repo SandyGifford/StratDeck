@@ -231,18 +231,10 @@ class GameStateManager {
         this.resetDelegate.trigger(this.gameState);
     }
     static initializePlayer(playerIndex, playerState) {
-        let players = this.gameState.get("players");
-        const boardWidth = this.gameState.get("boardWidth");
-        const boardHeight = this.gameState.get("boardHeight");
-        players = players.set(playerIndex, _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].makeTablePlayer(playerState, playerIndex, boardWidth, boardHeight));
-        const waitingOnPlayers = players.reduce((playerCount, player) => {
-            if (player)
-                playerCount--;
-            return playerCount;
-        }, players.size);
-        const allPicked = waitingOnPlayers === 0;
         let gameState = this.gameState;
-        gameState = gameState.set("players", players);
+        gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_3__["default"].convertPlayerToTablePlayer(gameState, playerIndex);
+        const waitingOnPlayers = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_3__["default"].countUnreadyPlayers(gameState);
+        const allPicked = waitingOnPlayers === 0;
         gameState = gameState.set("screen", allPicked ? "table" : "characterSelect");
         GameStateManager.updateGameState(gameState);
         return waitingOnPlayers;
@@ -551,6 +543,17 @@ class Gameutils {
         const players = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].moveCharInPlayers(gameState.get("players"), playerIndex, charIndex, move);
         return gameState.set("players", players);
     }
+    static setPlayer(gameState, playerIndex, player) {
+        const players = gameState.get("players").set(playerIndex, player);
+        return gameState.set("players", players);
+    }
+    static countUnreadyPlayers(gameState) {
+        return _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].countUnreadyPlayers(gameState.get("players"));
+    }
+    static convertPlayerToTablePlayer(gameState, playerIndex) {
+        const players = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].convertPlayerToTablePlayerInPlayers(gameState.get("players"), playerIndex, gameState.get("boardWidth"), gameState.get("boardHeight"));
+        return gameState.set("players", players);
+    }
 }
 
 
@@ -631,7 +634,11 @@ class PlayerUtils {
     static addCardToDiscard(player, card) {
         return player.set("discard", _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_1__["default"].addCardsToTop(player.get("discard"), card));
     }
-    static makeTablePlayer(player, playerIndex, boardWidth, boardHeight) {
+    static convertPlayerToTablePlayerInPlayers(players, playerIndex, boardWidth, boardHeight) {
+        const player = this.convertPlayerToTablePlayer(players.get(playerIndex), playerIndex, boardWidth, boardHeight);
+        return players.set(playerIndex, player);
+    }
+    static convertPlayerToTablePlayer(player, playerIndex, boardWidth, boardHeight) {
         const positions = this.getPlayerPosition(playerIndex, boardWidth, boardHeight);
         const tablePlayer = player;
         const chars = player.get("chars");
@@ -645,6 +652,13 @@ class PlayerUtils {
         });
         // FIXME: baaaad typing
         return tablePlayer.set("chars", tableChars);
+    }
+    static countUnreadyPlayers(players) {
+        return players.reduce((playerCount, player) => {
+            if (player)
+                playerCount--;
+            return playerCount;
+        }, players.size);
     }
     static moveCharInPlayers(players, playerIndex, charIndex, move) {
         const player = this.moveCharInPlayer(players.get(playerIndex), charIndex, move);
