@@ -54,9 +54,9 @@ export default class PlayerUtils {
 		);
 	}
 
-	public static convertPlayerToTablePlayerInPlayers(players: ImmutableTablePlayerStates, playerIndex: number, boardWidth: number, boardHeight: number): ImmutableTablePlayerStates {
-		const player = this.convertPlayerToTablePlayer(players.get(playerIndex), playerIndex, boardWidth, boardHeight);
-		return players.set(playerIndex, player);
+	public static convertPlayerToTablePlayerInPlayers(players: ImmutableTablePlayerStates, playerIndex: number, player: ImmutablePlayerState, boardWidth: number, boardHeight: number): ImmutableTablePlayerStates {
+		const tablePlayer = this.convertPlayerToTablePlayer(player, playerIndex, boardWidth, boardHeight);
+		return players.set(playerIndex, tablePlayer);
 	}
 
 	public static convertPlayerToTablePlayer(player: ImmutablePlayerState, playerIndex: number, boardWidth: number, boardHeight: number): ImmutableTablePlayerState {

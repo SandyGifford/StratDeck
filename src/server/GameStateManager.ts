@@ -41,7 +41,7 @@ export default class GameStateManager {
 
 	public static initializePlayer(playerIndex: number, playerState: ImmutablePlayerState): number {
 		let gameState = this.gameState;
-		gameState = GameUtils.convertPlayerToTablePlayer(gameState, playerIndex);
+		gameState = GameUtils.convertPlayerToTablePlayer(gameState, playerState, playerIndex);
 
 		const waitingOnPlayers = GameUtils.countUnreadyPlayers(gameState);
 		const allPicked = waitingOnPlayers === 0;

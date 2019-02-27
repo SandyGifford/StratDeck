@@ -232,7 +232,7 @@ class GameStateManager {
     }
     static initializePlayer(playerIndex, playerState) {
         let gameState = this.gameState;
-        gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_3__["default"].convertPlayerToTablePlayer(gameState, playerIndex);
+        gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_3__["default"].convertPlayerToTablePlayer(gameState, playerState, playerIndex);
         const waitingOnPlayers = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_3__["default"].countUnreadyPlayers(gameState);
         const allPicked = waitingOnPlayers === 0;
         gameState = gameState.set("screen", allPicked ? "table" : "characterSelect");
@@ -550,8 +550,8 @@ class Gameutils {
     static countUnreadyPlayers(gameState) {
         return _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].countUnreadyPlayers(gameState.get("players"));
     }
-    static convertPlayerToTablePlayer(gameState, playerIndex) {
-        const players = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].convertPlayerToTablePlayerInPlayers(gameState.get("players"), playerIndex, gameState.get("boardWidth"), gameState.get("boardHeight"));
+    static convertPlayerToTablePlayer(gameState, player, playerIndex) {
+        const players = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].convertPlayerToTablePlayerInPlayers(gameState.get("players"), playerIndex, player, gameState.get("boardWidth"), gameState.get("boardHeight"));
         return gameState.set("players", players);
     }
 }
@@ -634,9 +634,9 @@ class PlayerUtils {
     static addCardToDiscard(player, card) {
         return player.set("discard", _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_1__["default"].addCardsToTop(player.get("discard"), card));
     }
-    static convertPlayerToTablePlayerInPlayers(players, playerIndex, boardWidth, boardHeight) {
-        const player = this.convertPlayerToTablePlayer(players.get(playerIndex), playerIndex, boardWidth, boardHeight);
-        return players.set(playerIndex, player);
+    static convertPlayerToTablePlayerInPlayers(players, playerIndex, player, boardWidth, boardHeight) {
+        const tablePlayer = this.convertPlayerToTablePlayer(player, playerIndex, boardWidth, boardHeight);
+        return players.set(playerIndex, tablePlayer);
     }
     static convertPlayerToTablePlayer(player, playerIndex, boardWidth, boardHeight) {
         const positions = this.getPlayerPosition(playerIndex, boardWidth, boardHeight);
