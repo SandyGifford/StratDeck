@@ -201,11 +201,9 @@ class ConnectedPlayer {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return GameStateManager; });
-/* harmony import */ var _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @utils/PlayerUtils */ "./src/shared/utils/PlayerUtils.ts");
-/* harmony import */ var _utils_EventDelegate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @utils/EventDelegate */ "./src/shared/utils/EventDelegate.ts");
-/* harmony import */ var _server_initialGameState__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @server/initialGameState */ "./src/server/initialGameState.ts");
-/* harmony import */ var _utils_GameUtils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @utils/GameUtils */ "./src/shared/utils/GameUtils.ts");
-
+/* harmony import */ var _utils_EventDelegate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @utils/EventDelegate */ "./src/shared/utils/EventDelegate.ts");
+/* harmony import */ var _server_initialGameState__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @server/initialGameState */ "./src/server/initialGameState.ts");
+/* harmony import */ var _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @utils/GameUtils */ "./src/shared/utils/GameUtils.ts");
 
 
 
@@ -227,29 +225,25 @@ class GameStateManager {
         this.updateDelegate.trigger(this.gameState);
     }
     static resetGame(playerCount) {
-        this.gameState = Object(_server_initialGameState__WEBPACK_IMPORTED_MODULE_2__["immutableInitialGameState"])(playerCount);
+        this.gameState = Object(_server_initialGameState__WEBPACK_IMPORTED_MODULE_1__["immutableInitialGameState"])(playerCount);
         this.resetDelegate.trigger(this.gameState);
     }
     static initializePlayer(playerIndex, playerState) {
         let gameState = this.gameState;
-        gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_3__["default"].convertPlayerToTablePlayer(gameState, playerState, playerIndex);
-        const waitingOnPlayers = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_3__["default"].countUnreadyPlayers(gameState);
+        gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].convertPlayerToTablePlayer(gameState, playerState, playerIndex);
+        const waitingOnPlayers = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].countUnreadyPlayers(gameState);
         const allPicked = waitingOnPlayers === 0;
         gameState = gameState.set("screen", allPicked ? "table" : "characterSelect");
         GameStateManager.updateGameState(gameState);
         return waitingOnPlayers;
     }
     static buyCard(playerIndex, boughtCard) {
-        const players = this.gameState.get("players");
-        const player = players.get(playerIndex);
-        _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].addCardToDiscard(player, boughtCard);
-        let gameState = this.gameState;
-        gameState = gameState.set("players", players);
+        let gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].addCardToDiscard(this.gameState, playerIndex, boughtCard);
         gameState = gameState.set("playPhase", "move");
         GameStateManager.updateGameState(gameState);
     }
     static moveChar(playerIndex, charIndex, move) {
-        GameStateManager.updateGameState(_utils_GameUtils__WEBPACK_IMPORTED_MODULE_3__["default"].moveChar(this.gameState, playerIndex, charIndex, move));
+        GameStateManager.updateGameState(_utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].moveChar(this.gameState, playerIndex, charIndex, move));
     }
     static incrementTurn() {
         let whosTurn = this.gameState.get("whosTurn");
@@ -270,8 +264,8 @@ class GameStateManager {
     }
 }
 GameStateManager.gameState = null;
-GameStateManager.updateDelegate = new _utils_EventDelegate__WEBPACK_IMPORTED_MODULE_1__["default"]();
-GameStateManager.resetDelegate = new _utils_EventDelegate__WEBPACK_IMPORTED_MODULE_1__["default"]();
+GameStateManager.updateDelegate = new _utils_EventDelegate__WEBPACK_IMPORTED_MODULE_0__["default"]();
+GameStateManager.resetDelegate = new _utils_EventDelegate__WEBPACK_IMPORTED_MODULE_0__["default"]();
 ;
 
 
@@ -571,7 +565,7 @@ class Gameutils {
         return _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].countUnreadyPlayers(gameState.get("players"));
     }
     static convertPlayerToTablePlayer(gameState, player, playerIndex) {
-        const tablePlayer = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].convertPlayerToTablePlayer(gameState.get("players").get(playerIndex), playerIndex, gameState.get("boardWidth"), gameState.get("boardHeight"));
+        const tablePlayer = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].convertPlayerToTablePlayer(player, playerIndex, gameState.get("boardWidth"), gameState.get("boardHeight"));
         const players = gameState.get("players").set(playerIndex, tablePlayer);
         return gameState.set("players", players);
     }

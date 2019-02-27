@@ -19,7 +19,7 @@ export default class Gameutils {
 	}
 
 	public static convertPlayerToTablePlayer(gameState: ImmutableGameState, player: ImmutablePlayerState, playerIndex: number): ImmutableGameState {
-		const tablePlayer = PlayerUtils.convertPlayerToTablePlayer(gameState.get("players").get(playerIndex), playerIndex, gameState.get("boardWidth"), gameState.get("boardHeight"));
+		const tablePlayer = PlayerUtils.convertPlayerToTablePlayer(player, playerIndex, gameState.get("boardWidth"), gameState.get("boardHeight"));
 		const players = gameState.get("players").set(playerIndex, tablePlayer);
 		return gameState.set("players", players);
 	}

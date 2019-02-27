@@ -1,5 +1,4 @@
 import { CardType, PlayPhase, ImmutableGameState, ImmutablePlayerState } from "@typings/game";
-import PlayerUtils from "@utils/PlayerUtils";
 import EventDelegate, { GenericEventListener } from "@utils/EventDelegate";
 import { immutableInitialGameState } from "@server/initialGameState";
 import { Vector2 } from "@typings/vector";
@@ -54,15 +53,8 @@ export default class GameStateManager {
 	}
 
 	public static buyCard(playerIndex: number, boughtCard: CardType): void {
-		const players = this.gameState.get("players");
-		const player = players.get(playerIndex);
-
-		PlayerUtils.addCardToDiscard(player, boughtCard);
-
-		let gameState = this.gameState;
-		gameState = gameState.set("players", players);
+		let gameState = GameUtils.addCardToDiscard(this.gameState, playerIndex, boughtCard);
 		gameState = gameState.set("playPhase", "move");
-
 		GameStateManager.updateGameState(gameState);
 	}
 
