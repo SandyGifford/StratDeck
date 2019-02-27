@@ -76,6 +76,12 @@ export default class PlayerUtils {
 		return player.set("chars", chars);
 	}
 
+	public static setCharMovedThisTurn(player: ImmutableTablePlayerState, charIndex: number, movedThisTurn: boolean) {
+		const char = player.get("chars").get(charIndex).set("movedThisTurn", movedThisTurn);
+		const chars = player.get("chars").set(charIndex, char);
+		return player.set("chars", chars);
+	}
+
 	public static getPlayerPosition(playerIndex: number, boardWidth: number, boardHeight: number): CharPositions {
 		switch (playerIndex) {
 			case 0:

@@ -29,4 +29,10 @@ export default class Gameutils {
 		const players = gameState.get("players").set(playerIndex, player);
 		return gameState.set("players", players);
 	}
+
+	public static setCharMovedThisTurn(gameState: ImmutableGameState, playerIndex: number, charIndex: number, movedThisTurn: boolean) {
+		const player = PlayerUtils.setCharMovedThisTurn(gameState.get("players").get(playerIndex), charIndex, movedThisTurn);
+		const players = gameState.get("players").set(playerIndex, player);
+		return gameState.set("players", players);
+	}
 }

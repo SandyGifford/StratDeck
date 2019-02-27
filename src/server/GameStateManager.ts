@@ -3,6 +3,7 @@ import EventDelegate, { GenericEventListener } from "@utils/EventDelegate";
 import { immutableInitialGameState } from "@server/initialGameState";
 import { Vector2 } from "@typings/vector";
 import GameUtils from "@utils/GameUtils";
+import Gameutils from "@utils/GameUtils";
 
 export default class GameStateManager {
 	private static gameState: ImmutableGameState = null;
@@ -58,7 +59,9 @@ export default class GameStateManager {
 	}
 
 	public static moveChar(playerIndex: number, charIndex: number, move: Vector2): void {
-		GameStateManager.updateGameState(GameUtils.moveChar(this.gameState, playerIndex, charIndex, move));
+		let gameState = GameUtils.moveChar(this.gameState, playerIndex, charIndex, move);
+		gameState = Gameutils.setCharMovedThisTurn(gameState, playerIndex, charIndex, true);
+		GameStateManager.updateGameState(gameState);
 	}
 
 	public static incrementTurn(): void {
@@ -81,5 +84,9 @@ export default class GameStateManager {
 
 	public static getPlayPhase(): PlayPhase {
 		return this.gameState.get("playPhase");
+	}
+
+	public static getCharDidMoveThisTurn(playerIndex: number, charIndex: number): boolean {
+		return this.gameState.get("players").get(playerIndex).get("chars").get(charIndex).get("movedThisTurn");
 	}
 };

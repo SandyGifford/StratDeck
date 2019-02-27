@@ -135,6 +135,10 @@ class ConnectedPlayer {
                 console.log(`Player ${this.getPlayerNumber()} tried to move their char ${charIndex + 1} out of turn.`);
                 return;
             }
+            if (_GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].getCharDidMoveThisTurn(this.playerIndex, charIndex)) {
+                console.log(`Player ${this.getPlayerNumber()} tried to move their char ${charIndex + 1} but that char has moved already.`);
+                return;
+            }
             const playPhase = _GameStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].getPlayPhase();
             if (playPhase !== "move") {
                 console.log(`Player ${this.getPlayerNumber()} tried to move their chars but play phase is ${playPhase}.`);
@@ -207,6 +211,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 class GameStateManager {
     static addUpdateListener(listener) {
         this.updateDelegate.addEventListener(listener);
@@ -243,7 +248,9 @@ class GameStateManager {
         GameStateManager.updateGameState(gameState);
     }
     static moveChar(playerIndex, charIndex, move) {
-        GameStateManager.updateGameState(_utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].moveChar(this.gameState, playerIndex, charIndex, move));
+        let gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].moveChar(this.gameState, playerIndex, charIndex, move);
+        gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].setCharMovedThisTurn(gameState, playerIndex, charIndex, true);
+        GameStateManager.updateGameState(gameState);
     }
     static incrementTurn() {
         let whosTurn = this.gameState.get("whosTurn");
@@ -261,6 +268,9 @@ class GameStateManager {
     }
     static getPlayPhase() {
         return this.gameState.get("playPhase");
+    }
+    static getCharDidMoveThisTurn(playerIndex, charIndex) {
+        return this.gameState.get("players").get(playerIndex).get("chars").get(charIndex).get("movedThisTurn");
     }
 }
 GameStateManager.gameState = null;
@@ -581,6 +591,11 @@ class Gameutils {
         const players = gameState.get("players").set(playerIndex, player);
         return gameState.set("players", players);
     }
+    static setCharMovedThisTurn(gameState, playerIndex, charIndex, movedThisTurn) {
+        const player = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].setCharMovedThisTurn(gameState.get("players").get(playerIndex), charIndex, movedThisTurn);
+        const players = gameState.get("players").set(playerIndex, player);
+        return gameState.set("players", players);
+    }
 }
 
 
@@ -677,6 +692,11 @@ class PlayerUtils {
     }
     static moveCharInPlayer(player, charIndex, move) {
         const char = _CharUtils__WEBPACK_IMPORTED_MODULE_2__["default"].moveChar(player.get("chars").get(charIndex), move);
+        const chars = player.get("chars").set(charIndex, char);
+        return player.set("chars", chars);
+    }
+    static setCharMovedThisTurn(player, charIndex, movedThisTurn) {
+        const char = player.get("chars").get(charIndex).set("movedThisTurn", movedThisTurn);
         const chars = player.get("chars").set(charIndex, char);
         return player.set("chars", chars);
     }

@@ -55,6 +55,11 @@ export default class ConnectedPlayer {
 			return;
 		}
 
+		if (GameStateManager.getCharDidMoveThisTurn(this.playerIndex, charIndex)) {
+			console.log(`Player ${this.getPlayerNumber()} tried to move their char ${charIndex + 1} but that char has moved already.`);
+			return
+		}
+
 		const playPhase = GameStateManager.getPlayPhase();
 
 		if (playPhase !== "move") {
