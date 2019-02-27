@@ -46,7 +46,6 @@ export default class GameStateManager {
 		const allPicked = waitingOnPlayers === 0;
 
 		gameState = gameState.set("screen", allPicked ? "table" : "characterSelect");
-
 		GameStateManager.updateGameState(gameState);
 
 		return waitingOnPlayers;
