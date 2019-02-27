@@ -540,7 +540,8 @@ __webpack_require__.r(__webpack_exports__);
 
 class Gameutils {
     static moveChar(gameState, playerIndex, charIndex, move) {
-        const players = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].moveCharInPlayers(gameState.get("players"), playerIndex, charIndex, move);
+        const player = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].moveCharInPlayer(gameState.get("players").get(playerIndex), charIndex, move);
+        const players = gameState.get("players").set(playerIndex, player);
         return gameState.set("players", players);
     }
     static setPlayer(gameState, playerIndex, player) {
@@ -551,7 +552,13 @@ class Gameutils {
         return _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].countUnreadyPlayers(gameState.get("players"));
     }
     static convertPlayerToTablePlayer(gameState, player, playerIndex) {
-        const players = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].convertPlayerToTablePlayerInPlayers(gameState.get("players"), playerIndex, player, gameState.get("boardWidth"), gameState.get("boardHeight"));
+        const tablePlayer = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].convertPlayerToTablePlayer(gameState.get("players").get(playerIndex), playerIndex, gameState.get("boardWidth"), gameState.get("boardHeight"));
+        const players = gameState.get("players").set(playerIndex, tablePlayer);
+        return gameState.set("players", players);
+    }
+    static addCardToDiscard(gameState, playerIndex, card) {
+        const player = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].addCardToDiscard(gameState.get("players").get(playerIndex), card);
+        const players = gameState.get("players").set(playerIndex, player);
         return gameState.set("players", players);
     }
 }
@@ -634,10 +641,6 @@ class PlayerUtils {
     static addCardToDiscard(player, card) {
         return player.set("discard", _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_1__["default"].addCardsToTop(player.get("discard"), card));
     }
-    static convertPlayerToTablePlayerInPlayers(players, playerIndex, player, boardWidth, boardHeight) {
-        const tablePlayer = this.convertPlayerToTablePlayer(player, playerIndex, boardWidth, boardHeight);
-        return players.set(playerIndex, tablePlayer);
-    }
     static convertPlayerToTablePlayer(player, playerIndex, boardWidth, boardHeight) {
         const positions = this.getPlayerPosition(playerIndex, boardWidth, boardHeight);
         const tablePlayer = player;
@@ -659,10 +662,6 @@ class PlayerUtils {
                 playerCount--;
             return playerCount;
         }, players.size);
-    }
-    static moveCharInPlayers(players, playerIndex, charIndex, move) {
-        const player = this.moveCharInPlayer(players.get(playerIndex), charIndex, move);
-        return players.set(playerIndex, player);
     }
     static moveCharInPlayer(player, charIndex, move) {
         const chars = this.moveCharInChars(player.get("chars"), charIndex, move);

@@ -47,16 +47,11 @@ export default class PlayerUtils {
 		return this.shuffleDeck(player, "deck");
 	}
 
-	public static addCardToDiscard(player: ImmutablePlayerState, card: CardType): ImmutablePlayerState {
+	public static addCardToDiscard(player: ImmutableTablePlayerState, card: CardType): ImmutableTablePlayerState {
 		return player.set(
 			"discard",
 			DeckUtils.addCardsToTop(player.get("discard"), card),
 		);
-	}
-
-	public static convertPlayerToTablePlayerInPlayers(players: ImmutableTablePlayerStates, playerIndex: number, player: ImmutablePlayerState, boardWidth: number, boardHeight: number): ImmutableTablePlayerStates {
-		const tablePlayer = this.convertPlayerToTablePlayer(player, playerIndex, boardWidth, boardHeight);
-		return players.set(playerIndex, tablePlayer);
 	}
 
 	public static convertPlayerToTablePlayer(player: ImmutablePlayerState, playerIndex: number, boardWidth: number, boardHeight: number): ImmutableTablePlayerState {
@@ -83,11 +78,6 @@ export default class PlayerUtils {
 			if (player) playerCount--;
 			return playerCount;
 		}, players.size);
-	}
-
-	public static moveCharInPlayers(players: ImmutableTablePlayerStates, playerIndex: number, charIndex: number, move: Vector2): ImmutableTablePlayerStates {
-		const player = this.moveCharInPlayer(players.get(playerIndex), charIndex, move);
-		return players.set(playerIndex, player);
 	}
 
 	public static moveCharInPlayer(player: ImmutableTablePlayerState, charIndex: number, move: Vector2): ImmutableTablePlayerState {
