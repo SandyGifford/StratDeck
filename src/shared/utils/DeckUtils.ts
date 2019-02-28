@@ -19,7 +19,7 @@ export default class DeckUtils {
 
 	public static dealCards(deck: ImmutableCardTypes, cardCount: number): DealtCards {
 		return {
-			deck: deck.slice(0, cardCount),
+			deck: deck.slice(0, -cardCount),
 			dealt: deck.slice(-cardCount),
 		};
 	}

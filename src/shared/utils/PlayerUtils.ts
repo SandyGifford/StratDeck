@@ -8,7 +8,7 @@ import CharUtils from "./CharUtils";
 export type PlayerDeckType = "deck" | "hand" | "discard";
 
 export default class PlayerUtils {
-	public static dealCards(player: ImmutablePlayerState, cardCount: number): ImmutablePlayerState {
+	public static dealCards(player: ImmutableTablePlayerState, cardCount: number): ImmutableTablePlayerState {
 		const deckSize = player.get("deck").size;
 		if (cardCount > deckSize) {
 			player = this.dealCardsFromDeckToDeck(player, "deck", "hand", deckSize);
@@ -21,26 +21,26 @@ export default class PlayerUtils {
 		return player;
 	}
 
-	public static dealCardsFromDeckToDeck(player: ImmutablePlayerState, fromDeck: PlayerDeckType, toDeck: PlayerDeckType, cardCount: number): ImmutablePlayerState {
+	public static dealCardsFromDeckToDeck(player: ImmutableTablePlayerState, fromDeck: PlayerDeckType, toDeck: PlayerDeckType, cardCount: number): ImmutableTablePlayerState {
 		const fromTo = DeckUtils.dealCardsToDeck(player.get(fromDeck), player.get(toDeck), cardCount);
 		player = player.set(fromDeck, fromTo.fromDeck);
 		player = player.set(toDeck, fromTo.toDeck);
 		return player;
 	}
 
-	public static dealAllCardsFromDeckToDeck(player: ImmutablePlayerState, fromDeck: PlayerDeckType, toDeck: PlayerDeckType): ImmutablePlayerState {
+	public static dealAllCardsFromDeckToDeck(player: ImmutableTablePlayerState, fromDeck: PlayerDeckType, toDeck: PlayerDeckType): ImmutableTablePlayerState {
 		return this.dealCardsFromDeckToDeck(player, fromDeck, toDeck, player.get(fromDeck).size);
 	}
 
-	public static shuffleDeck(player: ImmutablePlayerState, deck: PlayerDeckType): ImmutablePlayerState {
+	public static shuffleDeck(player: ImmutableTablePlayerState, deck: PlayerDeckType): ImmutableTablePlayerState {
 		return player.set(deck, ArrayUtils.shuffleImmutable(player.get(deck)));
 	}
 
-	public static discardHand(player: ImmutablePlayerState): ImmutablePlayerState {
+	public static discardHand(player: ImmutableTablePlayerState): ImmutableTablePlayerState {
 		return this.dealAllCardsFromDeckToDeck(player, "hand", "discard");
 	}
 
-	public static shuffleDiscardToDeck(player: ImmutablePlayerState): ImmutablePlayerState {
+	public static shuffleDiscardToDeck(player: ImmutableTablePlayerState): ImmutableTablePlayerState {
 		player = this.dealAllCardsFromDeckToDeck(player, "discard", "deck");
 		return this.shuffleDeck(player, "deck");
 	}
@@ -89,6 +89,10 @@ export default class PlayerUtils {
 		const char = player.get("chars").get(charIndex).set("movedThisTurn", movedThisTurn);
 		const chars = player.get("chars").set(charIndex, char);
 		return player.set("chars", chars);
+	}
+
+	public static allMovesTaken(player: ImmutableTablePlayerState): boolean {
+		return player.get("chars").every(char => char.get("movedThisTurn"));
 	}
 
 	public static getPlayerPosition(playerIndex: number, boardWidth: number, boardHeight: number): CharPositions {

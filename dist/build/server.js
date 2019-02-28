@@ -220,7 +220,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 class GameStateManager {
     static addUpdateListener(listener) {
         this.updateDelegate.addEventListener(listener);
@@ -263,6 +262,10 @@ class GameStateManager {
         let gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].moveChar(this.gameState, playerIndex, charIndex, move);
         gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].setCharMovedThisTurn(gameState, playerIndex, charIndex, true);
         const waitingOnChars = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].countUnmovedPlayers(gameState, playerIndex);
+        if (waitingOnChars === 0) {
+            gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].discardHand(gameState, playerIndex);
+            gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].dealCards(gameState, playerIndex, 5);
+        }
         GameStateManager.updateGameState(gameState);
         return waitingOnChars;
     }
@@ -521,7 +524,7 @@ class DeckUtils {
     }
     static dealCards(deck, cardCount) {
         return {
-            deck: deck.slice(0, cardCount),
+            deck: deck.slice(0, -cardCount),
             dealt: deck.slice(-cardCount),
         };
     }
@@ -593,6 +596,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PlayerUtils */ "./src/shared/utils/PlayerUtils.ts");
 
 class Gameutils {
+    static dealCards(gameState, playerIndex, cardCount) {
+        const player = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].dealCards(gameState.get("players").get(playerIndex), cardCount);
+        const players = gameState.get("players").set(playerIndex, player);
+        return gameState.set("players", players);
+    }
     static moveChar(gameState, playerIndex, charIndex, move) {
         const player = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].moveCharInPlayer(gameState.get("players").get(playerIndex), charIndex, move);
         const players = gameState.get("players").set(playerIndex, player);
@@ -618,6 +626,11 @@ class Gameutils {
         const players = gameState.get("players").set(playerIndex, tablePlayer);
         return gameState.set("players", players);
     }
+    static discardHand(gameState, playerIndex) {
+        const player = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].discardHand(gameState.get("players").get(playerIndex));
+        const players = gameState.get("players").set(playerIndex, player);
+        return gameState.set("players", players);
+    }
     static addCardToDiscard(gameState, playerIndex, card) {
         const player = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].addCardToDiscard(gameState.get("players").get(playerIndex), card);
         const players = gameState.get("players").set(playerIndex, player);
@@ -627,6 +640,9 @@ class Gameutils {
         const player = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].setCharMovedThisTurn(gameState.get("players").get(playerIndex), charIndex, movedThisTurn);
         const players = gameState.get("players").set(playerIndex, player);
         return gameState.set("players", players);
+    }
+    static allMovesTaken(gameState, playerIndex) {
+        return _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].allMovesTaken(gameState.get("players").get(playerIndex));
     }
 }
 
@@ -738,6 +754,9 @@ class PlayerUtils {
         const char = player.get("chars").get(charIndex).set("movedThisTurn", movedThisTurn);
         const chars = player.get("chars").set(charIndex, char);
         return player.set("chars", chars);
+    }
+    static allMovesTaken(player) {
+        return player.get("chars").every(char => char.get("movedThisTurn"));
     }
     static getPlayerPosition(playerIndex, boardWidth, boardHeight) {
         switch (playerIndex) {

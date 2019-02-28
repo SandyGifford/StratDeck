@@ -3,7 +3,6 @@ import EventDelegate, { GenericEventListener } from "@utils/EventDelegate";
 import { immutableInitialGameState } from "@server/initialGameState";
 import { Vector2 } from "@typings/vector";
 import GameUtils from "@utils/GameUtils";
-import Gameutils from "@utils/GameUtils";
 
 export default class GameStateManager {
 	private static gameState: ImmutableGameState = null;
@@ -64,9 +63,15 @@ export default class GameStateManager {
 
 	public static moveChar(playerIndex: number, charIndex: number, move: Vector2): number {
 		let gameState = GameUtils.moveChar(this.gameState, playerIndex, charIndex, move);
-		gameState = Gameutils.setCharMovedThisTurn(gameState, playerIndex, charIndex, true);
+		gameState = GameUtils.setCharMovedThisTurn(gameState, playerIndex, charIndex, true);
 
 		const waitingOnChars = GameUtils.countUnmovedPlayers(gameState, playerIndex);
+
+		if (waitingOnChars === 0) {
+			gameState = GameUtils.discardHand(gameState, playerIndex);
+			gameState = GameUtils.dealCards(gameState, playerIndex, 5)
+		}
+
 		GameStateManager.updateGameState(gameState);
 
 		return waitingOnChars;
