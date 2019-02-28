@@ -29,6 +29,7 @@
     "react-dom": "^16.7.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
+    "ts-jest": "^24.0.0",
     "ts-loader": "^5.3.3",
     "typescript": "^3.2.4",
     "uuid": "^3.3.2",
@@ -41,6 +42,17 @@
     "watchClient": "webpack --watch --config webpack.client.config.js",
     "watchServer": "webpack --watch --config webpack.server.config.js",
     "build": "webpack --config webpack.server.config.js",
-    "devStart": "nodemon --inspect ./dist/build/server.js"
+    "devStart": "nodemon --inspect ./dist/build/server.js",
+    "test": "jest --watch"
+  },
+  "jest": {
+    "testRegex": ".*\\/__tests__\\/.*\\.test\\.(ts|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "transform": {
+      "\\.ts$": "ts-jest"
+    }
   }
 }
