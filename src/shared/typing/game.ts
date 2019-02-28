@@ -16,14 +16,19 @@ export default interface GameState {
 
 export type CardType = "hand" | "weapon" | "ability1" | "ability2" | "ability3";
 export type CardTypes = CardType[];
-export type CardDeck = CardType[];
+export type DeckState = CardState[];
+
+export interface CardState {
+	type: CardType;
+	uid: string;
+}
 
 export interface PlayerState {
 	name: string;
 	chars: PlayerCharacters;
-	hand: CardDeck;
-	deck: CardDeck;
-	discard: CardDeck;
+	hand: DeckState;
+	deck: DeckState;
+	discard: DeckState;
 }
 
 export type PlayerInitializer = Pick<PlayerState, "chars" | "name">;
@@ -48,4 +53,5 @@ export type ImmutableTablePlayerStates = Immutalizer<TablePlayerStates>;
 export type ImmutablePlayerInitializer = Immutalizer<PlayerInitializer>;
 
 export type ImmutableCardTypes = Immutalizer<CardTypes>;
-export type ImmutableDeck = Immutalizer<CardDeck>;
+export type ImmutableCardState = Immutalizer<CardState>;
+export type ImmutableDeckState = Immutalizer<DeckState>;

@@ -41378,10 +41378,10 @@ class Card extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
         this.state = {};
     }
     render() {
-        const { type, height, facedown } = this.props;
+        const { card, height, facedown } = this.props;
         const baseClassName = _utils_DOMUtils__WEBPACK_IMPORTED_MODULE_3__["default"].BEMClassName("Card", {
             "facedown": facedown,
-        }, type);
+        }, card.get("type"));
         const shadowOpacity = _utils_NumberUtils__WEBPACK_IMPORTED_MODULE_4__["default"].clamp(0.5 - (height * 0.1), 0, 0.5);
         const xScale = facedown ? -1 : 1;
         return (react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: baseClassName, onClick: this.cardClicked, style: {
@@ -41438,7 +41438,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _CardPool_style__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_CardPool_style__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _Deck_Deck__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Deck/Deck */ "./src/client/components/PlayTable/subComponents/Deck/Deck.tsx");
+/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! immutable */ "./node_modules/immutable/dist/immutable.es.js");
+/* harmony import */ var _Deck_Deck__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Deck/Deck */ "./src/client/components/PlayTable/subComponents/Deck/Deck.tsx");
+
 
 
 
@@ -41456,8 +41458,12 @@ class CardPool extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
             this.renderDeck("ability3", "ability 3", 5)));
     }
     renderDeck(cardType, label, cost) {
+        const card = {
+            type: cardType,
+            uid: "",
+        };
         return react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "CardPool__deck" },
-            react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_Deck_Deck__WEBPACK_IMPORTED_MODULE_2__["default"], { label: this.renderDeckLabel(label, cost), onMouseDown: this.makeClickHandler(cardType), topType: cardType, facedown: false, cardCount: 50 }));
+            react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_Deck_Deck__WEBPACK_IMPORTED_MODULE_3__["default"], { label: this.renderDeckLabel(label, cost), onMouseDown: this.makeClickHandler(cardType), card: immutable__WEBPACK_IMPORTED_MODULE_2__["fromJS"](card), facedown: false, cardCount: 50 }));
     }
     renderDeckLabel(text, cost) {
         return react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "CardPool__deck__label" },
@@ -41532,7 +41538,7 @@ class Deck extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
         this.state = {};
     }
     render() {
-        const { facedown, topType, cardCount, onMouseDown, label, disabled } = this.props;
+        const { facedown, card, cardCount, onMouseDown, label, disabled } = this.props;
         const deckHeight = cardCount / 2;
         const baseClassName = _utils_DOMUtils__WEBPACK_IMPORTED_MODULE_3__["default"].BEMClassName("Deck", {
             "disabled": disabled,
@@ -41545,7 +41551,7 @@ class Deck extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
                 react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "Deck__inner" },
                     react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "Deck__inner__cards" },
                         react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "Deck__inner__cards__card", style: { top: `${-deckHeight / 10}em` } },
-                            react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_Card_Card__WEBPACK_IMPORTED_MODULE_2__["default"], { onClick: onMouseDown, facedown: facedown, type: topType || "hand", height: 0 })),
+                            react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_Card_Card__WEBPACK_IMPORTED_MODULE_2__["default"], { onClick: onMouseDown, facedown: facedown, card: card, height: 0 })),
                         react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "Deck__inner__cards__fill", style: { height: `${(deckHeight / 10) + 10}em` } }))),
             labelEl));
     }
@@ -41618,7 +41624,7 @@ class DeckDeck extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
     }
     render() {
         const _a = this.props, { deck } = _a, otherProps = __rest(_a, ["deck"]);
-        return (react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_Deck_Deck__WEBPACK_IMPORTED_MODULE_2__["default"], Object.assign({ cardCount: deck.size, topType: deck.last() }, otherProps)));
+        return (react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_Deck_Deck__WEBPACK_IMPORTED_MODULE_2__["default"], Object.assign({ cardCount: deck.size, card: deck.last() }, otherProps)));
     }
 }
 
@@ -41680,8 +41686,8 @@ class Hand extends react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"] {
     }
     render() {
         const { cards, facedown } = this.props;
-        return (react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "Hand" }, cards.map((cardType, index) => react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { key: index, className: "Hand__card" },
-            react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_Card_Card__WEBPACK_IMPORTED_MODULE_2__["default"], { type: cardType, facedown: facedown, height: 0.1 })))));
+        return (react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { className: "Hand" }, cards.map(card => react__WEBPACK_IMPORTED_MODULE_1__["createElement"]("div", { key: card.get("uid"), className: "Hand__card" },
+            react__WEBPACK_IMPORTED_MODULE_1__["createElement"](_Card_Card__WEBPACK_IMPORTED_MODULE_2__["default"], { card: card, facedown: facedown, height: 0.1 })))));
     }
 }
 

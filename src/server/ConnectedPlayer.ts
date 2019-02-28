@@ -2,11 +2,12 @@ import * as Immutable from "immutable";
 
 import GameStateManager from "./GameStateManager";
 import emitTypes from "@shared/emitTypes";
-import { PlayerState, CardType } from "@typings/game";
+import { PlayerState, CardType, DeckState } from "@typings/game";
 import ArrayUtils from "@utils/ArrayUtils";
 import LoopUtils from "@utils/LoopUtils";
 import PlayerUtils from "@utils/PlayerUtils";
 import { Vector2 } from "@typings/vector";
+import CardUtils from "@utils/CardUtils";
 
 const { fromServer, toServer } = emitTypes;
 
@@ -138,7 +139,7 @@ export default class ConnectedPlayer {
 		return this.socket.handshake.address;
 	}
 
-	private makeCards(num: number, type: CardType): CardType[] {
-		return LoopUtils.mapTimes(num, () => type);
+	private makeCards(num: number, type: CardType): DeckState {
+		return LoopUtils.mapTimes(num, () => CardUtils.createCard(type));
 	}
 }

@@ -2,13 +2,13 @@ import "./Deck.style";
 
 import * as React from "react";
 import Card, { CardClickEventHandler } from "../Card/Card";
-import { CardType } from "@typings/game";
+import { ImmutableCardState } from "@typings/game";
 import DOMUtils from "@utils/DOMUtils";
 
 export interface DeckProps {
 	facedown: boolean;
 	onMouseDown?: CardClickEventHandler;
-	topType?: CardType;
+	card?: ImmutableCardState;
 	cardCount: number;
 	label?: React.ReactNode;
 	disabled?: boolean;
@@ -22,7 +22,7 @@ export default class Deck extends React.PureComponent<DeckProps, DeckState> {
 	}
 
 	public render(): React.ReactNode {
-		const { facedown, topType, cardCount, onMouseDown, label, disabled } = this.props;
+		const { facedown, card, cardCount, onMouseDown, label, disabled } = this.props;
 		const deckHeight = cardCount / 2;
 
 		const baseClassName = DOMUtils.BEMClassName("Deck", {
@@ -43,7 +43,7 @@ export default class Deck extends React.PureComponent<DeckProps, DeckState> {
 									<Card
 										onClick={onMouseDown}
 										facedown={facedown}
-										type={topType || "hand"}
+										card={card}
 										height={0} />
 								</div>
 								<div className="Deck__inner__cards__fill" style={{ height: `${(deckHeight / 10) + 10}em` }} />

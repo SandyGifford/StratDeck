@@ -1,4 +1,6 @@
-import { CardType, ImmutableTablePlayerState, ImmutablePlayerState, ImmutableTablePlayerStates } from "@typings/game";
+import * as Immutable from "immutable";
+
+import { ImmutableTablePlayerState, ImmutablePlayerState, ImmutableTablePlayerStates, ImmutableCardState } from "@typings/game";
 import DeckUtils from "@utils/DeckUtils";
 import ArrayUtils from "@utils/ArrayUtils";
 import { CharPositions } from "@typings/connection";
@@ -32,8 +34,8 @@ export default class PlayerUtils {
 		return this.dealCardsFromDeckToDeck(player, fromDeck, toDeck, player.get(fromDeck).size);
 	}
 
-	public static shuffleDeck(player: ImmutableTablePlayerState, deck: PlayerDeckType): ImmutableTablePlayerState {
-		return player.set(deck, ArrayUtils.shuffleImmutable(player.get(deck)));
+	public static shuffleDeck(player: ImmutableTablePlayerState, deckType: PlayerDeckType): ImmutableTablePlayerState {
+		return player.set(deckType, ArrayUtils.shuffleImmutable(player.get(deckType)));
 	}
 
 	public static discardHand(player: ImmutableTablePlayerState): ImmutableTablePlayerState {
@@ -45,10 +47,10 @@ export default class PlayerUtils {
 		return this.shuffleDeck(player, "deck");
 	}
 
-	public static addCardToDiscard(player: ImmutableTablePlayerState, card: CardType): ImmutableTablePlayerState {
+	public static addCardToDiscard(player: ImmutableTablePlayerState, card: ImmutableCardState): ImmutableTablePlayerState {
 		return player.set(
 			"discard",
-			DeckUtils.addCardsToTop(player.get("discard"), card),
+			DeckUtils.addCardsToTop(player.get("discard"), Immutable.fromJS([card])),
 		);
 	}
 

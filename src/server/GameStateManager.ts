@@ -3,6 +3,7 @@ import EventDelegate, { GenericEventListener } from "@utils/EventDelegate";
 import { immutableInitialGameState } from "@server/initialGameState";
 import { Vector2 } from "@typings/vector";
 import GameUtils from "@utils/GameUtils";
+import CardUtils from "@utils/CardUtils";
 
 export default class GameStateManager {
 	private static gameState: ImmutableGameState = null;
@@ -53,7 +54,7 @@ export default class GameStateManager {
 	}
 
 	public static buyCard(playerIndex: number, boughtCard: CardType): void {
-		const gameState = GameUtils.addCardToDiscard(this.gameState, playerIndex, boughtCard);
+		const gameState = GameUtils.addCardToDiscard(this.gameState, playerIndex, CardUtils.createImmutableCard(boughtCard));
 		GameStateManager.updateGameState(gameState);
 	}
 

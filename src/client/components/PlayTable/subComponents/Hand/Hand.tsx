@@ -1,11 +1,11 @@
 import "./Hand.style";
 
 import * as React from "react";
-import { ImmutableCardTypes } from "@typings/game";
+import { ImmutableDeckState } from "@typings/game";
 import Card from "../Card/Card";
 
 export interface HandProps {
-	cards: ImmutableCardTypes;
+	cards: ImmutableDeckState;
 	facedown: boolean;
 }
 export interface HandState { }
@@ -22,9 +22,9 @@ export default class Hand extends React.PureComponent<HandProps, HandState> {
 		return (
 			<div className="Hand">
 				{
-					cards.map((cardType, index) => <div key={index} className="Hand__card">
+					cards.map(card => <div key={card.get("uid")} className="Hand__card">
 						<Card
-							type={cardType}
+							card={card}
 							facedown={facedown}
 							height={0.1}
 						/>

@@ -103,6 +103,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @utils/ArrayUtils */ "./src/shared/utils/ArrayUtils.ts");
 /* harmony import */ var _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @utils/LoopUtils */ "./src/shared/utils/LoopUtils.ts");
 /* harmony import */ var _utils_PlayerUtils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @utils/PlayerUtils */ "./src/shared/utils/PlayerUtils.ts");
+/* harmony import */ var _utils_CardUtils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @utils/CardUtils */ "./src/shared/utils/CardUtils.ts");
+
 
 
 
@@ -197,7 +199,7 @@ class ConnectedPlayer {
         return this.socket.handshake.address;
     }
     makeCards(num, type) {
-        return _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_4__["default"].mapTimes(num, () => type);
+        return _utils_LoopUtils__WEBPACK_IMPORTED_MODULE_4__["default"].mapTimes(num, () => _utils_CardUtils__WEBPACK_IMPORTED_MODULE_6__["default"].createCard(type));
     }
 }
 
@@ -217,6 +219,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_EventDelegate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @utils/EventDelegate */ "./src/shared/utils/EventDelegate.ts");
 /* harmony import */ var _server_initialGameState__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @server/initialGameState */ "./src/server/initialGameState.ts");
 /* harmony import */ var _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @utils/GameUtils */ "./src/shared/utils/GameUtils.ts");
+/* harmony import */ var _utils_CardUtils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @utils/CardUtils */ "./src/shared/utils/CardUtils.ts");
+
 
 
 
@@ -252,7 +256,7 @@ class GameStateManager {
         GameStateManager.updateGameState(this.gameState.set("screen", screen));
     }
     static buyCard(playerIndex, boughtCard) {
-        const gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].addCardToDiscard(this.gameState, playerIndex, boughtCard);
+        const gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].addCardToDiscard(this.gameState, playerIndex, _utils_CardUtils__WEBPACK_IMPORTED_MODULE_3__["default"].createImmutableCard(boughtCard));
         GameStateManager.updateGameState(gameState);
     }
     static setPlayPhase(gamePhase) {
@@ -467,6 +471,37 @@ class ArrayUtils {
 
 /***/ }),
 
+/***/ "./src/shared/utils/CardUtils.ts":
+/*!***************************************!*\
+  !*** ./src/shared/utils/CardUtils.ts ***!
+  \***************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return CardUtils; });
+/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! uuid */ "uuid");
+/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(uuid__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! immutable */ "immutable");
+/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(immutable__WEBPACK_IMPORTED_MODULE_1__);
+
+
+class CardUtils {
+    static createImmutableCard(type) {
+        return immutable__WEBPACK_IMPORTED_MODULE_1__["fromJS"](this.createCard(type));
+    }
+    static createCard(type) {
+        return {
+            type: type,
+            uid: uuid__WEBPACK_IMPORTED_MODULE_0__["v4"](),
+        };
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/shared/utils/CharUtils.ts":
 /*!***************************************!*\
   !*** ./src/shared/utils/CharUtils.ts ***!
@@ -510,9 +545,6 @@ class CharUtils {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return DeckUtils; });
-/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! immutable */ "immutable");
-/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(immutable__WEBPACK_IMPORTED_MODULE_0__);
-
 class DeckUtils {
     static dealAllCardsToDeck(fromDeck, toDeck) {
         return this.dealCardsToDeck(fromDeck, toDeck, fromDeck.size);
@@ -529,12 +561,10 @@ class DeckUtils {
         };
     }
     static addCardsToTop(deck, cards) {
-        const multiCards = typeof cards === "string" ? immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"]([cards]) : cards;
-        return deck.concat(multiCards);
+        return deck.concat(cards);
     }
     static addCardsToBottom(deck, cards) {
-        const multiCards = typeof cards === "string" ? immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"]([cards]) : cards;
-        return multiCards.concat(deck);
+        return cards.concat(deck);
     }
 }
 
@@ -682,9 +712,12 @@ class LoopUtils {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return PlayerUtils; });
-/* harmony import */ var _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @utils/DeckUtils */ "./src/shared/utils/DeckUtils.ts");
-/* harmony import */ var _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @utils/ArrayUtils */ "./src/shared/utils/ArrayUtils.ts");
-/* harmony import */ var _CharUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CharUtils */ "./src/shared/utils/CharUtils.ts");
+/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! immutable */ "immutable");
+/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(immutable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @utils/DeckUtils */ "./src/shared/utils/DeckUtils.ts");
+/* harmony import */ var _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @utils/ArrayUtils */ "./src/shared/utils/ArrayUtils.ts");
+/* harmony import */ var _CharUtils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./CharUtils */ "./src/shared/utils/CharUtils.ts");
+
 
 
 
@@ -702,7 +735,7 @@ class PlayerUtils {
         return player;
     }
     static dealCardsFromDeckToDeck(player, fromDeck, toDeck, cardCount) {
-        const fromTo = _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_0__["default"].dealCardsToDeck(player.get(fromDeck), player.get(toDeck), cardCount);
+        const fromTo = _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_1__["default"].dealCardsToDeck(player.get(fromDeck), player.get(toDeck), cardCount);
         player = player.set(fromDeck, fromTo.fromDeck);
         player = player.set(toDeck, fromTo.toDeck);
         return player;
@@ -710,8 +743,8 @@ class PlayerUtils {
     static dealAllCardsFromDeckToDeck(player, fromDeck, toDeck) {
         return this.dealCardsFromDeckToDeck(player, fromDeck, toDeck, player.get(fromDeck).size);
     }
-    static shuffleDeck(player, deck) {
-        return player.set(deck, _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_1__["default"].shuffleImmutable(player.get(deck)));
+    static shuffleDeck(player, deckType) {
+        return player.set(deckType, _utils_ArrayUtils__WEBPACK_IMPORTED_MODULE_2__["default"].shuffleImmutable(player.get(deckType)));
     }
     static discardHand(player) {
         return this.dealAllCardsFromDeckToDeck(player, "hand", "discard");
@@ -721,13 +754,13 @@ class PlayerUtils {
         return this.shuffleDeck(player, "deck");
     }
     static addCardToDiscard(player, card) {
-        return player.set("discard", _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_0__["default"].addCardsToTop(player.get("discard"), card));
+        return player.set("discard", _utils_DeckUtils__WEBPACK_IMPORTED_MODULE_1__["default"].addCardsToTop(player.get("discard"), immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"]([card])));
     }
     static convertPlayerToTablePlayer(player, playerIndex, boardWidth, boardHeight) {
         const positions = this.getPlayerPosition(playerIndex, boardWidth, boardHeight);
         const tablePlayer = player;
         const chars = player.get("chars");
-        const tableChars = chars.map((char, c) => _CharUtils__WEBPACK_IMPORTED_MODULE_2__["default"].convertToTableChar(char, positions[c]));
+        const tableChars = chars.map((char, c) => _CharUtils__WEBPACK_IMPORTED_MODULE_3__["default"].convertToTableChar(char, positions[c]));
         // FIXME: baaaad typing
         return tablePlayer.set("chars", tableChars);
     }
@@ -739,10 +772,10 @@ class PlayerUtils {
         }, players.size);
     }
     static countUnmovedPlayers(player) {
-        return _CharUtils__WEBPACK_IMPORTED_MODULE_2__["default"].countUnmovedPlayers(player.get("chars"));
+        return _CharUtils__WEBPACK_IMPORTED_MODULE_3__["default"].countUnmovedPlayers(player.get("chars"));
     }
     static moveCharInPlayer(player, charIndex, move) {
-        const char = _CharUtils__WEBPACK_IMPORTED_MODULE_2__["default"].moveChar(player.get("chars").get(charIndex), move);
+        const char = _CharUtils__WEBPACK_IMPORTED_MODULE_3__["default"].moveChar(player.get("chars").get(charIndex), move);
         const chars = player.get("chars").set(charIndex, char);
         return player.set("chars", chars);
     }
@@ -845,6 +878,17 @@ module.exports = require("path");
 /***/ (function(module, exports) {
 
 module.exports = require("socket.io");
+
+/***/ }),
+
+/***/ "uuid":
+/*!***********************!*\
+  !*** external "uuid" ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("uuid");
 
 /***/ })
 

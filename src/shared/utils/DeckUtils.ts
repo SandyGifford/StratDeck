@@ -1,36 +1,31 @@
-import * as Immutable from "immutable";
+import { ImmutableDeckState } from "@typings/game";
 
-import { CardType, ImmutableCardTypes } from "@typings/game";
-
-export type MaybeMultiCard = ImmutableCardTypes | CardType;
-export type FromDeckToDeck = { fromDeck: ImmutableCardTypes, toDeck: ImmutableCardTypes };
-export type DealtCards = { deck: ImmutableCardTypes, dealt: ImmutableCardTypes };
+export type FromDeckToDeck = { fromDeck: ImmutableDeckState, toDeck: ImmutableDeckState };
+export type DealtCards = { deck: ImmutableDeckState, dealt: ImmutableDeckState };
 
 export default class DeckUtils {
-	public static dealAllCardsToDeck(fromDeck: ImmutableCardTypes, toDeck: ImmutableCardTypes): FromDeckToDeck {
+	public static dealAllCardsToDeck(fromDeck: ImmutableDeckState, toDeck: ImmutableDeckState): FromDeckToDeck {
 		return this.dealCardsToDeck(fromDeck, toDeck, fromDeck.size);
 	}
 
-	public static dealCardsToDeck(fromDeck: ImmutableCardTypes, toDeck: ImmutableCardTypes, cardCount: number): FromDeckToDeck {
+	public static dealCardsToDeck(fromDeck: ImmutableDeckState, toDeck: ImmutableDeckState, cardCount: number): FromDeckToDeck {
 		const dealtCards = DeckUtils.dealCards(fromDeck, cardCount);
 		const newToDeck = this.addCardsToTop(toDeck, dealtCards.dealt);
 		return { fromDeck: dealtCards.deck, toDeck: newToDeck };
 	}
 
-	public static dealCards(deck: ImmutableCardTypes, cardCount: number): DealtCards {
+	public static dealCards(deck: ImmutableDeckState, cardCount: number): DealtCards {
 		return {
 			deck: deck.slice(0, -cardCount),
 			dealt: deck.slice(-cardCount),
 		};
 	}
 
-	public static addCardsToTop(deck: ImmutableCardTypes, cards: MaybeMultiCard): ImmutableCardTypes {
-		const multiCards = typeof cards === "string" ? Immutable.fromJS([cards]) as ImmutableCardTypes : cards;
-		return deck.concat(multiCards);
+	public static addCardsToTop(deck: ImmutableDeckState, cards: ImmutableDeckState): ImmutableDeckState {
+		return deck.concat(cards);
 	}
 
-	public static addCardsToBottom(deck: ImmutableCardTypes, cards: MaybeMultiCard): ImmutableCardTypes {
-		const multiCards = typeof cards === "string" ? Immutable.fromJS([cards]) as ImmutableCardTypes : cards;
-		return multiCards.concat(deck);
+	public static addCardsToBottom(deck: ImmutableDeckState, cards: ImmutableDeckState): ImmutableDeckState {
+		return cards.concat(deck);
 	}
 }

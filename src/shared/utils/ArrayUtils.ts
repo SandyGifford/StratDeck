@@ -9,7 +9,7 @@ export default class ArrayUtils {
 		}
 		return arr;
 	}
-	public static shuffleImmutable<T>(arr: ImmutalizerList<T[]>): Immutable.List<T> {
+	public static shuffleImmutable<T>(arr: ImmutalizerList<T[]>): ImmutalizerList<T[]> {
 		// ughhh
 		return Immutable.fromJS(this.shuffle(arr.toJS()));
 	}

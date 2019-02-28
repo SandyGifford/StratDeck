@@ -1,9 +1,10 @@
 import "./CardPool.style";
 
 import * as React from "react";
+import * as Immutable from "immutable";
 import Deck from "../Deck/Deck";
 import { CardType } from "@typings/game";
-import { CardClickEventHandler } from "../Card/Card";
+import { CardClickEventHandler, CardState } from "../Card/Card";
 
 export type CardPoolClicked = (cardType: CardType) => void;
 
@@ -31,11 +32,16 @@ export default class CardPool extends React.PureComponent<CardPoolProps, CardPoo
 	}
 
 	private renderDeck(cardType: CardType, label: string, cost: number): React.ReactNode {
+		const card: CardState = {
+			type: cardType,
+			uid: "",
+		};
+
 		return <div className="CardPool__deck">
 			<Deck
 				label={this.renderDeckLabel(label, cost)}
 				onMouseDown={this.makeClickHandler(cardType)}
-				topType={cardType}
+				card={Immutable.fromJS(card)}
 				facedown={false}
 				cardCount={50} />
 		</div>

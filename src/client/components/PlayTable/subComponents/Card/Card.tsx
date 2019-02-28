@@ -2,7 +2,7 @@ import "./Card.style";
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { CardType } from "@typings/game";
+import { ImmutableCardState } from "@typings/game";
 import DOMUtils from "@utils/DOMUtils";
 import NumberUtils from "@utils/NumberUtils";
 
@@ -15,7 +15,7 @@ export type CardClickEventHandler = (e: CardClickEvent) => void;
 
 export interface CardProps {
 	onClick?: CardClickEventHandler;
-	type: CardType;
+	card: ImmutableCardState;
 	height: number;
 	facedown: boolean;
 }
@@ -29,11 +29,11 @@ export default class Card extends React.PureComponent<CardProps, CardState> {
 	}
 
 	public render(): React.ReactNode {
-		const { type, height, facedown } = this.props;
+		const { card, height, facedown } = this.props;
 
 		const baseClassName = DOMUtils.BEMClassName("Card", {
 			"facedown": facedown,
-		}, type);
+		}, card.get("type"));
 
 		const shadowOpacity = NumberUtils.clamp(0.5 - (height * 0.1), 0, 0.5);
 		const xScale = facedown ? -1 : 1;

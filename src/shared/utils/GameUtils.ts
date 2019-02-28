@@ -1,4 +1,4 @@
-import { ImmutableGameState, ImmutableTablePlayerState, ImmutablePlayerState, CardType } from "@typings/game";
+import { ImmutableGameState, ImmutableTablePlayerState, ImmutablePlayerState, ImmutableCardState } from "@typings/game";
 import { Vector2 } from "@typings/vector";
 import PlayerUtils from "./PlayerUtils";
 
@@ -47,7 +47,7 @@ export default class Gameutils {
 		return gameState.set("players", players);
 	}
 
-	public static addCardToDiscard(gameState: ImmutableGameState, playerIndex: number, card: CardType): ImmutableGameState {
+	public static addCardToDiscard(gameState: ImmutableGameState, playerIndex: number, card: ImmutableCardState): ImmutableGameState {
 		const player = PlayerUtils.addCardToDiscard(gameState.get("players").get(playerIndex), card);
 		const players = gameState.get("players").set(playerIndex, player);
 		return gameState.set("players", players);
