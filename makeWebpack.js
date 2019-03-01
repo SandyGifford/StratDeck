@@ -1,4 +1,15 @@
 const path = require("path");
+const tsconfig = require("./tsconfig")
+
+const tsPaths = tsconfig.compilerOptions.paths;
+const tsPathKeys = Object.keys(tsPaths)
+
+const aliases = tsPathKeys.reduce((aliases, tsPathKey) => {
+	const tsPath = tsPaths[tsPathKey];
+	const aliasKey = tsPathKey.replace(/\/\*$/, "");
+	aliases[aliasKey] = path.resolve(__dirname, tsPath[0].replace(/\/\*$/, ""));
+	return aliases;
+}, {});
 
 module.exports = (entry, additionalRules) => ({
 	mode: "development",
@@ -18,14 +29,7 @@ module.exports = (entry, additionalRules) => ({
 	},
 	resolve: {
 		extensions: [".js", ".jsx", ".ts", ".tsx", ".css", ".scss"],
-		alias: {
-			"@utils": path.resolve(__dirname, "src/shared/utils/"),
-			"@typings": path.resolve(__dirname, "src/shared/typing/"),
-			"@shared": path.resolve(__dirname, "src/shared/"),
-			"@components": path.resolve(__dirname, "src/client/components/"),
-			"@client": path.resolve(__dirname, "src/client/"),
-			"@server": path.resolve(__dirname, "src/server/"),
-		},
+		alias: aliases,
 	},
 	devtool: "source-map",
 });
