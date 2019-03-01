@@ -1,10 +1,10 @@
 import * as Immutable from "immutable";
 
 import { CardTypes, DeckState, ImmutableCardTypes, ImmutableDeckState } from "@typings/game";
-import LoopUtils from "../LoopUtils";
-import CardUtils from "../CardUtils";
+import LoopUtils from "@utils/LoopUtils";
+import CardUtils from "@utils/CardUtils";
 import CharacterState, { ImmutableCharacterState } from "@typings/character";
-import { characters } from "../../characters/characters";
+import { characters } from "@shared/characters/characters";
 
 export default class TestUtils {
 	private static readonly CARD_TYPES: CardTypes = ["ability1", "ability2", "ability3", "hand", "weapon"];

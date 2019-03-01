@@ -1,8 +1,8 @@
 import "jest";
 
-import UidUtils from "../UidUtils";
-import ArrayUtils from "../ArrayUtils";
-import LoopUtils from "../LoopUtils";
+import UidUtils from "@utils/UidUtils";
+import ArrayUtils from "@utils/ArrayUtils";
+import LoopUtils from "@utils/LoopUtils";
 
 
 describe("UidUtils", () => {

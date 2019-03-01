@@ -1,6 +1,6 @@
 import "jest";
 
-import DeckUtils, { FromDeckToDeck, DealtCards } from "../DeckUtils";
+import DeckUtils, { FromDeckToDeck, DealtCards } from "@utils/DeckUtils";
 import TestUtils from "./TestUtils";
 import { ImmutableDeckState } from "@typings/game";
 

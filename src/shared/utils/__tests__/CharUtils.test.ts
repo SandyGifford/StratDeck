@@ -1,7 +1,7 @@
 import "jest";
 import * as Immutable from "immutable";
 
-import CharUtils from "../CharUtils";
+import CharUtils from "@utils/CharUtils";
 import TestUtils from "./TestUtils";
 import { ImmutableCharacterState, ImmutableTableCharacterState, ImmutableTablePlayerCharacterStates } from "@typings/character";
 

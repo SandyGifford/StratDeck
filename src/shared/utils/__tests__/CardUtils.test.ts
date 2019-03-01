@@ -1,7 +1,7 @@
 import "jest";
 
-import CardUtils from "../CardUtils";
-import ArrayUtils from "../ArrayUtils";
+import CardUtils from "@utils/CardUtils";
+import ArrayUtils from "@utils/ArrayUtils";
 import TestUtils from "./TestUtils";
 import { CardTypes, DeckState } from "@typings/game";
 

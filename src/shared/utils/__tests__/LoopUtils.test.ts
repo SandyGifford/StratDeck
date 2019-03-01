@@ -1,5 +1,5 @@
 import "jest";
-import LoopUtils from "../LoopUtils";
+import LoopUtils from "@utils/LoopUtils";
 
 describe("LoopUtils", () => {
 	describe("mapTimes", () => {
