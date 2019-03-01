@@ -44,23 +44,5 @@
     "build": "webpack --config webpack.server.config.js",
     "devStart": "nodemon --inspect ./dist/build/server.js",
     "test": "jest --watch"
-  },
-  "jest": {
-    "testRegex": ".*\\/__tests__\\/.*\\.test\\.(ts|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ],
-    "transform": {
-      "\\.ts$": "ts-jest"
-    },
-    "moduleNameMapper": {
-      "^@utils(.*)$": "<rootDir>/src/shared/utils$1",
-      "^@typings(.*)$": "<rootDir>/src/shared/typing$1",
-      "^@shared(.*)$": "<rootDir>/src/shared$1",
-      "^@components(.*)$": "<rootDir>/src/client/components$1",
-      "^@client(.*)$": "<rootDir>/src/client$1",
-      "^@server(.*)$": "<rootDir>/src/server$1"
-    }
   }
 }
