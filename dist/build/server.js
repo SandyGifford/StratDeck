@@ -265,7 +265,7 @@ class GameStateManager {
     static moveChar(playerIndex, charIndex, move) {
         let gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].moveChar(this.gameState, playerIndex, charIndex, move);
         gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].setCharMovedThisTurn(gameState, playerIndex, charIndex, true);
-        const waitingOnChars = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].countUnmovedPlayers(gameState, playerIndex);
+        const waitingOnChars = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].countUnmovedCharacters(gameState, playerIndex);
         if (waitingOnChars === 0) {
             gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].discardHand(gameState, playerIndex);
             gameState = _utils_GameUtils__WEBPACK_IMPORTED_MODULE_2__["default"].dealCards(gameState, playerIndex, 5);
@@ -575,7 +575,7 @@ class CharUtils {
      * @param chars An Immutable list of characters
      * @returns The numbe of characters who have not moved yet
      */
-    static countUnmovedPlayers(chars) {
+    static countUnmovedCharacters(chars) {
         return chars.reduce((charCount, char) => {
             if (char.get("movedThisTurn"))
                 charCount--;
@@ -726,8 +726,8 @@ class Gameutils {
     static countUnreadyPlayers(gameState) {
         return _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].countUnreadyPlayers(gameState.get("players"));
     }
-    static countUnmovedPlayers(gameState, playerIndex) {
-        return _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].countUnmovedPlayers(gameState.get("players").get(playerIndex));
+    static countUnmovedCharacters(gameState, playerIndex) {
+        return _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].countUnmovedCharacters(gameState.get("players").get(playerIndex));
     }
     static setAllCharMovedThisTurn(gameState, playerIndex, movedThisTurn) {
         const player = _PlayerUtils__WEBPACK_IMPORTED_MODULE_0__["default"].setAllCharMovedThisTurn(gameState.get("players").get(playerIndex), movedThisTurn);
@@ -860,8 +860,8 @@ class PlayerUtils {
             return playerCount;
         }, players.size);
     }
-    static countUnmovedPlayers(player) {
-        return _CharUtils__WEBPACK_IMPORTED_MODULE_3__["default"].countUnmovedPlayers(player.get("chars"));
+    static countUnmovedCharacters(player) {
+        return _CharUtils__WEBPACK_IMPORTED_MODULE_3__["default"].countUnmovedCharacters(player.get("chars"));
     }
     static moveCharInPlayer(player, charIndex, move) {
         const char = _CharUtils__WEBPACK_IMPORTED_MODULE_3__["default"].moveChar(player.get("chars").get(charIndex), move);
