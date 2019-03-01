@@ -25,8 +25,8 @@ export default class Gameutils {
 		return PlayerUtils.countUnreadyPlayers(gameState.get("players"));
 	}
 
-	public static countUnmovedPlayers(gameState: ImmutableGameState, playerIndex: number): number {
-		return PlayerUtils.countUnmovedPlayers(gameState.get("players").get(playerIndex));
+	public static countUnmovedCharacters(gameState: ImmutableGameState, playerIndex: number): number {
+		return PlayerUtils.countUnmovedCharacters(gameState.get("players").get(playerIndex));
 	}
 
 	public static setAllCharMovedThisTurn(gameState: ImmutableGameState, playerIndex: number, movedThisTurn: boolean): ImmutableGameState {

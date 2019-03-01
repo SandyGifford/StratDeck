@@ -1,9 +1,9 @@
 import * as Immutable from "immutable";
 
-import { CharacterDefs, ImmutableCharacterDefs } from "@typings/character";
+import { CharacterStates, ImmutableCharacterStates } from "@typings/character";
 import Abilities from "./Abilities";
 
-const characters: CharacterDefs = [
+export const characters: CharacterStates = [
 	{
 		name: "Boop",
 		color: "red",
@@ -158,4 +158,4 @@ const characters: CharacterDefs = [
 	},
 ];
 
-export default Immutable.fromJS(characters) as ImmutableCharacterDefs;
+export default Immutable.fromJS(characters) as ImmutableCharacterStates;

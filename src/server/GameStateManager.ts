@@ -66,7 +66,7 @@ export default class GameStateManager {
 		let gameState = GameUtils.moveChar(this.gameState, playerIndex, charIndex, move);
 		gameState = GameUtils.setCharMovedThisTurn(gameState, playerIndex, charIndex, true);
 
-		const waitingOnChars = GameUtils.countUnmovedPlayers(gameState, playerIndex);
+		const waitingOnChars = GameUtils.countUnmovedCharacters(gameState, playerIndex);
 
 		if (waitingOnChars === 0) {
 			gameState = GameUtils.discardHand(gameState, playerIndex);

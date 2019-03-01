@@ -1,7 +1,7 @@
 import DiceRoll from "@typings/dice";
 import Immutalizer from "./immutalizer";
 
-export default interface CharacterDef {
+export default interface CharacterState {
 	name: string;
 	hp: number;
 	armor: number;
@@ -13,7 +13,7 @@ export default interface CharacterDef {
 	color: string;
 }
 
-export type CharacterDefs = CharacterDef[];
+export type CharacterStates = CharacterState[];
 
 export interface CharacterWeapon {
 	dmg: DiceRoll;
@@ -31,10 +31,10 @@ export interface CharacterAbility {
 export type CharacterAbilityUse = "action" | "reaction";
 export type CharacterAbilities = [CharacterAbility, CharacterAbility, CharacterAbility];
 
-export type PlayerCharacters = CharacterDef[];
-export type TablePlayerCharacters = TableCharacterDef[];
+export type PlayerCharacterStates = CharacterState[];
+export type TablePlayerCharacterStates = TableCharacterState[];
 
-export interface TableCharacterDef extends CharacterDef {
+export interface TableCharacterState extends CharacterState {
 	x: number;
 	y: number;
 	maxHP: number;
@@ -46,12 +46,12 @@ export interface TableCharacterDef extends CharacterDef {
  * Immutable interfaces
  */
 
-export type ImmutableCharacterDef = Immutalizer<CharacterDef>;
-export type ImmutableCharacterDefs = Immutalizer<CharacterDefs>;
+export type ImmutableCharacterState = Immutalizer<CharacterState>;
+export type ImmutableCharacterStates = Immutalizer<CharacterStates>;
 export type ImmutableCharacterWeapon = Immutalizer<CharacterWeapon>;
 export type ImmutableCharacterAbility = Immutalizer<CharacterAbility>;
 
-export type ImmutablePlayerCharacters = Immutalizer<PlayerCharacters>;
-export type ImmutableTablePlayerCharacters = Immutalizer<TablePlayerCharacters>;
+export type ImmutablePlayerCharacterStates = Immutalizer<PlayerCharacterStates>;
+export type ImmutableTablePlayerCharacterStates = Immutalizer<TablePlayerCharacterStates>;
 
-export type ImmutableTableCharacterDef = Immutalizer<TableCharacterDef>;
+export type ImmutableTableCharacterState = Immutalizer<TableCharacterState>;

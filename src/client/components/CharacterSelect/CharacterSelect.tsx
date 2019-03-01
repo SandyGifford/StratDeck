@@ -4,7 +4,7 @@ import * as Immutable from "immutable";
 import * as React from "react";
 import { CharacterWeapon, ImmutableCharacterWeapon } from "@typings/character";
 import CharacterSelectStat from "./subComponents/CharacterSelectStat/CharacterSelectStat";
-import characters from "@client/characters/characters";
+import characters from "@shared/characters/characters";
 import WeaponDice from "@components/WeaponDice/WeaponDice";
 import AbilityStatItem from "./subComponents/AbilityStatItem/AbilityStatItem";
 import SimpleButton from "@components/SimpleButton/SimpleButton";

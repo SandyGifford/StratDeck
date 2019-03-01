@@ -351,7 +351,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var path__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(path__WEBPACK_IMPORTED_MODULE_1__);
 
 
-const app = express__WEBPACK_IMPORTED_MODULE_0__();
+const app = express__WEBPACK_IMPORTED_MODULE_0___default()();
 app.get("/", (req, res) => res.sendFile(path__WEBPACK_IMPORTED_MODULE_1__["join"](__dirname, "../index.html")));
 app.get("/assets/*", (req, res) => res.sendFile(path__WEBPACK_IMPORTED_MODULE_1__["join"](__dirname, "../", req.url)));
 app.get("/build/*", (req, res) => res.sendFile(path__WEBPACK_IMPORTED_MODULE_1__["join"](__dirname, "../", req.url)));
@@ -377,7 +377,7 @@ console.clear();
 
 
 
-const app = express__WEBPACK_IMPORTED_MODULE_0__();
+const app = express__WEBPACK_IMPORTED_MODULE_0___default()();
 const server = __webpack_require__(/*! http */ "http").Server(app);
 Object(_socketStuff__WEBPACK_IMPORTED_MODULE_1__["default"])(server);
 app.use(_routing__WEBPACK_IMPORTED_MODULE_2__["default"]);
@@ -455,16 +455,42 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(immutable__WEBPACK_IMPORTED_MODULE_0__);
 
 class ArrayUtils {
-    static shuffle(arr) {
-        for (let i = arr.length - 1; i > 0; i--) {
+    /**
+     * Shuffles the values in an array
+     * @param array an array
+     * @returns an array made up of the elements of array in random order
+     */
+    static shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
+            [array[i], array[j]] = [array[j], array[i]];
         }
-        return arr;
+        return array;
     }
-    static shuffleImmutable(arr) {
+    // TODO: rewrite this as a proper immutable function
+    /**
+     * Shuffles the values in an Immutable LIst
+     * @param list an Immutable List
+     * @returns an Immutable List made up of the elements of list in random order
+     */
+    static shuffleImmutable(list) {
         // ughhh
-        return immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"](this.shuffle(arr.toJS()));
+        return immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"](this.shuffle(list.toJS()));
+    }
+    static removeAtIndex(array, index, size = 1) {
+        return array.slice(0, index).concat(array.slice(index + size));
+    }
+    // TODO: positive I can do this in better time
+    /**
+     * Checks (with strict equals) if all values in array are unique
+     * @param arr an array
+     * @returns true if all values in array are unique, otherwise false
+     */
+    static hasOnlyUniqueValues(arr) {
+        return arr.every((val, index) => {
+            const trimmed = this.removeAtIndex(arr, index);
+            return !trimmed.includes(val);
+        });
     }
 }
 
@@ -481,20 +507,29 @@ class ArrayUtils {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return CardUtils; });
-/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! uuid */ "uuid");
-/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(uuid__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! immutable */ "immutable");
-/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(immutable__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! immutable */ "immutable");
+/* harmony import */ var immutable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(immutable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _UidUtils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UidUtils */ "./src/shared/utils/UidUtils.ts");
 
 
 class CardUtils {
-    static createImmutableCard(type) {
-        return immutable__WEBPACK_IMPORTED_MODULE_1__["fromJS"](this.createCard(type));
+    /**
+     * Creates an Immutable CardState from card type.  Generates random UID for it
+     * @param type The type of the card
+     * @returns A new Immutable CardState with type type
+     */
+    static createImmutableCard(type, uidSeed) {
+        return immutable__WEBPACK_IMPORTED_MODULE_0__["fromJS"](this.createCard(type, uidSeed));
     }
-    static createCard(type) {
+    /**
+     * Creates a CardState from card type.  Generates random UID for it
+     * @param type The type of the card
+     * @returns A new CardState with type type
+     */
+    static createCard(type, uidSeed) {
         return {
             type: type,
-            uid: uuid__WEBPACK_IMPORTED_MODULE_0__["v4"](),
+            uid: _UidUtils__WEBPACK_IMPORTED_MODULE_1__["default"].generate(uidSeed),
         };
     }
 }
@@ -513,9 +548,21 @@ class CardUtils {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return CharUtils; });
 class CharUtils {
+    /**
+     * Changes the location of a character
+     * @param character A character
+     * @param move The new location
+     * @returns an Immutable character at the new location
+     */
     static moveChar(character, move) {
         return character.set("x", move.x).set("y", move.y);
     }
+    /**
+     * Changes an ImmutableCharacterDef to an ImmutableTableCharacterDef
+     * @param character The character base
+     * @param position The position to start the character at
+     * @returns a new ImmutableTableCharacterDef
+     */
     static convertToTableChar(character, position) {
         return character
             .set("maxHP", character.get("hp"))
@@ -523,6 +570,11 @@ class CharUtils {
             .set("y", position.y)
             .set("movedThisTurn", false);
     }
+    /**
+     * Counts how man players haven't moved yet in this turn
+     * @param chars An Immutable list of characters
+     * @returns The numbe of characters who have not moved yet
+     */
     static countUnmovedPlayers(chars) {
         return chars.reduce((charCount, char) => {
             if (char.get("movedThisTurn"))
@@ -546,23 +598,54 @@ class CharUtils {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return DeckUtils; });
 class DeckUtils {
+    /**
+     * Deals all cards from one deck onto the top of another
+     * @param fromDeck The deck to deal cards from
+     * @param toDeck The deck to deal cards to
+     * @returns an object with the after states of both decks
+     */
     static dealAllCardsToDeck(fromDeck, toDeck) {
         return this.dealCardsToDeck(fromDeck, toDeck, fromDeck.size);
     }
+    /**
+     * Deals cards from one deck onto the top of another
+     * @param fromDeck The deck to deal cards from
+     * @param toDeck The deck to deal cards to
+     * @param cardCount The number of cards to deal
+     * @returns an object with the after states of both decks
+     */
     static dealCardsToDeck(fromDeck, toDeck, cardCount) {
         const dealtCards = DeckUtils.dealCards(fromDeck, cardCount);
         const newToDeck = this.addCardsToTop(toDeck, dealtCards.dealt);
         return { fromDeck: dealtCards.deck, toDeck: newToDeck };
     }
+    /**
+     * Removes cards from the top of a deck, returns them
+     * @param deck The deck to deal from
+     * @param cardCount The number of cards to deal
+     * @returns an object with the after state of the deck as well as the cards dealt
+     */
     static dealCards(deck, cardCount) {
         return {
             deck: deck.slice(0, -cardCount),
             dealt: deck.slice(-cardCount),
         };
     }
+    /**
+     * Adds cards to the top of a deck
+     * @param deck The deck to add to
+     * @param cards The cards to add
+     * @returns The new deck state
+     */
     static addCardsToTop(deck, cards) {
         return deck.concat(cards);
     }
+    /**
+     * Adds cards to the bottom of a deck
+     * @param deck The deck to add to
+     * @param cards The cards to add
+     * @returns The new deck state
+     */
     static addCardsToBottom(deck, cards) {
         return cards.concat(deck);
     }
@@ -690,6 +773,12 @@ class Gameutils {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return LoopUtils; });
 class LoopUtils {
+    /**
+     * Creates an array of elements
+     * @param times the number of elements
+     * @param callback called once per element
+     * @returns array!
+     */
     static mapTimes(times, callback) {
         const arr = [];
         for (let i = 0; i < times; i++) {
@@ -820,6 +909,37 @@ class PlayerUtils {
             default:
                 throw `Board does not support this many players.  Requested start location for player ${playerIndex + 1},  max player count is 2`;
         }
+    }
+}
+
+
+/***/ }),
+
+/***/ "./src/shared/utils/UidUtils.ts":
+/*!**************************************!*\
+  !*** ./src/shared/utils/UidUtils.ts ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return UidUtils; });
+/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! uuid */ "uuid");
+/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(uuid__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _LoopUtils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./LoopUtils */ "./src/shared/utils/LoopUtils.ts");
+
+
+class UidUtils {
+    /**
+     * Generate a random UID
+     * @param seed a seed for the UID generation, NOTE: THIS DOES NOT DO A GOOD JOB OF UTILIZING THE SEED, ONLY USE THIS FOR TEESTING
+     * @returns a uid
+     */
+    static generate(seed) {
+        return uuid__WEBPACK_IMPORTED_MODULE_0__["v4"](typeof seed === "number" ? {
+            random: _LoopUtils__WEBPACK_IMPORTED_MODULE_1__["default"].mapTimes(16, i => seed + i),
+        } : undefined);
     }
 }
 

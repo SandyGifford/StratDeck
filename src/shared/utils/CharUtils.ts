@@ -1,4 +1,4 @@
-import { ImmutableTableCharacterDef, ImmutableCharacterDef, ImmutableTablePlayerCharacters } from "@typings/character";
+import { ImmutableTableCharacterState, ImmutableCharacterState, ImmutableTablePlayerCharacterStates } from "@typings/character";
 import { Vector2 } from "@typings/vector";
 
 export default class CharUtils {
@@ -8,7 +8,7 @@ export default class CharUtils {
 	 * @param move The new location
 	 * @returns an Immutable character at the new location
 	 */
-	public static moveChar(character: ImmutableTableCharacterDef, move: Vector2): ImmutableTableCharacterDef {
+	public static moveChar(character: ImmutableTableCharacterState, move: Vector2): ImmutableTableCharacterState {
 		return character.set("x", move.x).set("y", move.y);
 	}
 
@@ -18,8 +18,8 @@ export default class CharUtils {
 	 * @param position The position to start the character at
 	 * @returns a new ImmutableTableCharacterDef
 	 */
-	public static convertToTableChar(character: ImmutableCharacterDef, position: Vector2): ImmutableTableCharacterDef {
-		return (character as ImmutableTableCharacterDef)
+	public static convertToTableChar(character: ImmutableCharacterState, position: Vector2): ImmutableTableCharacterState {
+		return (character as ImmutableTableCharacterState)
 			.set("maxHP", character.get("hp"))
 			.set("x", position.x)
 			.set("y", position.y)
@@ -31,7 +31,7 @@ export default class CharUtils {
 	 * @param chars An Immutable list of characters
 	 * @returns The numbe of characters who have not moved yet
 	 */
-	public static countUnmovedPlayers(chars: ImmutableTablePlayerCharacters): number {
+	public static countUnmovedCharacters(chars: ImmutableTablePlayerCharacterStates): number {
 		return chars.reduce((charCount, char) => {
 			if (char.get("movedThisTurn")) charCount--;
 			return charCount;

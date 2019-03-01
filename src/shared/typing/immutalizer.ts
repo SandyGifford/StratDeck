@@ -12,7 +12,7 @@ export default Immutalizer;
 
 export interface ImmutalizerObject<
 	MUTABLE_TYPE,
-	> {
+	> extends Immutable.Map<keyof MUTABLE_TYPE, ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[keyof MUTABLE_TYPE]>> {
 	size: number;
 	isEmpty(): boolean;
 
@@ -27,7 +27,7 @@ export interface ImmutalizerObject<
 
 export interface ImmutalizerList<
 	MUTABLE_TYPE extends any[],
-	> extends Immutable.List<MUTABLE_TYPE[number]> {
+	> extends Immutable.List<ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[number]>> {
 	size: number;
 	isEmpty(): boolean;
 

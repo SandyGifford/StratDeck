@@ -72,8 +72,8 @@ export default class PlayerUtils {
 		}, players.size);
 	}
 
-	public static countUnmovedPlayers(player: ImmutableTablePlayerState): number {
-		return CharUtils.countUnmovedPlayers(player.get("chars"));
+	public static countUnmovedCharacters(player: ImmutableTablePlayerState): number {
+		return CharUtils.countUnmovedCharacters(player.get("chars"));
 	}
 
 	public static moveCharInPlayer(player: ImmutableTablePlayerState, charIndex: number, move: Vector2): ImmutableTablePlayerState {

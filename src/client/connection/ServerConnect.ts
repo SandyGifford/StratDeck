@@ -1,5 +1,5 @@
 import * as Immutable from "immutable";
-import * as io from "socket.io-client";
+import io from "socket.io-client";
 
 import GameState, { CardType, ImmutableGameState, ImmutablePlayerInitializer } from "@typings/game";
 import emitTypes from "@shared/emitTypes";

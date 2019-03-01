@@ -1,4 +1,4 @@
-import { PlayerCharacters, TablePlayerCharacters } from "@typings/character";
+import { PlayerCharacterStates, TablePlayerCharacterStates } from "@typings/character";
 import Immutalizer from "./immutalizer";
 
 export type PlayPhase = "buy" | "move";
@@ -25,7 +25,7 @@ export interface CardState {
 
 export interface PlayerState {
 	name: string;
-	chars: PlayerCharacters;
+	chars: PlayerCharacterStates;
 	hand: DeckState;
 	deck: DeckState;
 	discard: DeckState;
@@ -34,7 +34,7 @@ export interface PlayerState {
 export type PlayerInitializer = Pick<PlayerState, "chars" | "name">;
 
 export interface TablePlayerState extends PlayerState {
-	chars: TablePlayerCharacters;
+	chars: TablePlayerCharacterStates;
 }
 
 export type TablePlayerStates = TablePlayerState[];
