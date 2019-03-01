@@ -379,9 +379,10 @@ console.clear();
 
 const app = express__WEBPACK_IMPORTED_MODULE_0___default()();
 const server = __webpack_require__(/*! http */ "http").Server(app);
+const port = parseInt(process.env.PORT) || 3000;
 Object(_socketStuff__WEBPACK_IMPORTED_MODULE_1__["default"])(server);
 app.use(_routing__WEBPACK_IMPORTED_MODULE_2__["default"]);
-server.listen(3000, "0.0.0.0");
+server.listen(port, "0.0.0.0");
 
 
 /***/ }),
