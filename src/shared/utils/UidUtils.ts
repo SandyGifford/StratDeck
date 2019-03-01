@@ -9,7 +9,7 @@ export default class UidUtils {
 	 */
 	public static generate(seed?: number) {
 		return uuid.v4(typeof seed === "number" ? {
-			random: LoopUtils.mapTimes(16, () => seed),
+			random: LoopUtils.mapTimes(16, i => seed + i),
 		} : undefined);
 	}
 }
