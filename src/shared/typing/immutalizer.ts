@@ -51,6 +51,10 @@ export interface ImmutalizerList<
 		reducer: (reduction: MUTABLE_TYPE[number] | R, value: MUTABLE_TYPE[number], key: number, iter: this) => R
 	): R;
 	concat(...valuesOrCollections: this[]): this;
+	forEach(
+		sideEffect: (value: ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[number]>, key: number, iter: this) => any,
+		context?: any
+	): number;
 
 
 	find(
