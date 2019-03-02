@@ -44,7 +44,6 @@
     "build": "yarn run buildServer; yarn run buildClient;",
     "buildServer": "webpack --config webpack.server.config.js",
     "buildClient": "webpack --config webpack.client.config.js",
-    "heroku-postbuild": "yarn run build",
     "devStart": "nodemon --inspect ./dist/build/server.js",
     "test": "jest --watch"
   }
