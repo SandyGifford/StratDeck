@@ -1,6 +1,6 @@
 import { CardType, PlayPhase, ImmutableGameState, ImmutablePlayerState, GameScreen } from "@typings/game";
 import EventDelegate, { GenericEventListener } from "@utils/EventDelegate";
-import { immutableInitialGameState } from "@server/initialGameState";
+import { immutableInitialGameState } from "@server/gameStates/mock/earlyGame";
 import { Vector2 } from "@typings/vector";
 import GameUtils from "@utils/GameUtils";
 import CardUtils from "@utils/CardUtils";

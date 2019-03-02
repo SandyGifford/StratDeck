@@ -10,8 +10,16 @@ const { fromServer } = emitTypes;
 export default (server: Server) => {
 	const io: SocketIO.Server = require("socket.io")(server);
 
-	GameStateManager.addResetListener((gameState: ImmutableGameState) => io.emit(fromServer.gameReset, gameState.toJS()));
-	GameStateManager.addUpdateListener((gameState: ImmutableGameState) => io.emit(fromServer.gameStateUpdated, gameState.toJS()));
+	GameStateManager.addResetListener((gameState: ImmutableGameState) => {
+		const jsGS = gameState.toJS();
+		console.log("resetting game state", jsGS);
+		io.emit(fromServer.gameReset, jsGS);
+	});
+	GameStateManager.addUpdateListener((gameState: ImmutableGameState) => {
+		const jsGS = gameState.toJS();
+		console.log("updating game state", jsGS);
+		io.emit(fromServer.gameStateUpdated, jsGS);
+	});
 
 	io.emit(fromServer.gameReset);
 
