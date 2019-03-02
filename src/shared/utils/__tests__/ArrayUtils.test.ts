@@ -1,6 +1,6 @@
 import "jest";
 
-import ArrayUtils from "@utils/Arrayutils";
+import ArrayUtils from "@utils/ArrayUtils";
 
 describe("Arrayutils", () => {
 	describe("createCard", () => {
