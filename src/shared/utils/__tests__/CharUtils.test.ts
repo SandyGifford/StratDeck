@@ -37,9 +37,9 @@ describe("CharUtils", () => {
 
 	describe("countUnmovedCharacters", () => {
 		const chars0Moved: ImmutableTablePlayerCharacterStates = Immutable.fromJS([
-			CharUtils.convertToTableChar(TestUtils.makeBlankImmutableCharacter(0), { x: 0, y: 0, }),
-			CharUtils.convertToTableChar(TestUtils.makeBlankImmutableCharacter(1), { x: 0, y: 1, }),
-			CharUtils.convertToTableChar(TestUtils.makeBlankImmutableCharacter(2), { x: 0, y: 2, }),
+			CharUtils.convertToTableChar(TestUtils.makeBlankImmutableCharacter(0), { x: 0, y: 0, }).toJS(),
+			CharUtils.convertToTableChar(TestUtils.makeBlankImmutableCharacter(1), { x: 0, y: 1, }).toJS(),
+			CharUtils.convertToTableChar(TestUtils.makeBlankImmutableCharacter(2), { x: 0, y: 2, }).toJS(),
 		]);
 
 		const chars1Moved = chars0Moved.setIn([1, "movedThisTurn"], true);

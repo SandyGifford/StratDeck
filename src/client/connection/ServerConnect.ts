@@ -12,10 +12,12 @@ const socket = io();
 export type ConnectedEventHandler = GenericEventListener<ImmutableGameState>;
 export type GameUpdatedEventHandler = GenericEventListener<ImmutableGameState>;
 export type GameResetEventHandler = GenericEventListener<ImmutableGameState>;
+export type PlayerIndexAssignedEventHandler = GenericEventListener<number>;
 
 const connectedDelegate = new EventDelegate<ImmutableGameState>();
 const gameUpdatedDelegate = new EventDelegate<ImmutableGameState>();
 const gameResetDelegate = new EventDelegate<ImmutableGameState>();
+const playerIndexAssignedDelegate = new EventDelegate<number>();
 
 const onConnected = (gameState: GameState) => connectedDelegate.trigger(Immutable.fromJS(gameState));
 const onGameUpdated = (gameState: GameState) => gameUpdatedDelegate.trigger(Immutable.fromJS(gameState));
@@ -42,6 +44,10 @@ export default class ServerConnect {
 		socket.emit(toServer.moveChar, charIndex, move);
 	};
 
+	public static connectAsPlayer = (playerIndex: number): void => {
+
+	};
+
 
 
 
@@ -59,6 +65,10 @@ export default class ServerConnect {
 		gameResetDelegate.addEventListener(listener);
 	};
 
+	public static addPlayerIndexAssignedListener = (listener: PlayerIndexAssignedEventHandler): void => {
+		playerIndexAssignedDelegate.addEventListener(listener);
+	};
+
 	public static removeConnectedListener = (listener: ConnectedEventHandler): void => {
 		connectedDelegate.removeEventListener(listener);
 	};
@@ -69,6 +79,10 @@ export default class ServerConnect {
 
 	public static removeGameResetListener = (listener: GameResetEventHandler): void => {
 		gameResetDelegate.removeEventListener(listener);
+	};
+
+	public static removePlayerIndexAssignedListener = (listener: PlayerIndexAssignedEventHandler): void => {
+		playerIndexAssignedDelegate.removeEventListener(listener);
 	};
 }
 

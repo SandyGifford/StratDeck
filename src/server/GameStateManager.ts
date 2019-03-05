@@ -42,6 +42,7 @@ export default class GameStateManager {
 	public static initializePlayer(playerIndex: number, playerState: ImmutablePlayerState): number {
 		let gameState = this.gameState;
 		gameState = GameUtils.convertPlayerToTablePlayer(gameState, playerState, playerIndex);
+		gameState = GameUtils.dealCards(gameState, playerIndex, 5);
 
 		const waitingOnPlayers = GameUtils.countUnreadyPlayers(gameState);
 		GameStateManager.updateGameState(gameState);

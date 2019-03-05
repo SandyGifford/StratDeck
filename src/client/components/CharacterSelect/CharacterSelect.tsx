@@ -9,6 +9,8 @@ import WeaponDice from "@components/WeaponDice/WeaponDice";
 import AbilityStatItem from "./subComponents/AbilityStatItem/AbilityStatItem";
 import SimpleButton from "@components/SimpleButton/SimpleButton";
 import ServerConnect from "@client/connection/ServerConnect";
+import { ImmutalizerList } from "@typings/immutalizer";
+import { PlayerInitializer } from "@typings/game";
 
 
 export interface CharacterSelectProps {
@@ -19,7 +21,7 @@ export interface CharacterSelectProps {
 }
 
 export interface CharacterSelectState {
-	selected: Immutable.List<number>;
+	selected: ImmutalizerList<number[]>;
 	playerName: string;
 }
 
@@ -142,9 +144,14 @@ export default class CharacterSelect extends React.PureComponent<CharacterSelect
 		const { playerIndex } = this.props;
 		const { selected, playerName } = this.state;
 
-		ServerConnect.initializePlayer(playerIndex, Immutable.fromJS({
-			chars: selected.map(charIndex => characters.get(charIndex)),
+		const playerInit: PlayerInitializer = {
+			// This toJS isn't super effecient, but since this isn't a
+			// repeating action we'll just maintain good typing for the
+			// sake of organization
+			chars: selected.map(charIndex => characters.get(charIndex)).toJS(),
 			name: playerName,
-		}));
+		}
+
+		ServerConnect.initializePlayer(playerIndex, Immutable.fromJS(playerInit));
 	};
 }

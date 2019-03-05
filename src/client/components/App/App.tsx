@@ -8,7 +8,7 @@ import LoopUtils from "@utils/LoopUtils";
 import SimpleButton, { SimpleButtonClickHandler } from "@components/SimpleButton/SimpleButton";
 import CharacterSelect from "@components/CharacterSelect/CharacterSelect";
 import PlayTable from "@components/PlayTable/PlayTable";
-import ServerConnect from "@client/connection/ServerConnect";
+import ServerConnect, { PlayerIndexAssignedEventHandler } from "@client/connection/ServerConnect";
 
 
 export interface AppProps {
@@ -37,11 +37,13 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 	public componentDidMount() {
 		ServerConnect.addGameUpdatedListener(this.gameStateUpdated);
 		ServerConnect.addGameResetListener(this.gameReset);
+		ServerConnect.addPlayerIndexAssignedListener(this.playerIndexAssigned);
 	}
 
 	public componentWillUnmount() {
 		ServerConnect.removeGameUpdatedListener(this.gameStateUpdated);
 		ServerConnect.removeGameResetListener(this.gameReset);
+		ServerConnect.removePlayerIndexAssignedListener(this.playerIndexAssigned);
 	}
 
 	public render(): React.ReactNode {
@@ -119,6 +121,12 @@ export default class App extends React.PureComponent<AppProps, AppState> {
 			selectingPlayer: true,
 		}
 	}
+
+	private playerIndexAssigned: PlayerIndexAssignedEventHandler = playerIndex => {
+		this.setState({
+			myPlayerIndex: playerIndex,
+		});
+	};
 
 	private makeSelectPlayerLabel: SimpleSelectMakeLabel<number> = playerIndex => {
 		const player = this.state.gameState.get("players").get(playerIndex);

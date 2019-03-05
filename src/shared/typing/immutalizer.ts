@@ -1,8 +1,12 @@
 ///<reference path="../../../node_modules/immutable/dist/immutable.d.ts" />
 import * as Immutable from "immutable";
 
+declare module "immutable" {
+	export function fromJS<T>(jsValue: T): Immutalizer<T>;
+}
+
 // TODO: actual logic in Immutable is if the object has a constructor
-export type ImmutablePrimitive = string | number | boolean | symbol | String | Number | Boolean | Symbol | Element;
+export type ImmutablePrimitive = Immutable.Map<any, any> | Immutable.List<any> | Immutalizer<any> | string | number | boolean | symbol | String | Number | Boolean | Symbol | Element;
 
 export type ImmutablePrimitiveSwitch<MUTABLE_TYPE, PROP_NAME extends keyof MUTABLE_TYPE> = ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[PROP_NAME]>;
 export type ImmutablePrimitiveSwitchValue<VALUE_TYPE> = VALUE_TYPE extends ImmutablePrimitive ? VALUE_TYPE : Immutalizer<VALUE_TYPE>;

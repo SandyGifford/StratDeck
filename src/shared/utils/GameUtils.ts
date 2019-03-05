@@ -2,7 +2,7 @@ import { ImmutableGameState, ImmutableTablePlayerState, ImmutablePlayerState, Im
 import { Vector2 } from "@typings/vector";
 import PlayerUtils from "./PlayerUtils";
 
-export default class Gameutils {
+export default class GameUtils {
 	public static dealCards(gameState: ImmutableGameState, playerIndex: number, cardCount: number): ImmutableGameState {
 		const player = PlayerUtils.dealCards(gameState.get("players").get(playerIndex), cardCount);
 		const players = gameState.get("players").set(playerIndex, player);

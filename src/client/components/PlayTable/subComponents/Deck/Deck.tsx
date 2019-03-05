@@ -30,7 +30,7 @@ export default class Deck extends React.PureComponent<DeckProps, DeckState> {
 		});
 
 		const labelEl = label ?
-			<div className="Deck__inner__label">{label}</div> : null;
+			<div className="Deck__label">{label}</div> : null;
 
 		return (
 			<div className={baseClassName}>

@@ -3,8 +3,8 @@ import "./CardPool.style";
 import * as React from "react";
 import * as Immutable from "immutable";
 import Deck from "../Deck/Deck";
-import { CardType } from "@typings/game";
-import { CardClickEventHandler, CardState } from "../Card/Card";
+import { CardType, CardState } from "@typings/game";
+import { CardClickEventHandler } from "../Card/Card";
 
 export type CardPoolClicked = (cardType: CardType) => void;
 
@@ -55,9 +55,8 @@ export default class CardPool extends React.PureComponent<CardPoolProps, CardPoo
 	}
 
 	private makeClickHandler(cardType: CardType): CardClickEventHandler {
-		return (e) => {
+		return () => {
 			const { onClick } = this.props;
-
 			if (onClick) onClick(cardType);
 		};
 	}

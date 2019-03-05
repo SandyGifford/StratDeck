@@ -2,10 +2,9 @@ import * as Immutable from "immutable";
 
 import GameStateManager from "./GameStateManager";
 import emitTypes from "@shared/emitTypes";
-import { PlayerState, CardType, DeckState } from "@typings/game";
+import { PlayerState, CardType, DeckState, ImmutablePlayerState } from "@typings/game";
 import ArrayUtils from "@utils/ArrayUtils";
 import LoopUtils from "@utils/LoopUtils";
-import PlayerUtils from "@utils/PlayerUtils";
 import { Vector2 } from "@typings/vector";
 import CardUtils from "@utils/CardUtils";
 
@@ -21,6 +20,7 @@ export default class ConnectedPlayer {
 		socket.emit(fromServer.playerConnected, GameStateManager.getGameState());
 
 		socket.on(toServer.resetGame, this.resetGame);
+		socket.on(toServer.setPlayerIndex, this.setPlayerIndex);
 		socket.on(toServer.initializePlayer, this.initialize);
 		socket.on(toServer.buyCard, this.buyCard);
 		socket.on(toServer.moveChar, this.moveChar);
@@ -81,6 +81,11 @@ export default class ConnectedPlayer {
 		}
 	};
 
+	private setPlayerIndex = (playerIndex: number) => {
+		this.playerIndex = playerIndex;
+		this.socket.emit(emitTypes.fromServer.playerIndexAssigned, playerIndex);
+	};
+
 	private initialize = (playerIndex: number, partialPlayerState: Pick<PlayerState, "chars" | "name">) => {
 		console.log(`initializing player ${playerIndex + 1}`, partialPlayerState);
 
@@ -91,7 +96,8 @@ export default class ConnectedPlayer {
 			return;
 		}
 
-		this.playerIndex = playerIndex;
+		this.setPlayerIndex(playerIndex);
+
 		this.playerName = partialPlayerState.name;
 
 		let playerState: PlayerState = {
@@ -104,8 +110,9 @@ export default class ConnectedPlayer {
 			discard: [],
 		};
 
-		const immutablePlayerState = PlayerUtils.dealCards(Immutable.fromJS(playerState), 5);
-		const waitingOnPlayers = GameStateManager.initializePlayer(playerIndex, immutablePlayerState);
+		let immutablePlayerState: ImmutablePlayerState = Immutable.fromJS(playerState);
+		let waitingOnPlayers = GameStateManager.initializePlayer(playerIndex, immutablePlayerState);
+
 		const allPicked = waitingOnPlayers === 0;
 		GameStateManager.setGameScreen(allPicked ? "table" : "characterSelect")
 

@@ -50,7 +50,7 @@ export default class PlayerUtils {
 	public static addCardToDiscard(player: ImmutableTablePlayerState, card: ImmutableCardState): ImmutableTablePlayerState {
 		return player.set(
 			"discard",
-			DeckUtils.addCardsToTop(player.get("discard"), Immutable.fromJS([card])),
+			DeckUtils.addCardsToTop(player.get("discard"), Immutable.fromJS([card as any])),
 		);
 	}
 

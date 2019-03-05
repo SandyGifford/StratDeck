@@ -3,15 +3,9 @@ import "./Card.style";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { ImmutableCardState } from "@typings/game";
-import DOMUtils from "@utils/DOMUtils";
-import NumberUtils from "@utils/NumberUtils";
+import CardArea from "../CardArea/CardArea";
 
-export interface CardClickEvent {
-	props: CardProps;
-	actualX: number;
-	actualY: number;
-}
-export type CardClickEventHandler = (e: CardClickEvent) => void;
+export type CardClickEventHandler = () => void;
 
 export interface CardProps {
 	onClick?: CardClickEventHandler;
@@ -20,7 +14,7 @@ export interface CardProps {
 	facedown: boolean;
 }
 
-export interface CardState { }
+interface CardState { }
 
 export default class Card extends React.PureComponent<CardProps, CardState> {
 	constructor(props: CardProps) {
@@ -29,36 +23,17 @@ export default class Card extends React.PureComponent<CardProps, CardState> {
 	}
 
 	public render(): React.ReactNode {
-		const { card, height, facedown } = this.props;
-
-		const baseClassName = DOMUtils.BEMClassName("Card", {
-			"facedown": facedown,
-		}, card.get("type"));
-
-		const shadowOpacity = NumberUtils.clamp(0.5 - (height * 0.1), 0, 0.5);
-		const xScale = facedown ? -1 : 1;
+		const { onClick } = this.props;
 
 		return (
-			<div
-				className={baseClassName}
-				onClick={this.cardClicked}
-				style={{
-					transform: `scaleX(${xScale})`,
-					boxShadow: `${1 * height}em ${1 * height}em ${2.5 * height}em 0 rgba(0, 0, 0, ${shadowOpacity})`,
-				}}
-			/>
+			<div onClick={onClick} className="Card" />
 		)
 	}
 
-	private cardClicked = () => {
-		if (this.props.onClick) {
-			const rect = (ReactDOM.findDOMNode(this) as HTMLDivElement).getBoundingClientRect();
+	public componentDidUpdate() {
+		const el = (ReactDOM.findDOMNode(this) as HTMLDivElement);
+		const parent = el ? el.parentElement : null;
 
-			this.props.onClick({
-				props: { ...this.props },
-				actualX: rect.left,
-				actualY: rect.top,
-			})
-		}
-	};
+		CardArea.cardUpdated(this.props.card.get("uid"), parent);
+	}
 }
