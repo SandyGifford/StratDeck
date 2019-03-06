@@ -22,6 +22,14 @@ export default class Card extends React.PureComponent<CardProps, CardState> {
 		this.state = {};
 	}
 
+	public componentDidUpdate() {
+		this.updateCard();
+	}
+
+	public componentDidMount() {
+		this.updateCard();
+	}
+
 	public render(): React.ReactNode {
 		const { onClick } = this.props;
 
@@ -30,10 +38,10 @@ export default class Card extends React.PureComponent<CardProps, CardState> {
 		)
 	}
 
-	public componentDidUpdate() {
+	private updateCard() {
 		const el = (ReactDOM.findDOMNode(this) as HTMLDivElement);
-		const parent = el ? el.parentElement : null;
+		const { card } = this.props;
 
-		CardArea.cardUpdated(this.props.card.get("uid"), parent);
+		CardArea.cardUpdated(card.get("uid"), card.get("type"), el);
 	}
 }

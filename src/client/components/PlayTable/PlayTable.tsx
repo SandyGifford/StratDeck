@@ -13,6 +13,7 @@ import LoopUtils from "@utils/LoopUtils";
 import SimpleButton from "@components/SimpleButton/SimpleButton";
 import PopMessenger from "@components/PopMessage/PopMessenger";
 import ServerConnect from "@client/connection/ServerConnect";
+import CardArea from "./subComponents/CardArea/CardArea";
 
 export interface PlayTableProps {
 	gameState: ImmutableGameState;
@@ -115,8 +116,9 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 						onChange={this.onNewGamePlayerCountChange} />
 					<SimpleButton className="PlayTable__newGamePanel__start" onClick={this.resetGame}>start</SimpleButton>
 				</div>
+				<CardArea />
 			</div>
-		)
+		);
 	}
 
 	private poolClicked: CardPoolClicked = (cardType) => {

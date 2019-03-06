@@ -1,4 +1,4 @@
-import "./Card.style";
+import "./CardDisplay.style";
 
 import * as React from "react";
 import { CardType } from "@typings/game";
