@@ -1,3 +1,5 @@
+export type DomLoopAction<R> = (ancestor: HTMLElement, index: number) => R;
+
 export default class DOMUtils {
 	/**
 	 * Creates classnames for BEM
@@ -23,5 +25,37 @@ export default class DOMUtils {
 			if (cn) aggregate += ` ${cn}`;
 			return aggregate;
 		}, "");
+	}
+
+	public static forEachAncestor(element: HTMLElement, action: DomLoopAction<void>): void {
+		for (let i = 0; element.parentElement; element = element.parentElement, i++) action(element, i);
+	}
+
+	public static everyAncestor(element: HTMLElement, action: DomLoopAction<boolean>): boolean {
+		let cont = true;
+
+		for (let i = 0; element.parentElement && cont; element = element.parentElement, i++) {
+			cont = action(element, i);
+		}
+
+		return cont;
+	}
+
+	public static findAncestor(element: HTMLElement, action: DomLoopAction<boolean>): HTMLElement {
+		let found: HTMLElement;
+
+		this.everyAncestor(element, (ancestor, index) => {
+			const didFind = action(ancestor, index);
+			if (didFind) found = ancestor;
+			return didFind;
+		});
+
+		return found;
+	}
+
+	public static findNearestAncestorWithStyle(element: HTMLElement, style: keyof CSSStyleDeclaration): HTMLElement {
+		return this.findAncestor(element, (ancestor) => {
+			return !!ancestor.style[style];
+		});
 	}
 }

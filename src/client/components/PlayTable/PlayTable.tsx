@@ -54,12 +54,10 @@ export default class PlayTable extends React.PureComponent<PlayTableProps, PlayT
 
 		return (
 			<div className="PlayTable">
-				<TableDrawer side="left" forceState={poolOpen}>
-					<Rotado angle={-90} watchResize={true}>
-						<div className="PlayTable__cardPool">
-							<CardPool onClick={this.poolClicked} />
-						</div>
-					</Rotado>
+				<TableDrawer side="top" forceState={poolOpen}>
+					<div className="PlayTable__cardPool">
+						<CardPool onClick={this.poolClicked} />
+					</div>
 				</TableDrawer>
 				<div className="PlayTable__board">
 					<Board
