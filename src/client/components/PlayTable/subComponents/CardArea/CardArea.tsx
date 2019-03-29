@@ -27,7 +27,6 @@ export interface CardInfo {
 	cardType: CardType;
 	fromPos: Vector2;
 	toPos: Vector2;
-	isIn: boolean;
 	owner: CardOwner;
 }
 export type ImmutableCardInfo = Immutalizer<CardInfo>;
@@ -71,9 +70,11 @@ export default class CardArea extends React.PureComponent<CardAreaProps, CardAre
 				{
 					// TODO: figure out why uid wants to type as "React.Key"
 					ImmutableUtils.plainMap(cardStock, (cardInfo, uid: string) => {
-						const isIn = cardInfo.get("isIn");
+						const owner = cardInfo.get("owner");
+						const ownedByArea = owner === "area";
+
 						const cardType = cardInfo.get("cardType");
-						const pos = isIn ? cardInfo.get("toPos") : cardInfo.get("fromPos");
+						const pos = ownedByArea ? cardInfo.get("toPos") : cardInfo.get("fromPos");
 						const style = pos ? {
 							top: pos.get("y"),
 							left: pos.get("x"),
@@ -81,7 +82,7 @@ export default class CardArea extends React.PureComponent<CardAreaProps, CardAre
 
 						return <Transition
 							key={uid}
-							in={isIn}
+							in={ownedByArea}
 							onEntered={() => CardArea.endMovement(uid)}
 							timeout={1000}
 							appear>
@@ -90,7 +91,7 @@ export default class CardArea extends React.PureComponent<CardAreaProps, CardAre
 								style={style}
 								ref={CardArea.cardRefs[uid]}>
 								{
-									cardInfo.get("owner") === "area" ?
+									ownedByArea ?
 										<CardDisplay
 											type={cardType}
 											height={1}
@@ -138,7 +139,6 @@ export default class CardArea extends React.PureComponent<CardAreaProps, CardAre
 		const wrapperRect = this.getWrapperRect(uid);
 
 		cardInfo = cardInfo.set("fromPos", Immutable.fromJS({ x: wrapperRect.left, y: wrapperRect.top }));
-		cardInfo = cardInfo.set("isIn", false);
 		cardInfo = cardInfo.set("owner", "self");
 
 		this.updateCardStock(uid, cardInfo);
@@ -156,7 +156,6 @@ export default class CardArea extends React.PureComponent<CardAreaProps, CardAre
 
 			cardInfo = cardInfo.set("fromPos", Immutable.fromJS({ x: wrapperRect.left, y: wrapperRect.top }));
 			cardInfo = cardInfo.set("toPos", Immutable.fromJS({ x: rect.left, y: rect.top }));
-			cardInfo = cardInfo.set("isIn", true);
 			cardInfo = cardInfo.set("parent", newParent);
 			cardInfo = cardInfo.set("owner", "area");
 
@@ -177,7 +176,6 @@ export default class CardArea extends React.PureComponent<CardAreaProps, CardAre
 			parent: element.parentElement,
 			fromPos: { x: rect.left, y: rect.top },
 			toPos: { x: rect.left, y: rect.top },
-			isIn: false,
 			owner: "self",
 		} as CardInfo);
 
