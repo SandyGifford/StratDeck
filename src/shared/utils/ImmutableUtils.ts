@@ -5,7 +5,7 @@ export default class ImmutableUtils {
 	private static readonly EMPTY_MAP = Immutable.fromJS({});
 	private static readonly EMPTY_LIST = Immutable.fromJS([]);
 
-	public static plainMap<T, R>(imm: Immutalizer<T>, mapper: (value: ImmutablePrimitiveSwitchValue<T[keyof T]>, key: keyof T, iter: Immutalizer<T>) => R, context?: any): R[] {
+	public static plainMap<T extends { [key in K]: T[K] }, K extends keyof T, R>(imm: Immutalizer<T>, mapper: (value: ImmutablePrimitiveSwitchValue<T[K]>, key: K, iter: Immutalizer<T>) => R, context?: any): R[] {
 		return (imm as any as Immutable.Map<any, any>).reduce((arr, value, key) => {
 			arr.push(mapper(value, key, imm));
 			return arr;

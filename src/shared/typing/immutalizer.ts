@@ -6,7 +6,7 @@ declare module "immutable" {
 }
 
 // TODO: actual logic in Immutable is if the object has a constructor
-export type ImmutablePrimitive = Immutable.Map<any, any> | Immutable.List<any> | Immutalizer<any> | string | number | boolean | symbol | String | Number | Boolean | Symbol | Element;
+export type ImmutablePrimitive = Immutable.Map<unknown, unknown> | Immutable.List<unknown> | Immutalizer<unknown> | string | number | boolean | symbol | String | Number | Boolean | Symbol | Element;
 
 export type ImmutablePrimitiveSwitch<MUTABLE_TYPE, PROP_NAME extends keyof MUTABLE_TYPE> = ImmutablePrimitiveSwitchValue<MUTABLE_TYPE[PROP_NAME]>;
 export type ImmutablePrimitiveSwitchValue<VALUE_TYPE> = VALUE_TYPE extends ImmutablePrimitive ? VALUE_TYPE : Immutalizer<VALUE_TYPE>;
