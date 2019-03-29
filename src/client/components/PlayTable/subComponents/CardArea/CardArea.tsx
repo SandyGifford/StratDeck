@@ -23,8 +23,7 @@ type CardOwner = "self" | "area";
 export interface CardInfo {
 	parent: HTMLElement;
 	cardType: CardType;
-	fromPos: Vector2;
-	toPos: Vector2;
+	position: Vector2;
 	owner: CardOwner;
 }
 export type ImmutableCardInfo = Immutalizer<CardInfo>;
@@ -72,10 +71,10 @@ export default class CardArea extends React.PureComponent<CardAreaProps, CardAre
 						const ownedByArea = owner === "area";
 
 						const cardType = cardInfo.get("cardType");
-						const pos = ownedByArea ? cardInfo.get("toPos") : cardInfo.get("fromPos");
-						const style = pos ? {
-							top: pos.get("y"),
-							left: pos.get("x"),
+						const position = cardInfo.get("position");
+						const style = position ? {
+							top: position.get("y"),
+							left: position.get("x"),
 						} : null;
 
 						return <Transition
@@ -136,7 +135,7 @@ export default class CardArea extends React.PureComponent<CardAreaProps, CardAre
 		let cardInfo = this.cardStock.get(uid);
 		const wrapperRect = this.getWrapperRect(uid);
 
-		cardInfo = cardInfo.set("fromPos", Immutable.fromJS({ x: wrapperRect.left, y: wrapperRect.top }));
+		cardInfo = cardInfo.set("position", Immutable.fromJS({ x: wrapperRect.left, y: wrapperRect.top }));
 		cardInfo = cardInfo.set("owner", "self");
 
 		this.updateCardStock(uid, cardInfo);
@@ -150,10 +149,8 @@ export default class CardArea extends React.PureComponent<CardAreaProps, CardAre
 
 		if (currentParent !== newParent) {
 			const rect = cardElement.getBoundingClientRect();
-			const wrapperRect = this.getWrapperRect(uid);
 
-			cardInfo = cardInfo.set("fromPos", Immutable.fromJS({ x: wrapperRect.left, y: wrapperRect.top }));
-			cardInfo = cardInfo.set("toPos", Immutable.fromJS({ x: rect.left, y: rect.top }));
+			cardInfo = cardInfo.set("position", Immutable.fromJS({ x: rect.left, y: rect.top }));
 			cardInfo = cardInfo.set("parent", newParent);
 			cardInfo = cardInfo.set("owner", "area");
 
@@ -173,7 +170,7 @@ export default class CardArea extends React.PureComponent<CardAreaProps, CardAre
 			cardType,
 			parent: element.parentElement,
 			fromPos: { x: rect.left, y: rect.top },
-			toPos: { x: rect.left, y: rect.top },
+			position: { x: rect.left, y: rect.top },
 			owner: "self",
 		} as CardInfo);
 
