@@ -11,8 +11,6 @@ import CardDisplay from "../CardDisplay/CardDisplay";
 import { Vector2 } from "@typings/vector";
 import KeyedEventDelegate from "@utils/KeyedEventDelegate";
 
-(window as any).i = Immutable
-
 export interface CardAreaProps {
 
 }
